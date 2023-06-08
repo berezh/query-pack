@@ -1,7 +1,7 @@
-import { BoolZipper } from "../bool";
+import { BooleanZipper } from "../boolean";
 
 describe("BoolZipper", () => {
-  const zipper = new BoolZipper();
+  const zipper = new BooleanZipper();
   it("zip", () => {
     expect(zipper.zip(true)).toBe("1");
     expect(zipper.zip(false)).toBe("0");

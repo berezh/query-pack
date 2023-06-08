@@ -1,6 +1,6 @@
 import { Zipper } from "./zipper";
 
-export class BoolZipper extends Zipper<boolean> {
+export class BooleanZipper extends Zipper<boolean> {
   public zip(source: boolean): string {
     return source === true ? "1" : "0";
   }

@@ -6,6 +6,8 @@ import { UsedSigns } from "./used-signs";
 export class ComplexHandler {
   private simple = new SimpleHandler();
 
+  public static Version = 1;
+
   private options: ZipOptions;
 
   constructor(options?: ZipOptions) {
@@ -14,19 +16,21 @@ export class ComplexHandler {
     }
   }
 
-  private zipComplex(propertyName: string, value: unknown, current: ComplexResult, results: ComplexResult[]) {
+  private zipComplex(propertyName: string, value: unknown, current: ComplexResult | undefined, results: ComplexResult[]) {
     const type = TypeUtil.getType(value);
     if (TypeUtil.isComplex(type)) {
       if (type === "object") {
         const obj = value as object;
         const keys = Object.keys(obj);
 
-        current.children.push({
-          propertyName,
-          type,
-          splitter: UsedSigns.Splitter.ObjectProperty,
-          value: "",
-        });
+        if (current) {
+          current.children.push({
+            propertyName,
+            type,
+            splitter: UsedSigns.Splitter.ObjectProperty,
+            value: "",
+          });
+        }
 
         const child: ComplexResult = {
           type,
@@ -35,10 +39,11 @@ export class ComplexHandler {
         results.push(child);
 
         for (const key of keys) {
-          this.zipComplex(key, obj[key], child, results);
+          const zippedKey = this.simple.zip("string", key)?.value;
+          this.zipComplex(zippedKey || "", obj[key], child, results);
         }
       }
-    } else if (type === "array") {
+    } else if (type === "array" && current) {
       current.children.push({
         propertyName,
         type,
@@ -54,7 +59,7 @@ export class ComplexHandler {
       for (const itemValue of value as any[]) {
         this.zipComplex(propertyName, itemValue, child, results);
       }
-    } else {
+    } else if (current) {
       const simpleResult = this.simple.zip(type, value);
       if (simpleResult) {
         current.children.push({ ...simpleResult, propertyName });
@@ -63,14 +68,21 @@ export class ComplexHandler {
   }
 
   public zip(source: unknown): string {
-    const root: ComplexResult = {
-      type: TypeUtil.getType(source),
-      children: [],
-    };
-    const results: ComplexResult[] = [root];
+    const results: ComplexResult[] = [];
 
-    this.zipComplex("", source, root, results);
+    this.zipComplex("", source, undefined, results);
 
-    return "";
+    const lines: string[] = [ComplexHandler.Version.toString()];
+
+    for (const cr of results) {
+      const complexLine = cr.children
+        .map(({ propertyName, splitter, value }) => {
+          return propertyName + splitter + value;
+        })
+        .join(UsedSigns.Splitter.Property);
+
+      lines.push(complexLine);
+    }
+    return lines.join(UsedSigns.Splitter.Object);
   }
 }

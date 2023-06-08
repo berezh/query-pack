@@ -1,5 +1,5 @@
 import { HandledType, SimpleResult } from "../interfaces";
-import { BoolZipper } from "../zippers/bool";
+import { BooleanZipper } from "../zippers/boolean";
 import { NumberZipper } from "../zippers/number";
 import { StringZipper } from "../zippers/string";
 import { UpperCaseZipper } from "../zippers/upper-case";
@@ -27,7 +27,7 @@ export class SimpleHandler {
     {
       type: "boolean",
       splitter: UsedSigns.Splitter.BooleanProperty,
-      zippers: [new BoolZipper()],
+      zippers: [new BooleanZipper()],
     },
   ];
 

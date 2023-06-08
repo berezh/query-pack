@@ -6,6 +6,7 @@
 export class UsedSigns {
   public static Splitter = {
     Object: "X",
+    Property: "Y",
     StringProperty: "S",
     NumberProperty: "N",
     BigIntProperty: "I",
