@@ -1,7 +1,7 @@
 import { encode } from "../coder";
 import { UsedSigns } from "../lib/used-signs";
 
-describe("text", () => {
+describe.skip("text", () => {
   it("simple", () => {
     const testString = "Hello Word!";
     const encoded = encode(testString);

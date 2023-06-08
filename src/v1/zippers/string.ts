@@ -15,6 +15,8 @@ interface SignInfo {
   special?: boolean;
 }
 
+export type IItemType = typeof UsedSigns.String.WhiteSpace | typeof UsedSigns.String.Apostrophe;
+
 // https://www.threesl.com/blog/special-characters-regular-expressions-escape/
 // regex special: ., +, *, ?, ^, $, (, ), [, ], {, }, |, \.
 
@@ -36,44 +38,32 @@ export class StringZipper extends Zipper<string> {
 
   private zipAnyMatch: RegExp;
 
-  private zipMatches: SignReplace[] = [];
-
   private unzipAnyMatch: RegExp;
-
-  private unzipMatches: SignReplace[] = [];
 
   constructor() {
     super();
     let zipReg = "";
     for (const key in this.signs) {
-      const { altRegex, special, alt } = this.signs[key];
-      if (altRegex) {
-        zipReg += altRegex;
-        this.zipMatches.push({ regex: new RegExp(altRegex, "g"), replace: alt });
-      } else {
-        const caseReg = (special === true ? "\\" : "") + key;
-        zipReg += caseReg;
-        this.zipMatches.push({ regex: new RegExp(caseReg, "g"), replace: alt });
-      }
+      const { altRegex, special } = this.signs[key];
+      zipReg += altRegex ? altRegex : (special === true ? "\\" : "") + key;
     }
-    this.zipAnyMatch = new RegExp(`[${zipReg}]`);
+    this.zipAnyMatch = new RegExp(`[${zipReg}]`, "g");
 
     let unzipReg = "";
     const keys = Object.keys(this.signs);
     for (const key of keys) {
-      const { alt } = this.signs[key];
-      unzipReg += alt;
-      this.unzipMatches.push({ regex: new RegExp(alt, "g"), replace: key });
+      unzipReg += this.signs[key].alt;
     }
-    this.unzipAnyMatch = new RegExp(`[${unzipReg}]`);
+    this.unzipAnyMatch = new RegExp(`[${unzipReg}]`, "g");
   }
 
   public zip(source: string): string {
     let result = source;
     if (typeof result === "string" && this.zipAnyMatch.test(result)) {
-      for (const { regex, replace } of this.zipMatches) {
-        result = result.replace(regex, replace);
-      }
+      result = result.replace(this.zipAnyMatch, match => {
+        const info = this.signs[match];
+        return info?.alt;
+      });
     }
 
     return result;
@@ -82,9 +72,10 @@ export class StringZipper extends Zipper<string> {
   public unzip(zipped: string): string {
     let result = zipped;
     if (typeof result === "string" && this.unzipAnyMatch.test(result)) {
-      for (const { regex, replace } of this.unzipMatches) {
-        result = result.replace(regex, replace);
-      }
+      result = result.replace(this.unzipAnyMatch, match => {
+        const key = Object.keys(this.signs).find(key => this.signs[key].alt === match);
+        return key || "";
+      });
     }
     return result;
   }
