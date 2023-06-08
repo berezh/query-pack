@@ -3,7 +3,6 @@
 // 0123456789
 // -_.~
 
-import { SignReplace } from "../interfaces";
 import { UsedSigns } from "../lib/used-signs";
 import { Zipper } from "./zipper";
 
