@@ -4,29 +4,30 @@
 // -_.~
 
 export class UsedSigns {
-  public static Splitter: {
-    Object: "X";
-    StringProperty: "S";
-    NumberProperty: "N";
-    BooleanProperty: "B";
-    DateProperty: "D";
-    ObjectProperty: "O";
-    ArrayProperty: "A";
+  public static Splitter = {
+    Object: "X",
+    StringProperty: "S",
+    NumberProperty: "N",
+    BooleanProperty: "B",
+    DateProperty: "D",
+    ObjectProperty: "O",
+    ArrayProperty: "A",
   };
 
   public static UpperCase = "U";
 
-  public static String: {
-    WhiteSpace: "W";
-    QuestionMark: "Q";
-    Plus: "P";
-    Comma: "C";
-    Equals: "L";
-    At: "M";
-    Semicolon: "T";
-    Colon: "K";
-    Apostrophe: "I";
-    LeftParenthesis: "J";
-    RightParenthesis: "R";
+  public static String = {
+    WhiteSpace: "W",
+    QuestionMark: "Q",
+    Plus: "P",
+    Comma: "C",
+    Equals: "L",
+    At: "M",
+    Semicolon: "T",
+    Colon: "K",
+    Apostrophe: "I",
+    LeftParenthesis: "J",
+    RightParenthesis: "R",
+    Quotation: "H",
   };
 }
