@@ -4,39 +4,26 @@ import { StringZipper } from "../string";
 describe("StringZipper", () => {
   const zipper = new StringZipper();
 
-  describe("zip", () => {
+  function stringTest(source: string, zipped: string) {
+    expect(zipper.zip(source)).toBe(zipped);
+    expect(zipper.unzip(zipped)).toBe(source);
+  }
+
+  describe("zip/unzip", () => {
     it("simple", () => {
-      expect(zipper.zip("text")).toBe("text");
+      stringTest("text", "text");
     });
 
     it("whitespace", () => {
-      expect(zipper.zip("hello man")).toBe(`hello${UsedSigns.String.WhiteSpace}man`);
+      stringTest("hello man", `hello${UsedSigns.String.WhiteSpace}man`);
     });
 
     it("whitespace multi", () => {
-      expect(zipper.zip("hello nice man")).toBe(`hello${UsedSigns.String.WhiteSpace}nice${UsedSigns.String.WhiteSpace}man`);
+      stringTest("hello nice man", `hello${UsedSigns.String.WhiteSpace}nice${UsedSigns.String.WhiteSpace}man`);
     });
 
     it("mail", () => {
-      expect(zipper.zip("test@mail.com")).toBe(`test${UsedSigns.String.At}mail.com`);
-    });
-  });
-
-  describe("unzip", () => {
-    it("simple", () => {
-      expect(zipper.unzip("text")).toBe("text");
-    });
-
-    it("whitespace", () => {
-      expect(zipper.unzip(`hello${UsedSigns.String.WhiteSpace}man`)).toBe("hello man");
-    });
-
-    it("whitespace multi", () => {
-      expect(zipper.unzip(`hello${UsedSigns.String.WhiteSpace}nice${UsedSigns.String.WhiteSpace}man`)).toBe("hello nice man");
-    });
-
-    it("mail", () => {
-      expect(zipper.unzip(`test${UsedSigns.String.At}mail.com`)).toBe("test@mail.com");
+      stringTest("test@mail.com", `test${UsedSigns.String.At}mail.com`);
     });
   });
 });
