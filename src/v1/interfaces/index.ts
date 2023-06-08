@@ -22,3 +22,8 @@ export interface ZipConvertor extends Record<string, number | ZipPropertyConvert
 export interface ZipOptions {
   convertor: ZipConvertor | ZipConvertor[];
 }
+
+export interface SignReplace {
+  regex: RegExp;
+  replace: string;
+}

@@ -3,6 +3,7 @@
 // 0123456789
 // -_.~
 
+import { SignReplace } from "../interfaces";
 import { UsedSigns } from "../lib/used-signs";
 import { Zipper } from "./zipper";
 
@@ -12,11 +13,6 @@ interface SignInfo {
   alt: string;
   altRegex?: string;
   special?: boolean;
-}
-
-interface SignReplace {
-  regex: RegExp;
-  replace: string;
 }
 
 // https://www.threesl.com/blog/special-characters-regular-expressions-escape/
