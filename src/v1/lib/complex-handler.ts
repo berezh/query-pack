@@ -87,7 +87,7 @@ export class ComplexHandler {
       this.zipArray(results, source as object[]);
     } else {
       const current: ComplexResult = {
-        type: "object",
+        type,
         children: [],
       };
       results.push(current);
@@ -97,14 +97,24 @@ export class ComplexHandler {
     const lines: string[] = [ComplexHandler.Version.toString()];
 
     for (const cr of results) {
+      const propertySplitter = cr.type === "object" ? UsedSigns.Splitter.Property : "";
       const complexLine = cr.children
         .map(({ propertyName, splitter, value }) => {
           return (propertyName ? propertyName : "") + splitter + value;
         })
-        .join(UsedSigns.Splitter.Property);
+        .join(propertySplitter);
 
       lines.push(complexLine);
     }
-    return lines.join(UsedSigns.Splitter.Object);
+
+    // when object is one = no splitters
+    let splitter = UsedSigns.Splitter.Object;
+    if (results.length === 1) {
+      const first = results[0];
+      if (first.type !== "object") {
+        splitter = "";
+      }
+    }
+    return lines.join(splitter);
   }
 }
