@@ -13,8 +13,6 @@ export class ComplexHandler {
 
   private parser = new Parser();
 
-  private objectReg = new RegExp(`${UsedSigns.Splitter.Object}`, "g");
-
   constructor(options?: ZipOptions) {
     if (options) {
       this.options = options;
@@ -126,12 +124,24 @@ export class ComplexHandler {
   public unzip(zipped: string): any {
     const [version, restZipped] = this.parser.version(zipped);
     if ([ComplexHandler.Version].includes(version)) {
-      const ps = this.parser.properties(restZipped);
-      const values = ps.map(({ splitter, value }) => {
-        return this.simple.unzip(splitter, value);
-      });
-      if (values.length) {
-        return values.length === 1 ? values[0] : values;
+      if (this.parser.objectReg.test(zipped)) {
+        const os = this.parser.objects(restZipped);
+        if (os.length === 1) {
+          const result = {};
+          for (const { name, splitter, value } of os[0].properties) {
+            result[name] = this.simple.unzip(splitter, value);
+          }
+
+          return result;
+        }
+      } else if (this.parser.propertyTypeReg.test(zipped)) {
+        const ps = this.parser.properties(restZipped);
+        const values = ps.map(({ splitter, value }) => {
+          return this.simple.unzip(splitter, value);
+        });
+        if (values.length) {
+          return values.length === 1 ? values[0] : values;
+        }
       }
 
       return undefined;
