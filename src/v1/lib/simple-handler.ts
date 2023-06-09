@@ -10,14 +10,20 @@ interface TypeOperator {
   type: HandledType;
   splitter: string;
   zippers: Zipper[];
+  unzippers?: Zipper[];
 }
 
 export class SimpleHandler {
+  private upperCaseZipper = new UpperCaseZipper();
+
+  private stringZipper = new StringZipper();
+
   private operators: TypeOperator[] = [
     {
       type: "string",
       splitter: UsedSigns.Splitter.StringProperty,
-      zippers: [new UpperCaseZipper(), new StringZipper()],
+      zippers: [this.upperCaseZipper, this.stringZipper],
+      unzippers: [this.stringZipper, this.upperCaseZipper],
     },
     {
       type: "number",
@@ -34,16 +40,15 @@ export class SimpleHandler {
   public zip(type: HandledType, source: unknown): SimpleResult | undefined {
     const operator = this.operators.find(x => x.type === type);
     if (operator) {
-      let result = "";
+      let result = source;
       const { zippers } = operator;
       for (const zipper of zippers) {
-        result = zipper.zip(source);
-        source = result;
+        result = zipper.zip(result);
       }
       return {
         type: operator.type,
         splitter: operator?.splitter || "",
-        value: result,
+        value: result as string,
       };
     }
 
@@ -54,8 +59,8 @@ export class SimpleHandler {
     const operator = this.operators.find(x => (x.splitter = splitter));
     let result: any = zipped;
     if (operator) {
-      const { zippers } = operator;
-      for (const zipper of zippers) {
+      const { unzippers, zippers } = operator;
+      for (const zipper of unzippers || zippers) {
         result = zipper.unzip(result);
       }
     }
