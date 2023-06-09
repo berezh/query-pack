@@ -2,7 +2,7 @@ import { UsedSigns } from "./used-signs";
 
 export class Number32 {
   // abcdefghijklmnopqrstuv
-  private static numbers: Record<string, number> = {
+  public static readonly numbers: Record<string, number> = {
     "0": 0,
     "1": 1,
     "2": 2,

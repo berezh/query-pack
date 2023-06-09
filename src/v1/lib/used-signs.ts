@@ -9,9 +9,9 @@ export class UsedSigns {
     Property: "Y",
     StringProperty: "S",
     NumberProperty: "N",
-    BigIntProperty: "I",
+    // BigIntProperty: "I",
     BooleanProperty: "B",
-    DateProperty: "D",
+    // DateProperty: "D",
     ObjectProperty: "O",
     ArrayProperty: "A",
   };

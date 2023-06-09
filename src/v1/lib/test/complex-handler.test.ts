@@ -7,11 +7,15 @@ describe("ComplexHandler", () => {
   const handler = new ComplexHandler();
   const simpleHandler = new SimpleHandler();
 
+  function testZip(input: any, zipped: string) {
+    expect(handler.zip(input)).toBe(zipped);
+    expect(handler.unzip(zipped)).toBe(input);
+  }
+
   describe("simple", () => {
     it("number", () => {
       const value = 12345;
-      const zipped = handler.zip(value);
-      expect(zipped).toBe(ComplexHandler.Version + UsedSigns.Splitter.NumberProperty + simpleHandler.zip("number", value)?.value);
+      testZip(value, ComplexHandler.Version + UsedSigns.Splitter.NumberProperty + simpleHandler.zip("number", value)?.value);
     });
     it("string", () => {
       const value = "Hello Word!";
@@ -25,7 +29,7 @@ describe("ComplexHandler", () => {
   });
 
   describe("object", () => {
-    it("simple", () => {
+    it("default", () => {
       const obj = {
         id: 10,
         name: "daniel",

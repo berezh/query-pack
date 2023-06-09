@@ -56,7 +56,7 @@ export class SimpleHandler {
   }
 
   public unzip(splitter: string, zipped: string): unknown {
-    const operator = this.operators.find(x => (x.splitter = splitter));
+    const operator = this.operators.find(x => x.splitter === splitter);
     let result: any = zipped;
     if (operator) {
       const { unzippers, zippers } = operator;

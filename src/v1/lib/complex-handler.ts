@@ -1,4 +1,5 @@
 import { ComplexResult, ZipOptions } from "../interfaces";
+import { Parser } from "./parser";
 import { SimpleHandler } from "./simple-handler";
 import { TypeUtil } from "./type";
 import { UsedSigns } from "./used-signs";
@@ -9,6 +10,10 @@ export class ComplexHandler {
   public static Version = 1;
 
   private options: ZipOptions;
+
+  private parser = new Parser();
+
+  private objectReg = new RegExp(`${UsedSigns.Splitter.Object}`, "g");
 
   constructor(options?: ZipOptions) {
     if (options) {
@@ -116,5 +121,22 @@ export class ComplexHandler {
       }
     }
     return lines.join(splitter);
+  }
+
+  public unzip(zipped: string): any {
+    const [version, restZipped] = this.parser.version(zipped);
+    if ([ComplexHandler.Version].includes(version)) {
+      const ps = this.parser.properties(restZipped);
+      const values = ps.map(({ splitter, value }) => {
+        return this.simple.unzip(splitter, value);
+      });
+      if (values.length) {
+        return values.length === 1 ? values[0] : values;
+      }
+
+      return undefined;
+    } else {
+      throw Error(`${version} is not supported`);
+    }
   }
 }
