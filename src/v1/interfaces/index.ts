@@ -7,10 +7,11 @@ export interface SimpleResult {
 }
 
 export interface ComplexPropertyResult extends SimpleResult {
-  propertyName: string;
+  propertyName?: string;
 }
 
 export interface ComplexResult {
+  propertyName?: string;
   type: HandledType;
   children: ComplexPropertyResult[];
 }

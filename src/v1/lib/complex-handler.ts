@@ -16,53 +16,63 @@ export class ComplexHandler {
     }
   }
 
-  private zipComplex(propertyName: string, value: unknown, current: ComplexResult | undefined, results: ComplexResult[]) {
+  private zipSimple(current: ComplexResult, value: unknown, propertyName?: string) {
     const type = TypeUtil.getType(value);
-    if (TypeUtil.isComplex(type)) {
+    const simpleResult = this.simple.zip(type, value);
+    if (simpleResult) {
+      current.children.push({ ...simpleResult, propertyName });
+    }
+  }
+
+  private zipObject(results: ComplexResult[], value: object) {
+    const current: ComplexResult = {
+      type: "object",
+      children: [],
+    };
+    results.push(current);
+
+    const keys = Object.keys(value);
+    for (const key of keys) {
+      const childValue = value[key];
+      const childType = TypeUtil.getType(childValue);
+      const childProperty = this.simple.zip("string", key)?.value || "";
+      if (childType === "object") {
+        current.children.push({
+          propertyName: childProperty,
+          type: childType,
+          splitter: UsedSigns.Splitter.ObjectProperty,
+          value: "",
+        });
+        this.zipObject(results, childValue);
+      } else if (childType === "array") {
+        this.zipArray(results, childValue, childProperty);
+      } else {
+        this.zipSimple(current, childValue, childProperty);
+      }
+    }
+  }
+
+  private zipArray(results: ComplexResult[], obj: object[], propertyName?: string) {
+    const current: ComplexResult = {
+      propertyName,
+      type: "array",
+      children: [],
+    };
+
+    results.push(current);
+
+    for (const item of obj) {
+      const type = TypeUtil.getType(item);
       if (type === "object") {
-        const obj = value as object;
-        const keys = Object.keys(obj);
-
-        if (current) {
-          current.children.push({
-            propertyName,
-            type,
-            splitter: UsedSigns.Splitter.ObjectProperty,
-            value: "",
-          });
-        }
-
-        const child: ComplexResult = {
+        current.children.push({
+          propertyName: "",
           type,
-          children: [],
-        };
-        results.push(child);
-
-        for (const key of keys) {
-          const zippedKey = this.simple.zip("string", key)?.value;
-          this.zipComplex(zippedKey || "", obj[key], child, results);
-        }
-      }
-    } else if (type === "array" && current) {
-      current.children.push({
-        propertyName,
-        type,
-        splitter: UsedSigns.Splitter.ArrayProperty,
-        value: "",
-      });
-      const child: ComplexResult = {
-        type,
-        children: [],
-      };
-      results.push(child);
-
-      for (const itemValue of value as any[]) {
-        this.zipComplex(propertyName, itemValue, child, results);
-      }
-    } else if (current) {
-      const simpleResult = this.simple.zip(type, value);
-      if (simpleResult) {
-        current.children.push({ ...simpleResult, propertyName });
+          splitter: UsedSigns.Splitter.ObjectProperty,
+          value: "",
+        });
+        this.zipObject(results, item);
+      } else {
+        this.zipSimple(current, item);
       }
     }
   }
@@ -70,14 +80,26 @@ export class ComplexHandler {
   public zip(source: unknown): string {
     const results: ComplexResult[] = [];
 
-    this.zipComplex("", source, undefined, results);
+    const type = TypeUtil.getType(source);
+    if (type === "object") {
+      this.zipObject(results, source as object);
+    } else if (type === "array") {
+      this.zipArray(results, source as object[]);
+    } else {
+      const current: ComplexResult = {
+        type: "object",
+        children: [],
+      };
+      results.push(current);
+      this.zipSimple(current, source);
+    }
 
     const lines: string[] = [ComplexHandler.Version.toString()];
 
     for (const cr of results) {
       const complexLine = cr.children
         .map(({ propertyName, splitter, value }) => {
-          return propertyName + splitter + value;
+          return (propertyName ? propertyName : "") + splitter + value;
         })
         .join(UsedSigns.Splitter.Property);
 
