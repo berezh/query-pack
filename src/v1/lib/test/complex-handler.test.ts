@@ -8,8 +8,8 @@ describe("ComplexHandler", () => {
   const simpleHandler = new SimpleHandler();
 
   function testZip(input: any, zipped: string) {
-    expect(handler.zip(input)).toBe(zipped);
-    expect(handler.unzip(zipped)).toBe(input);
+    expect(handler.zip(input)).toEqual(zipped);
+    expect(handler.unzip(zipped)).toEqual(input);
   }
 
   describe("simple", () => {
@@ -19,12 +19,65 @@ describe("ComplexHandler", () => {
     });
     it("string", () => {
       const value = "Hello Word!";
-      const zipped = handler.zip(value);
-      expect(zipped).toBe(ComplexHandler.Version + UsedSigns.Splitter.StringProperty + simpleHandler.zip("string", value)?.value);
+      testZip(value, ComplexHandler.Version + UsedSigns.Splitter.StringProperty + simpleHandler.zip("string", value)?.value);
     });
     it("boolean", () => {
-      const zipped = handler.zip(true);
-      expect(zipped).toBe(ComplexHandler.Version + UsedSigns.Splitter.BooleanProperty + simpleHandler.zip("boolean", true)?.value);
+      const value = true;
+      testZip(value, ComplexHandler.Version + UsedSigns.Splitter.BooleanProperty + simpleHandler.zip("boolean", value)?.value);
+    });
+  });
+
+  describe("array", () => {
+    it("number", () => {
+      const value: number[] = [2, 16, 128];
+      let actual = "" + ComplexHandler.Version;
+      for (const item of value) {
+        const r = simpleHandler.zip("number", item);
+        if (r) {
+          actual += r.splitter + r.value;
+          expect(r.splitter).toBe(UsedSigns.Splitter.NumberProperty);
+        }
+      }
+      testZip(value, actual);
+    });
+
+    it("string", () => {
+      const value: string[] = ["first", "second", "third"];
+      let actual = "" + ComplexHandler.Version;
+      for (const item of value) {
+        const r = simpleHandler.zip("string", item);
+        if (r) {
+          actual += r.splitter + r.value;
+          expect(r.splitter).toBe(UsedSigns.Splitter.StringProperty);
+        }
+      }
+      testZip(value, actual);
+    });
+
+    it("boolean", () => {
+      const value: boolean[] = [true, false, true];
+      let actual = "" + ComplexHandler.Version;
+      for (const item of value) {
+        const r = simpleHandler.zip("boolean", item);
+        if (r) {
+          actual += r.splitter + r.value;
+          expect(r.splitter).toBe(UsedSigns.Splitter.BooleanProperty);
+        }
+      }
+      testZip(value, actual);
+    });
+
+    it("simple mix", () => {
+      const value: (boolean | number | string)[] = [true, 64, "third"];
+      let actual = "" + ComplexHandler.Version;
+      for (const item of value) {
+        const type = TypeUtil.getType(item);
+        const r = simpleHandler.zip(type, item);
+        if (r) {
+          actual += r.splitter + r.value;
+        }
+      }
+      testZip(value, actual);
     });
   });
 
@@ -59,64 +112,6 @@ describe("ComplexHandler", () => {
       };
       const zipped = handler.zip(obj);
       expect(zipped).toBe(ComplexHandler.Version + UsedSigns.Splitter.Object + simpleHandler.zip("string", "NamE")?.value + UsedSigns.Splitter.StringProperty + obj.NamE);
-    });
-  });
-
-  describe("array", () => {
-    it("number", () => {
-      const array: number[] = [2, 16, 128];
-      const zipped = handler.zip(array);
-      let actual = "" + ComplexHandler.Version;
-      for (const item of array) {
-        const r = simpleHandler.zip("number", item);
-        if (r) {
-          actual += r.splitter + r.value;
-          expect(r.splitter).toBe(UsedSigns.Splitter.NumberProperty);
-        }
-      }
-      expect(zipped).toBe(actual);
-    });
-
-    it("string", () => {
-      const array: string[] = ["first", "second", "third"];
-      const zipped = handler.zip(array);
-      let actual = "" + ComplexHandler.Version;
-      for (const item of array) {
-        const r = simpleHandler.zip("string", item);
-        if (r) {
-          actual += r.splitter + r.value;
-          expect(r.splitter).toBe(UsedSigns.Splitter.StringProperty);
-        }
-      }
-      expect(zipped).toBe(actual);
-    });
-
-    it("boolean", () => {
-      const array: boolean[] = [true, false, true];
-      const zipped = handler.zip(array);
-      let actual = "" + ComplexHandler.Version;
-      for (const item of array) {
-        const r = simpleHandler.zip("boolean", item);
-        if (r) {
-          actual += r.splitter + r.value;
-          expect(r.splitter).toBe(UsedSigns.Splitter.BooleanProperty);
-        }
-      }
-      expect(zipped).toBe(actual);
-    });
-
-    it("simple mix", () => {
-      const array: (boolean | number | string)[] = [true, 64, "third"];
-      const zipped = handler.zip(array);
-      let actual = "" + ComplexHandler.Version;
-      for (const item of array) {
-        const type = TypeUtil.getType(item);
-        const r = simpleHandler.zip(type, item);
-        if (r) {
-          actual += r.splitter + r.value;
-        }
-      }
-      expect(zipped).toBe(actual);
     });
   });
 
