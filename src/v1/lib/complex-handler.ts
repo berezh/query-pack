@@ -97,7 +97,7 @@ export class ComplexHandler {
       this.zipSimple(current, source);
     }
 
-    const lines: string[] = [ComplexHandler.Version.toString()];
+    const lines: string[] = [];
 
     for (const cr of results) {
       const propertySplitter = cr.type === "object" ? UsedSigns.Splitter.Property : "";
@@ -111,21 +111,19 @@ export class ComplexHandler {
     }
 
     // when object is one = no splitters
-    let splitter = UsedSigns.Splitter.Object;
-    if (results.length === 1) {
-      const first = results[0];
-      if (first.type !== "object") {
-        splitter = "";
-      }
+    if (lines.length) {
+      lines[0] = ComplexHandler.Version.toString() + lines[0];
     }
-    return lines.join(splitter);
+
+    return lines.join(UsedSigns.Splitter.Object);
   }
 
   public unzip(zipped: string): any {
     const [version, restZipped] = this.parser.version(zipped);
     if ([ComplexHandler.Version].includes(version)) {
+      // multi objects
       if (this.parser.objectReg.test(zipped)) {
-        const parsedObjects = this.parser.objects(restZipped);
+        const parsedObjects = this.parser.parseObjects(restZipped);
         if (parsedObjects.length > 0) {
           const root = parsedObjects[0];
           if (root.type === "object") {
@@ -157,7 +155,18 @@ export class ComplexHandler {
             return realObjects[0];
           }
         }
-      } else if (this.parser.propertyTypeReg.test(zipped)) {
+      }
+      // one object
+      else if (this.parser.namedPropertyReg.test(restZipped)) {
+        const props = this.parser.parseNamedProperties(restZipped);
+        const obj = {};
+        for (const { name, splitter, value } of props) {
+          obj[name] = this.simple.unzip(splitter, value);
+        }
+        return obj;
+      }
+      // simple value or array
+      else if (this.parser.propertyTypeReg.test(zipped)) {
         const ps = this.parser.properties(restZipped);
         const values = ps.map(({ splitter, value }) => {
           return this.simple.unzip(splitter, value);

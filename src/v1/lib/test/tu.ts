@@ -16,10 +16,17 @@ export class TU {
   }
 
   public static converter(zipper: { zip: (input: unknown) => string; unzip: (z: string) => unknown }) {
-    return (source: unknown, zipped: string | (string | number)[]) => {
+    return (source: unknown, zipped: string | (string | number)[], options?: { zip?: boolean; unzip?: boolean }) => {
       const zippedValue = Array.isArray(zipped) ? zipped.join("") : zipped;
-      expect(zipper.zip(source)).toEqual(zippedValue);
-      expect(zipper.unzip(zippedValue)).toEqual(source);
+
+      const o = options || { zip: true, unzip: true };
+
+      if (o.zip) {
+        expect(zipper.zip(source)).toEqual(zippedValue);
+      }
+      if (o.unzip) {
+        expect(zipper.unzip(zippedValue)).toEqual(source);
+      }
     };
   }
 }

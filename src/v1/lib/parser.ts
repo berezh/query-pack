@@ -50,6 +50,10 @@ export class Parser {
     return new RegExp(regStartWith(s.Object), "g");
   }
 
+  public get namedPropertyReg(): RegExp {
+    return regNameSignValue(this.propertySigns, [s.Property]);
+  }
+
   public get propertyReg(): RegExp {
     return new RegExp(regStartWith(s.Property), "g");
   }
@@ -127,13 +131,12 @@ export class Parser {
     return r;
   }
 
-  public splitNameSignValue(source: string, signs: string[], ignoreSings: string[]): [string, string, string][] {
+  public splitNameSignValue(source: string): [string, string, string][] {
     const r: [string, string, string][] = [];
-    const matcher = regNameSignValue(signs, ignoreSings);
-    const matches = source.match(matcher);
+    const matches = source.match(this.namedPropertyReg);
     if (matches?.length) {
       for (const match of matches) {
-        const ss = this.splitMedium(match, signs);
+        const ss = this.splitMedium(match, this.propertySigns);
         if (ss) {
           r.push(ss);
         }
@@ -179,28 +182,33 @@ export class Parser {
     return result;
   }
 
-  public objects(zipped: string): ParsedObject[] {
+  public parseObjects(zipped: string): ParsedObject[] {
     const result: ParsedObject[] = [];
-    const objectPairs = this.splitSignValue(zipped, [s.Object]);
-    for (const [_k, content] of objectPairs) {
+    const contents = zipped.split(new RegExp(s.Object));
+    for (const content of contents) {
       const parsedObject: ParsedObject = {
         type: "object",
-        properties: [],
+        properties: [...this.parseNamedProperties(content)],
       };
-      const propertyPairs = this.splitNameSignValue(content, this.propertySigns, [s.Property]);
-      for (const [name, splitter, value] of propertyPairs) {
-        const type = Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as HandledType;
-        parsedObject.properties.push({
-          name,
-          splitter,
-          type,
-          value,
-        });
-      }
 
       result.push(parsedObject);
     }
 
+    return result;
+  }
+
+  public parseNamedProperties(zipped: string): ParsedNamedProperty[] {
+    const result: ParsedNamedProperty[] = [];
+    const propertyPairs = this.splitNameSignValue(zipped);
+    for (const [name, splitter, value] of propertyPairs) {
+      const type = Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as HandledType;
+      result.push({
+        name,
+        splitter,
+        type,
+        value,
+      });
+    }
     return result;
   }
 }

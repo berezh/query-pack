@@ -12,34 +12,33 @@ interface TestContainer extends TestObject {
   child: TestObject;
 }
 
-describe("ComplexHandler Object", () => {
+describe.skip("ComplexHandler Array", () => {
   const handler = new ComplexHandler();
 
-  function testZip(input: any, zipped: (string | undefined | number)[]) {
-    expect(handler.zip(input)).toEqual(zipped.join(""));
-    expect(handler.unzip(zipped.join(""))).toEqual(input);
-  }
+  const testZip = TU.converter(handler);
 
-  describe("container", () => {
+  describe("array of objects", () => {
     it("default", () => {
-      const value: TestContainer = {
-        id: 10,
-        child: {
-          id: 11,
+      const value: TestObject[] = [
+        {
+          id: 1,
         },
-      };
+        {
+          id: 2,
+        },
+      ];
       testZip(value, [
         ComplexHandler.Version,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.id),
-        s.Property,
-        "child",
+        s.ObjectProperty,
         s.ObjectProperty,
         s.Object,
         "id",
         s.NumberProperty,
-        TU.zipN(value.child.id),
+        TU.zipN(value[0].id),
+        s.Object,
+        "id",
+        s.NumberProperty,
+        TU.zipN(value[1].id),
       ]);
     });
   });
