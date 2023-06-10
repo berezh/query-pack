@@ -125,15 +125,18 @@ export class ComplexHandler {
     const [version, restZipped] = this.parser.version(zipped);
     if ([ComplexHandler.Version].includes(version)) {
       if (this.parser.objectReg.test(zipped)) {
+        const results: any[] = [];
         const os = this.parser.objects(restZipped);
         if (os.length === 1) {
-          const result = {};
+          const obj = {};
           for (const { name, splitter, value } of os[0].properties) {
-            result[name] = this.simple.unzip(splitter, value);
+            obj[name] = this.simple.unzip(splitter, value);
           }
 
-          return result;
+          results.push(obj);
         }
+
+        return results.length ? results[0] : undefined;
       } else if (this.parser.propertyTypeReg.test(zipped)) {
         const ps = this.parser.properties(restZipped);
         const values = ps.map(({ splitter, value }) => {

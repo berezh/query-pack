@@ -81,7 +81,7 @@ describe("ComplexHandler", () => {
     });
   });
 
-  describe.skip("object", () => {
+  describe("object", () => {
     it("default", () => {
       const value = {
         id: 10,
