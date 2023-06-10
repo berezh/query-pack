@@ -16,7 +16,7 @@ describe("ComplexHandler Object", () => {
   const handler = new ComplexHandler();
 
   function testZip(input: any, zipped: (string | undefined | number)[]) {
-    // expect(handler.zip(input)).toEqual(zipped.join(""));
+    expect(handler.zip(input)).toEqual(zipped.join(""));
     expect(handler.unzip(zipped.join(""))).toEqual(input);
   }
 

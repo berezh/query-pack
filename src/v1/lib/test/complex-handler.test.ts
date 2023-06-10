@@ -8,22 +8,22 @@ const s = UsedSigns.Splitter;
 
 describe("ComplexHandler", () => {
   const handler = new ComplexHandler();
-  const simpleHandler = new SimpleHandler();
 
   const testZip = TU.converter(handler);
+  const simpleHandler = new SimpleHandler();
 
   describe("simple", () => {
     it("number", () => {
       const value = 12345;
-      testZip(value, ComplexHandler.Version + s.NumberProperty + simpleHandler.zip("number", value)?.value);
+      testZip(value, [ComplexHandler.Version, s.NumberProperty, TU.zipN(value)]);
     });
     it("string", () => {
       const value = "Hello Word!";
-      testZip(value, ComplexHandler.Version + s.StringProperty + simpleHandler.zip("string", value)?.value);
+      testZip(value, ComplexHandler.Version + s.StringProperty + TU.zipS(value));
     });
     it("boolean", () => {
       const value = true;
-      testZip(value, ComplexHandler.Version + s.BooleanProperty + simpleHandler.zip("boolean", value)?.value);
+      testZip(value, ComplexHandler.Version + s.BooleanProperty + TU.zipB(value));
     });
   });
 
@@ -94,7 +94,7 @@ describe("ComplexHandler", () => {
           s.Object +
           "id" +
           s.NumberProperty +
-          simpleHandler.zip("number", value.id)?.value +
+          TU.zipN(value.id) +
           s.Property +
           "name" +
           s.StringProperty +
@@ -102,7 +102,7 @@ describe("ComplexHandler", () => {
           s.Property +
           "verified" +
           s.BooleanProperty +
-          simpleHandler.zip("boolean", value.verified)?.value
+          TU.zipB(value.verified)
       );
     });
   });
@@ -113,7 +113,7 @@ describe("ComplexHandler", () => {
         NamE: "daniel",
       };
       const zipped = handler.zip(obj);
-      expect(zipped).toBe(ComplexHandler.Version + s.Object + simpleHandler.zip("string", "NamE")?.value + s.StringProperty + obj.NamE);
+      expect(zipped).toBe(ComplexHandler.Version + s.Object + TU.zipS("NamE") + s.StringProperty + obj.NamE);
     });
   });
 });
