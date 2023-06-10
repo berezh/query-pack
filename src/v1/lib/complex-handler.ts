@@ -125,18 +125,38 @@ export class ComplexHandler {
     const [version, restZipped] = this.parser.version(zipped);
     if ([ComplexHandler.Version].includes(version)) {
       if (this.parser.objectReg.test(zipped)) {
-        const results: any[] = [];
-        const os = this.parser.objects(restZipped);
-        if (os.length === 1) {
-          const obj = {};
-          for (const { name, splitter, value } of os[0].properties) {
-            obj[name] = this.simple.unzip(splitter, value);
+        const parsedObjects = this.parser.objects(restZipped);
+        if (parsedObjects.length > 0) {
+          const root = parsedObjects[0];
+          if (root.type === "object") {
+            const realObjects: any[] = [];
+            const references: [number, string, number][] = [];
+            let lastRefIndex = -1;
+            for (let i = 0; i < parsedObjects.length; i++) {
+              const parsedObject = parsedObjects[i];
+              const obj = {};
+              for (const { name, splitter, value, type } of parsedObject.properties) {
+                obj[name] = this.simple.unzip(splitter, value);
+                if (type === "object") {
+                  if (lastRefIndex === -1) {
+                    lastRefIndex = i + 1;
+                  } else {
+                    lastRefIndex++;
+                  }
+                  references.push([i, name, lastRefIndex]);
+                }
+              }
+
+              realObjects.push(obj);
+            }
+
+            for (const [containerIndex, name, childIndex] of references) {
+              realObjects[containerIndex][name] = realObjects[childIndex];
+            }
+
+            return realObjects[0];
           }
-
-          results.push(obj);
         }
-
-        return results.length ? results[0] : undefined;
       } else if (this.parser.propertyTypeReg.test(zipped)) {
         const ps = this.parser.properties(restZipped);
         const values = ps.map(({ splitter, value }) => {

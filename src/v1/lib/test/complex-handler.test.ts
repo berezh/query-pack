@@ -2,28 +2,28 @@ import { ComplexHandler } from "../complex-handler";
 import { SimpleHandler } from "../simple-handler";
 import { TypeUtil } from "../type";
 import { UsedSigns } from "../used-signs";
+import { TU } from "./tu";
+
+const s = UsedSigns.Splitter;
 
 describe("ComplexHandler", () => {
   const handler = new ComplexHandler();
   const simpleHandler = new SimpleHandler();
 
-  function testZip(input: any, zipped: string) {
-    expect(handler.zip(input)).toEqual(zipped);
-    expect(handler.unzip(zipped)).toEqual(input);
-  }
+  const testZip = TU.converter(handler);
 
   describe("simple", () => {
     it("number", () => {
       const value = 12345;
-      testZip(value, ComplexHandler.Version + UsedSigns.Splitter.NumberProperty + simpleHandler.zip("number", value)?.value);
+      testZip(value, ComplexHandler.Version + s.NumberProperty + simpleHandler.zip("number", value)?.value);
     });
     it("string", () => {
       const value = "Hello Word!";
-      testZip(value, ComplexHandler.Version + UsedSigns.Splitter.StringProperty + simpleHandler.zip("string", value)?.value);
+      testZip(value, ComplexHandler.Version + s.StringProperty + simpleHandler.zip("string", value)?.value);
     });
     it("boolean", () => {
       const value = true;
-      testZip(value, ComplexHandler.Version + UsedSigns.Splitter.BooleanProperty + simpleHandler.zip("boolean", value)?.value);
+      testZip(value, ComplexHandler.Version + s.BooleanProperty + simpleHandler.zip("boolean", value)?.value);
     });
   });
 
@@ -35,7 +35,7 @@ describe("ComplexHandler", () => {
         const r = simpleHandler.zip("number", item);
         if (r) {
           actual += r.splitter + r.value;
-          expect(r.splitter).toBe(UsedSigns.Splitter.NumberProperty);
+          expect(r.splitter).toBe(s.NumberProperty);
         }
       }
       testZip(value, actual);
@@ -48,7 +48,7 @@ describe("ComplexHandler", () => {
         const r = simpleHandler.zip("string", item);
         if (r) {
           actual += r.splitter + r.value;
-          expect(r.splitter).toBe(UsedSigns.Splitter.StringProperty);
+          expect(r.splitter).toBe(s.StringProperty);
         }
       }
       testZip(value, actual);
@@ -61,7 +61,7 @@ describe("ComplexHandler", () => {
         const r = simpleHandler.zip("boolean", item);
         if (r) {
           actual += r.splitter + r.value;
-          expect(r.splitter).toBe(UsedSigns.Splitter.BooleanProperty);
+          expect(r.splitter).toBe(s.BooleanProperty);
         }
       }
       testZip(value, actual);
@@ -91,17 +91,17 @@ describe("ComplexHandler", () => {
       testZip(
         value,
         ComplexHandler.Version +
-          UsedSigns.Splitter.Object +
+          s.Object +
           "id" +
-          UsedSigns.Splitter.NumberProperty +
+          s.NumberProperty +
           simpleHandler.zip("number", value.id)?.value +
-          UsedSigns.Splitter.Property +
+          s.Property +
           "name" +
-          UsedSigns.Splitter.StringProperty +
+          s.StringProperty +
           value.name +
-          UsedSigns.Splitter.Property +
+          s.Property +
           "verified" +
-          UsedSigns.Splitter.BooleanProperty +
+          s.BooleanProperty +
           simpleHandler.zip("boolean", value.verified)?.value
       );
     });
@@ -113,7 +113,7 @@ describe("ComplexHandler", () => {
         NamE: "daniel",
       };
       const zipped = handler.zip(obj);
-      expect(zipped).toBe(ComplexHandler.Version + UsedSigns.Splitter.Object + simpleHandler.zip("string", "NamE")?.value + UsedSigns.Splitter.StringProperty + obj.NamE);
+      expect(zipped).toBe(ComplexHandler.Version + s.Object + simpleHandler.zip("string", "NamE")?.value + s.StringProperty + obj.NamE);
     });
   });
 });

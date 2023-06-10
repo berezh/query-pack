@@ -29,9 +29,9 @@ function regSignValue(signs: string[]): RegExp {
   return new RegExp(signs.map(x => `(${x}[^${signs.join("")}]+)`).join("|"), "g");
 }
 
-function regNameSignValue(signs: string[], notSings: string[]): RegExp {
-  const notMatch = `[^${[...signs, ...notSings].join("")}]+`;
-  return new RegExp(signs.map(x => `(${notMatch}${x}${notMatch})`).join("|"), "g");
+function regNameSignValue(signs: string[], ignoreSings: string[]): RegExp {
+  const notMatch = `[^${[...signs, ...ignoreSings].join("")}]`;
+  return new RegExp(signs.map(x => `(${notMatch}+${x}${notMatch}*)`).join("|"), "g");
 }
 
 function regMedium(signs: string[]): RegExp {
@@ -44,7 +44,7 @@ function regMedium(signs: string[]): RegExp {
 const s = UsedSigns.Splitter;
 
 export class Parser {
-  private propertySigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty];
+  public readonly propertySigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty, s.ObjectProperty, s.ArrayProperty];
 
   public get objectReg(): RegExp {
     return new RegExp(regStartWith(s.Object), "g");
@@ -82,8 +82,8 @@ export class Parser {
   private splitMedium(source: string, sings: string[]): [string, string, string] | undefined {
     const matcher = regMedium(sings);
     const ms = source.match(matcher);
-    if (ms && ms.length > 2) {
-      return [ms[0], ms[1], ms[2]];
+    if (ms && ms.length > 1) {
+      return [ms[0], ms[1], ms[2] ? ms[2] : ""];
     }
   }
 
@@ -127,9 +127,9 @@ export class Parser {
     return r;
   }
 
-  private splitNameSignValue(source: string, signs: string[], notSings: string[]): [string, string, string][] {
+  public splitNameSignValue(source: string, signs: string[], ignoreSings: string[]): [string, string, string][] {
     const r: [string, string, string][] = [];
-    const matcher = regNameSignValue(signs, notSings);
+    const matcher = regNameSignValue(signs, ignoreSings);
     const matches = source.match(matcher);
     if (matches?.length) {
       for (const match of matches) {
