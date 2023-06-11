@@ -35,7 +35,7 @@ describe("ComplexHandler Object", () => {
         TU.zipN(value.id),
         s.Property,
         "child",
-        s.ObjectProperty,
+        s.ReferenceProperty,
         s.Object,
         "id",
         s.NumberProperty,

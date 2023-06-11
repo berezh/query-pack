@@ -1,31 +1,36 @@
+import { ParsedProperty } from "../../interfaces";
 import { Parser } from "../parser";
 
 describe("Parser", () => {
   const parser = new Parser();
 
-  describe("convert", () => {
+  function prop(splitter: string, name: string, value = ""): ParsedProperty {
+    return {
+      splitter,
+      name,
+      value,
+      type: parser.getType(splitter),
+    };
+  }
+
+  describe("properties", () => {
     it("simple", () => {
-      expect(parser.splitNameSignValue("idNaYnameSjohn")).toEqual([
-        ["N", "id", "a"],
-        ["S", "name", "john"],
-      ]);
+      expect(parser.properties("idNaYnameSjohn")).toEqual<ParsedProperty[]>([prop("N", "id", "a"), prop("S", "name", "john")]);
     });
 
     it("object", () => {
-      expect(parser.splitNameSignValue("childOidNaYnameSjohn")).toEqual([
-        ["O", "child"],
-        ["N", "id", "a"],
-        ["S", "name", "john"],
-      ]);
-      expect(parser.splitNameSignValue("idNaYchildOnameSjohn")).toEqual([
-        ["N", "id", "a"],
-        ["O", "child"],
-        ["S", "name", "john"],
-      ]);
+      expect(parser.properties("childRYidNaYnameSjohn")).toEqual<ParsedProperty[]>([prop("R", "child"), prop("N", "id", "a"), prop("S", "name", "john")]);
+      expect(parser.properties("idNaYchildRYnameSjohn")).toEqual<ParsedProperty[]>([prop("N", "id", "a"), prop("R", "child"), prop("S", "name", "john")]);
     });
 
     it("array", () => {
-      expect(parser.splitNameSignValue("massAN1N2")).toEqual([["A", "mass", "N", "1", "N", "2"]]);
+      expect(parser.properties("massR")).toEqual([prop("R", "mass")]);
+    });
+  });
+
+  describe("itemAllReg", () => {
+    it("simple", () => {
+      expect(parser.itemAllReg.test("N2NgN40")).toEqual(true);
     });
   });
 });

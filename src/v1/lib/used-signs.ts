@@ -12,8 +12,8 @@ export class UsedSigns {
     // BigIntProperty: "I",
     BooleanProperty: "B",
     // DateProperty: "D",
-    ObjectProperty: "O",
-    ArrayProperty: "A",
+    ReferenceProperty: "R",
+    // ArrayProperty: "A",
   };
 
   public static UpperCase = "U";
@@ -31,7 +31,7 @@ export class UsedSigns {
     Colon: "K",
     Apostrophe: "H",
     LeftParenthesis: "J",
-    RightParenthesis: "R",
+    RightParenthesis: "O",
     Quotation: "H",
   };
 }

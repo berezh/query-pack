@@ -29,8 +29,8 @@ describe.skip("ComplexHandler Array", () => {
       ];
       testZip(value, [
         ComplexHandler.Version,
-        s.ObjectProperty,
-        s.ObjectProperty,
+        s.ReferenceProperty,
+        s.ReferenceProperty,
         s.Object,
         "id",
         s.NumberProperty,

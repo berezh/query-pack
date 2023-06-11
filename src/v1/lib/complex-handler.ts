@@ -43,7 +43,7 @@ export class ComplexHandler {
         current.children.push({
           propertyName: childProperty,
           type: childType,
-          splitter: UsedSigns.Splitter.ObjectProperty,
+          splitter: UsedSigns.Splitter.ReferenceProperty,
           value: "",
         });
         this.zipObject(results, childValue);
@@ -70,7 +70,7 @@ export class ComplexHandler {
         current.children.push({
           propertyName: "",
           type,
-          splitter: UsedSigns.Splitter.ObjectProperty,
+          splitter: UsedSigns.Splitter.ReferenceProperty,
           value: "",
         });
         this.zipObject(results, item);
@@ -126,30 +126,48 @@ export class ComplexHandler {
         const parsedObjects = this.parser.parseObjects(restZipped);
         if (parsedObjects.length > 0) {
           const root = parsedObjects[0];
-          if (root.type === "object") {
+          if (root.type === "reference") {
             const realObjects: any[] = [];
-            const references: [number, string, number][] = [];
+            const references: [number, string | number, number][] = [];
             let lastRefIndex = -1;
             for (let i = 0; i < parsedObjects.length; i++) {
               const parsedObject = parsedObjects[i];
-              const obj = {};
-              for (const { name, splitter, value, type } of parsedObject.properties) {
-                obj[name] = this.simple.unzip(splitter, value);
-                if (type === "object") {
-                  if (lastRefIndex === -1) {
-                    lastRefIndex = i + 1;
-                  } else {
-                    lastRefIndex++;
+              if (parsedObject.isArray) {
+                const array: any[] = [];
+                for (let propIndex = 0; propIndex < parsedObject.properties.length; propIndex++) {
+                  const { splitter, value, type } = parsedObject.properties[i];
+                  const itemValue = this.simple.unzip(splitter, value);
+                  array.push(itemValue);
+                  if (type === "reference") {
+                    if (lastRefIndex === -1) {
+                      lastRefIndex = i + 1;
+                    } else {
+                      lastRefIndex++;
+                    }
+                    references.push([i, propIndex, lastRefIndex]);
                   }
-                  references.push([i, name, lastRefIndex]);
                 }
-              }
+                realObjects.push(array);
+              } else {
+                const obj = {};
+                for (const { name, splitter, value, type } of parsedObject.properties) {
+                  obj[name] = this.simple.unzip(splitter, value);
+                  if (type === "reference") {
+                    if (lastRefIndex === -1) {
+                      lastRefIndex = i + 1;
+                    } else {
+                      lastRefIndex++;
+                    }
+                    references.push([i, name, lastRefIndex]);
+                  }
+                }
 
-              realObjects.push(obj);
+                realObjects.push(obj);
+              }
             }
 
-            for (const [containerIndex, name, childIndex] of references) {
-              realObjects[containerIndex][name] = realObjects[childIndex];
+            for (const [containerIndex, index, childIndex] of references) {
+              realObjects[containerIndex][index] = realObjects[childIndex];
             }
 
             return realObjects[0];
@@ -157,8 +175,8 @@ export class ComplexHandler {
         }
       }
       // one object
-      else if (this.parser.namedPropertyReg.test(restZipped)) {
-        const props = this.parser.parseNamedProperties(restZipped);
+      else if (this.parser.propertyAllReg.test(restZipped)) {
+        const props = this.parser.properties(restZipped);
         const obj = {};
         for (const { name, splitter, value } of props) {
           obj[name] = this.simple.unzip(splitter, value);
@@ -166,8 +184,8 @@ export class ComplexHandler {
         return obj;
       }
       // simple value or array
-      else if (this.parser.propertyTypeReg.test(zipped)) {
-        const ps = this.parser.properties(restZipped);
+      else if (this.parser.itemAllReg.test(restZipped)) {
+        const ps = this.parser.items(restZipped);
         const values = ps.map(({ splitter, value }) => {
           return this.simple.unzip(splitter, value);
         });
