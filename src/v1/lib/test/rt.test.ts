@@ -1,9 +1,9 @@
-import { RT } from "../parser";
+import { RT } from "../../zippers/rt";
 
 describe("RT", () => {
   describe("itemAllReg", () => {
     it("default", () => {
-      expect(RT.itemAllReg.test("N2NgN40")).toEqual(true);
+      expect("N2NgN40".match(RT.itemAllReg)).toBeTruthy();
     });
   });
   describe("itemSplitReg", () => {
@@ -30,6 +30,12 @@ describe("RT", () => {
     it("ref", () => {
       //const refText = RT.propertyAllReg.toString();
       const zipped = "childRidNaYnameSdanielYverifiedB1";
+      const matches = zipped.match(RT.propertyAllReg);
+      expect(matches).toEqual([zipped]);
+    });
+    // idNb
+    it("one prop", () => {
+      const zipped = "idNb";
       const matches = zipped.match(RT.propertyAllReg);
       expect(matches).toEqual([zipped]);
     });

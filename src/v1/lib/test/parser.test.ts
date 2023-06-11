@@ -30,7 +30,7 @@ describe("Parser", () => {
 
   describe("itemAllReg", () => {
     it("simple", () => {
-      expect(parser.itemAllReg.test("N2NgN40")).toEqual(true);
+      expect("N2NgN40".match(parser.itemAllReg)).toBeTruthy();
     });
   });
 });

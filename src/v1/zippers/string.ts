@@ -58,7 +58,7 @@ export class StringZipper extends Zipper<string> {
 
   public zip(source: string): string {
     let result = source;
-    if (typeof result === "string" && this.zipAnyMatch.test(result)) {
+    if (typeof result === "string" && result.match(this.zipAnyMatch)) {
       result = result.replace(this.zipAnyMatch, match => {
         const info = this.signs[match];
         return info?.alt;
@@ -70,7 +70,7 @@ export class StringZipper extends Zipper<string> {
 
   public unzip(zipped: string): string {
     let result = zipped;
-    if (typeof result === "string" && this.unzipAnyMatch.test(result)) {
+    if (typeof result === "string" && result.match(this.unzipAnyMatch)) {
       result = result.replace(this.unzipAnyMatch, match => {
         const key = Object.keys(this.signs).find(key => this.signs[key].alt === match);
         return key || "";
