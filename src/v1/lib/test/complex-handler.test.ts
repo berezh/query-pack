@@ -27,7 +27,7 @@ describe("ComplexHandler", () => {
     });
   });
 
-  describe.skip("array", () => {
+  describe("array", () => {
     it("number", () => {
       const value: number[] = [2, 16, 128];
       let actual = "" + ComplexHandler.Version;

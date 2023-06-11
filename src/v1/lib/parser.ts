@@ -16,6 +16,7 @@ interface ParsedObject {
   type: HandledType;
   properties: ParsedNamedProperty[];
 }
+const s = UsedSigns.Splitter;
 
 function regStartWith(...signs: string[]): string {
   return signs.map(x => `(${x}[^${signs.join()}]+)`).join("|");
@@ -29,9 +30,68 @@ function regSignValue(signs: string[]): RegExp {
   return new RegExp(signs.map(x => `(${x}[^${signs.join("")}]+)`).join("|"), "g");
 }
 
-function regNameSignValue(signs: string[], ignoreSings: string[]): RegExp {
-  const notMatch = `[^${[...signs, ...ignoreSings].join("")}]`;
-  return new RegExp(signs.map(x => `(${notMatch}+${x}${notMatch}*)`).join("|"), "g");
+const simpleSigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty];
+
+class RT {
+  private static arrayASigns = [...simpleSigns, s.ObjectProperty];
+
+  private static not(...sings: string[]): string {
+    return `[^${sings.join("")}]+`;
+  }
+
+  private static notCommon() {
+    return RT.not(...simpleSigns, s.Property, s.ArrayProperty, s.ObjectProperty);
+  }
+
+  private static any(text: string | string[]): string {
+    return `[${Array.isArray(text) ? text.join("") : text}]`;
+  }
+
+  private static or(...text: string[]): string {
+    return `${text.map(x => `(${x})`).join("|")}`;
+  }
+
+  // regex texts
+  public static arrayValue = `${s.ArrayProperty}${RT.not(s.ArrayProperty, s.Property)}`;
+
+  public static simpleValue = `[${simpleSigns.join("")}]${RT.notCommon()}`;
+
+  public static nameObject = `${RT.notCommon()}${s.ObjectProperty}`;
+
+  public static simpleNameValue = `${RT.notCommon()}${RT.simpleValue}`;
+
+  public static arrayNameValue = `${RT.notCommon()}${RT.arrayValue}`;
+
+  public static arrayItems = `${RT.any(RT.arrayASigns)}${RT.not(...RT.arrayASigns)}`;
+
+  public static arrayNameValueSplit = RT.or(RT.notCommon(), s.ArrayProperty, RT.arrayItems);
+
+  public static arrayItemSplit = RT.or(RT.not(...RT.arrayASigns), RT.any(RT.arrayASigns), RT.not(...RT.arrayASigns));
+
+  // regex
+  public static nameObjectReg = new RegExp(RT.nameObject, "g");
+
+  public static simpleNameValueReg = new RegExp(RT.simpleNameValue, "g");
+
+  public static arrayNameValueReg = new RegExp(RT.arrayNameValue, "g");
+
+  public static arrayNameValueSplitReg = new RegExp(RT.arrayNameValueSplit, "g");
+
+  public static arrayItemsReg = new RegExp(RT.arrayItems, "g");
+
+  public static arrayItemSplitReg = new RegExp(RT.arrayItemSplit, "g");
+}
+
+function regNameSignValue(): RegExp {
+  const all: string[] = [];
+  // const notMatch = `[^${[...simpleSings, ...propertySings, objectSing, arraySing].join("")}]+`;
+  // all.push(`(${notMatch}${arraySing}${`[^${arraySing + propertySings}]+`})`);
+  // all.push(...simpleSings.map(x => `(${notMatch}${x}${notMatch})`));
+  // all.push(`(${notMatch}${objectSing})`);
+  all.push(RT.arrayNameValue);
+  all.push(RT.simpleNameValue);
+  all.push(RT.nameObject);
+  return new RegExp(all.map(x => `(${x})`).join("|"), "g");
 }
 
 function regMedium(signs: string[]): RegExp {
@@ -41,8 +101,6 @@ function regMedium(signs: string[]): RegExp {
   return new RegExp(match.join("|"), "g");
 }
 
-const s = UsedSigns.Splitter;
-
 export class Parser {
   public readonly propertySigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty, s.ObjectProperty, s.ArrayProperty];
 
@@ -51,7 +109,7 @@ export class Parser {
   }
 
   public get namedPropertyReg(): RegExp {
-    return regNameSignValue(this.propertySigns, [s.Property]);
+    return regNameSignValue();
   }
 
   public get propertyReg(): RegExp {
@@ -80,14 +138,6 @@ export class Parser {
     if (ms?.length) {
       const mt = ms[0];
       return [mt, source.slice(mt.length)];
-    }
-  }
-
-  private splitMedium(source: string, sings: string[]): [string, string, string] | undefined {
-    const matcher = regMedium(sings);
-    const ms = source.match(matcher);
-    if (ms && ms.length > 1) {
-      return [ms[0], ms[1], ms[2] ? ms[2] : ""];
     }
   }
 
@@ -131,14 +181,35 @@ export class Parser {
     return r;
   }
 
-  public splitNameSignValue(source: string): [string, string, string][] {
-    const r: [string, string, string][] = [];
+  // private match(text: string, regex: RegExp):
+
+  public splitNameSignValue(source: string): string[][] {
+    const r: string[][] = [];
     const matches = source.match(this.namedPropertyReg);
     if (matches?.length) {
-      for (const match of matches) {
-        const ss = this.splitMedium(match, this.propertySigns);
-        if (ss) {
-          r.push(ss);
+      for (const matchText of matches) {
+        if (matchText.match(RT.arrayNameValue)) {
+          const aSplits = matchText.match(RT.arrayNameValueSplitReg);
+          if (aSplits && aSplits.length > 2) {
+            const [aName, aSplitter, ...items] = aSplits;
+            const arrayResult = [aSplitter, aName];
+            for (const itemText of items) {
+              const splits = itemText.match(RT.arrayItemSplitReg);
+              if (splits && splits?.length > 1) {
+                arrayResult.push(...[splits[0], splits[1]]);
+              }
+            }
+            r.push(arrayResult);
+          }
+        } else if (matchText.match(RT.nameObject) || matchText.match(RT.simpleNameValueReg)) {
+          const ms = matchText.match(regMedium(this.propertySigns));
+          if (ms && ms.length > 1) {
+            const mr = [ms[1], ms[0]];
+            if (ms[2] !== undefined) {
+              mr.push(ms[2]);
+            }
+            r.push(mr);
+          }
         }
       }
     }
