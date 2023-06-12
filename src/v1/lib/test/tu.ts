@@ -25,6 +25,8 @@ export class TU {
       stringValue = s.NumberProperty + this.zipN(value);
     } else if (typeof value === "boolean") {
       stringValue = s.NumberProperty + this.zipB(value);
+    } else if (typeof value === "boolean") {
+      stringValue = s.NumberProperty + this.zipB(value);
     }
     return this.zipS(name) + stringValue + (last ? "" : s.Property);
   }
@@ -43,6 +45,24 @@ export class TU {
 
   public static r(name: string, last = false): string {
     return this.zipS(name) + s.ReferenceProperty + (last ? "" : s.Property);
+  }
+
+  public static a(...items: any[]): string {
+    let result = "";
+
+    items.forEach(value => {
+      if (typeof value === "string") {
+        result += s.StringProperty + this.zipS(value);
+      } else if (typeof value === "number") {
+        result += s.NumberProperty + this.zipN(value);
+      } else if (typeof value === "boolean") {
+        result += s.NumberProperty + this.zipB(value);
+      } else if (typeof value === "object") {
+        result += s.ReferenceProperty;
+      }
+    });
+
+    return result + s.Object;
   }
 
   public static obj(last: boolean | string, ...content: string[]): string {

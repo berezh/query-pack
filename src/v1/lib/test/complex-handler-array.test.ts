@@ -8,11 +8,7 @@ interface TestObject {
   id: number;
 }
 
-interface TestContainer extends TestObject {
-  child: TestObject;
-}
-
-describe.skip("ComplexHandler Array", () => {
+describe("ComplexHandler Array", () => {
   const handler = new ComplexHandler();
 
   const testZip = TU.converter(handler);
@@ -27,19 +23,19 @@ describe.skip("ComplexHandler Array", () => {
           id: 2,
         },
       ];
-      testZip(value, [
-        ComplexHandler.Version,
-        s.ReferenceProperty,
-        s.ReferenceProperty,
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value[0].id),
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value[1].id),
-      ]);
+      testZip(value, TU.full(ComplexHandler.Version, TU.obj(s.ReferenceProperty, s.ReferenceProperty), TU.obj(TU.p("id", value[0].id)), TU.obj(TU.p("id", value[1].id))));
+    });
+  });
+
+  describe("object with array", () => {
+    it("default", () => {
+      const value = {
+        id: 1,
+        players: ["first", "second"],
+      };
+      testZip(value, TU.full(ComplexHandler.Version, TU.obj(TU.p("id", 1), TU.r("players")), TU.a("first", "second")), {
+        zip: true,
+      });
     });
   });
 });

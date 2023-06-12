@@ -45,13 +45,17 @@ export class ComplexHandler {
       const childType = TypeUtil.getType(childValue);
       const childProperty = this.simple.zip("string", key)?.value || "";
       const p = ObjectPosition.index(position, index);
-      if (childType === "object") {
+
+      if (TypeUtil.isComplex(childType)) {
         current.children.push({
           propertyName: childProperty,
           type: childType,
           splitter: UsedSigns.Splitter.ReferenceProperty,
           value: "",
         });
+      }
+
+      if (childType === "object") {
         this.zipObject(results, childValue, p);
       } else if (childType === "array") {
         this.zipArray(results, childValue, childProperty, p);
@@ -76,13 +80,16 @@ export class ComplexHandler {
       const item = obj[index];
       const type = TypeUtil.getType(item);
       const p = ObjectPosition.index(position, index);
-      if (type === "object") {
+      if (TypeUtil.isComplex(type)) {
         current.children.push({
           propertyName: "",
           type,
           splitter: UsedSigns.Splitter.ReferenceProperty,
           value: "",
         });
+      }
+
+      if (type === "object") {
         this.zipObject(results, item, p);
       } else if (type === "array") {
         this.zipArray(results, item as [], undefined, p);
@@ -132,7 +139,8 @@ export class ComplexHandler {
       lines[0] = ComplexHandler.Version.toString() + lines[0];
     }
 
-    return lines.join(UsedSigns.Splitter.Object);
+    const fullResult = lines.join(UsedSigns.Splitter.Object);
+    return fullResult;
   }
 
   public unzip(zipped: string): any {

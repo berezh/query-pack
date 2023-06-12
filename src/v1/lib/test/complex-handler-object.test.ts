@@ -1,8 +1,5 @@
 import { ComplexHandler } from "../complex-handler";
-import { UsedSigns } from "../used-signs";
 import { TU } from "./tu";
-
-const s = UsedSigns.Splitter;
 
 interface TestObject {
   id: number;
