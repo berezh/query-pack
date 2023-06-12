@@ -94,5 +94,58 @@ describe("ComplexHandler Object", () => {
         )
       );
     });
+
+    it("2 child & 4, 4 deep", () => {
+      const value = {
+        id: 0,
+        first: {
+          id: 1,
+          second: {
+            id: 2,
+            third: {
+              id: 3,
+            },
+          },
+          forth: {
+            id: 4,
+            five: {
+              id: 5,
+            },
+          },
+        },
+        six: {
+          id: 6,
+          seven: {
+            id: 7,
+            eight: {
+              id: 8,
+            },
+          },
+          nine: {
+            id: 9,
+            ten: {
+              id: 10,
+            },
+          },
+        },
+      };
+      testZip(
+        value,
+        TU.full(
+          ComplexHandler.Version,
+          TU.obj(TU.p("id", value.id), TU.r("first"), TU.r("six")),
+          TU.obj(TU.p("id", value.first.id), TU.r("second"), TU.r("forth")),
+          TU.obj(TU.p("id", value.six.id), TU.r("seven"), TU.r("nine")),
+          TU.obj(TU.p("id", value.first.second.id), TU.r("third")),
+          TU.obj(TU.p("id", value.first.forth.id), TU.r("five")),
+          TU.obj(TU.p("id", value.six.seven.id), TU.r("eight")),
+          TU.obj(TU.p("id", value.six.nine.id), TU.r("ten")),
+          TU.obj(TU.p("id", value.first.second.third.id)),
+          TU.obj(TU.p("id", value.first.forth.five.id)),
+          TU.obj(TU.p("id", value.six.seven.eight.id)),
+          TU.obj(TU.p("id", value.six.nine.ten.id))
+        )
+      );
+    });
   });
 });
