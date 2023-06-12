@@ -25,8 +25,8 @@ export class TU {
       stringValue = s.NumberProperty + this.zipN(value);
     } else if (typeof value === "boolean") {
       stringValue = s.NumberProperty + this.zipB(value);
-    } else if (typeof value === "boolean") {
-      stringValue = s.NumberProperty + this.zipB(value);
+    } else if (typeof value === "object") {
+      stringValue = s.NumberProperty;
     }
     return this.zipS(name) + stringValue + (last ? "" : s.Property);
   }
