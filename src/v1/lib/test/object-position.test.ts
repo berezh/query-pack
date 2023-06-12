@@ -2,13 +2,15 @@ import { ComplexResultPosition } from "../../interfaces";
 import { ObjectPosition } from "../object-position";
 
 describe("ObjectPosition", () => {
+  const op = new ObjectPosition();
+
   function positionEqual(expected: ComplexResultPosition, actual: ComplexResultPosition) {
     expect(expected).toEqual<ComplexResultPosition>(actual);
   }
 
   describe("cycle", () => {
     it("root", () => {
-      const root = ObjectPosition.create();
+      const root = op.reset();
       positionEqual(root, {
         level: 0,
         levelIndex: 0,
@@ -17,11 +19,11 @@ describe("ObjectPosition", () => {
     });
 
     it("level", () => {
-      const root = ObjectPosition.create();
+      const root = op.reset();
 
       // level 1
       // levelIndex 0
-      const level1_0 = ObjectPosition.level(root);
+      const level1_0 = op.level(root);
       positionEqual(level1_0, {
         level: 1,
         levelIndex: 0,
@@ -30,7 +32,7 @@ describe("ObjectPosition", () => {
 
       // level 1
       // levelIndex 1
-      const level1_1 = ObjectPosition.level(root);
+      const level1_1 = op.level(root);
       positionEqual(level1_1, {
         level: 1,
         levelIndex: 1,
@@ -39,7 +41,7 @@ describe("ObjectPosition", () => {
 
       // level 1
       // levelIndex 2
-      const level1_2 = ObjectPosition.level(root);
+      const level1_2 = op.level(root);
       positionEqual(level1_2, {
         level: 1,
         levelIndex: 2,
@@ -48,22 +50,22 @@ describe("ObjectPosition", () => {
     });
 
     it("index", () => {
-      const root = ObjectPosition.create();
-      const level1 = ObjectPosition.level(root);
+      const root = op.reset();
+      const level1 = op.level(root);
 
       // index 0
-      positionEqual(ObjectPosition.index(level1, 0), {
+      positionEqual(op.index(level1, 0), {
         level: 1,
         levelIndex: 0,
         itemIndex: 0,
       });
       // index 0
-      positionEqual(ObjectPosition.index(level1, 1), {
+      positionEqual(op.index(level1, 1), {
         level: 1,
         levelIndex: 0,
         itemIndex: 1,
       });
-      positionEqual(ObjectPosition.index(level1, 2), {
+      positionEqual(op.index(level1, 2), {
         level: 1,
         levelIndex: 0,
         itemIndex: 2,

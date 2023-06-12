@@ -1,10 +1,10 @@
 import { ComplexResultPosition } from "../interfaces";
 
 export class ObjectPosition {
-  private static deep: number[];
+  private deep: number[] = [];
 
-  public static create(): ComplexResultPosition {
-    ObjectPosition.deep = [];
+  public reset(): ComplexResultPosition {
+    this.deep = [];
     return {
       level: 0,
       levelIndex: 0,
@@ -12,16 +12,16 @@ export class ObjectPosition {
     };
   }
 
-  public static level(p: ComplexResultPosition): ComplexResultPosition {
+  public level(p: ComplexResultPosition): ComplexResultPosition {
     const level = p.level + 1;
 
     let levelIndex = 0;
-    if (ObjectPosition.deep.length <= level) {
-      while (ObjectPosition.deep.length <= level) {
-        ObjectPosition.deep.push(0);
+    if (this.deep.length <= level) {
+      while (this.deep.length <= level) {
+        this.deep.push(0);
       }
     } else {
-      levelIndex = ObjectPosition.deep[level] = ObjectPosition.deep[level] + 1;
+      levelIndex = this.deep[level] = this.deep[level] + 1;
     }
 
     return {
@@ -31,7 +31,7 @@ export class ObjectPosition {
     };
   }
 
-  public static index(p: ComplexResultPosition, index: number): ComplexResultPosition {
+  public index(p: ComplexResultPosition, index: number): ComplexResultPosition {
     return {
       ...p,
       itemIndex: index,

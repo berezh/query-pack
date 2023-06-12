@@ -8,7 +8,6 @@ describe("RT", () => {
   });
   describe("itemSplitReg", () => {
     it("default", () => {
-      const s = RT.itemSplitReg.toString();
       expect("N2NgR".match(RT.itemSplitReg)).toEqual(["N2", "Ng", "R"]);
     });
   });
