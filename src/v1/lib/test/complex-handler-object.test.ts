@@ -15,10 +15,10 @@ interface TestContainer extends TestObject {
 describe("ComplexHandler Object", () => {
   const handler = new ComplexHandler();
 
-  function testZip(input: any, zipped: (string | undefined | number)[]) {
+  function testZip(input: any, zipped: string) {
     const zipResult = handler.zip(input);
-    expect(zipResult).toEqual(zipped.join(""));
-    expect(handler.unzip(zipped.join(""))).toEqual(input);
+    expect(zipResult).toEqual(zipped);
+    expect(handler.unzip(zipped)).toEqual(input);
   }
 
   describe("container", () => {
@@ -29,19 +29,7 @@ describe("ComplexHandler Object", () => {
           id: 11,
         },
       };
-      testZip(value, [
-        ComplexHandler.Version,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.id),
-        s.Property,
-        "child",
-        s.ReferenceProperty,
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.child.id),
-      ]);
+      testZip(value, TU.full(ComplexHandler.Version, TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj(TU.propN("id", value.child.id))));
     });
 
     it("2 child", () => {
@@ -54,26 +42,10 @@ describe("ComplexHandler Object", () => {
           id: 12,
         },
       };
-      testZip(value, [
-        ComplexHandler.Version,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.id),
-        s.Property,
-        "first",
-        s.ReferenceProperty,
-        s.Property,
-        "second",
-        s.ReferenceProperty,
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.first.id),
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.second.id),
-      ]);
+      testZip(
+        value,
+        TU.full(ComplexHandler.Version, TU.obj(TU.p("id", value.id), TU.r("first"), TU.r("second")), TU.obj(TU.p("id", value.first.id)), TU.obj(true, TU.p("id", value.second.id)))
+      );
     });
 
     it("2 deep", () => {
@@ -86,31 +58,19 @@ describe("ComplexHandler Object", () => {
           },
         },
       };
-      testZip(value, [
-        ComplexHandler.Version,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.id),
-        s.Property,
-        "first",
-        s.ReferenceProperty,
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.first.id),
-        s.Property,
-        "second",
-        s.ReferenceProperty,
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.first.second.id),
-      ]);
+      testZip(
+        value,
+        TU.full(
+          ComplexHandler.Version,
+          TU.obj(TU.propN("id", value.id), TU.r("first")),
+          TU.obj(TU.propN("id", value.first.id), TU.r("second")),
+          TU.obj(true, TU.propN("id", value.first.second.id))
+        )
+      );
     });
 
-    // 1idN0YfirstRYthirdRXidN1YsecondRXidN2XidN3
     // 1, 3, 2
-    it.skip("2 child & 2 deep", () => {
+    it("2 child & 2 deep", () => {
       const value = {
         id: 0,
         first: {
@@ -123,33 +83,16 @@ describe("ComplexHandler Object", () => {
           id: 3,
         },
       };
-      testZip(value, [
-        ComplexHandler.Version,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.id),
-        s.Property,
-        "first",
-        s.ReferenceProperty,
-        s.Property,
-        "third",
-        s.ReferenceProperty,
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.first.id),
-        s.Property,
-        "second",
-        s.ReferenceProperty,
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.first.second.id),
-        s.Object,
-        "id",
-        s.NumberProperty,
-        TU.zipN(value.third.id),
-      ]);
+      testZip(
+        value,
+        TU.full(
+          ComplexHandler.Version,
+          TU.obj(TU.propN("id", value.id), TU.r("first"), TU.r("third")),
+          TU.obj(TU.propN("id", value.first.id), TU.r("second")),
+          TU.obj(TU.propN("id", value.third.id)),
+          TU.obj(true, TU.propN("id", value.first.second.id))
+        )
+      );
     });
   });
 });

@@ -1,4 +1,5 @@
 import { ComplexResult, ComplexResultPosition, ZipOptions } from "../interfaces";
+import { CommonUtil } from "./common";
 import { ObjectPosition } from "./object-position";
 import { Parser } from "./parser";
 import { SimpleHandler } from "./simple-handler";
@@ -92,7 +93,7 @@ export class ComplexHandler {
   }
 
   public zip(source: unknown): string {
-    const results: ComplexResult[] = [];
+    let results: ComplexResult[] = [];
 
     const type = TypeUtil.getType(source);
 
@@ -112,6 +113,8 @@ export class ComplexHandler {
     }
 
     const lines: string[] = [];
+
+    results = CommonUtil.order(results, [x => x.position.itemIndex], [x => x.position.levelIndex], [x => x.position.level]);
 
     for (const cr of results) {
       const propertySplitter = cr.type === "object" ? UsedSigns.Splitter.Property : "";
