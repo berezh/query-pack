@@ -6,9 +6,9 @@ export function zip(source: unknown): string {
   return encodeURIComponent(result);
 }
 
-export function unzip(input: string): string {
+export function unzip<T = any>(input: string): T {
   const decodedInput = decodeURIComponent(input);
   const handler = new ComplexHandler();
-  const result = handler.zip(decodedInput);
+  const result = handler.unzip(decodedInput);
   return result;
 }
