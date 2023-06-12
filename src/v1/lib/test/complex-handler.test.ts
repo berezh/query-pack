@@ -1,6 +1,5 @@
 import { ComplexHandler } from "../complex-handler";
 import { SimpleHandler } from "../simple-handler";
-import { TypeUtil } from "../type";
 import { UsedSigns } from "../used-signs";
 import { TU } from "./tu";
 
@@ -43,40 +42,19 @@ describe("ComplexHandler", () => {
 
     it("string", () => {
       const value: string[] = ["first", "second", "third"];
-      let actual = "" + ComplexHandler.Version;
-      for (const item of value) {
-        const r = simpleHandler.zip("string", item);
-        if (r) {
-          actual += r.splitter + r.value;
-          expect(r.splitter).toBe(s.StringProperty);
-        }
-      }
+      const actual = TU.full(TU.a(value));
       testZip(value, actual);
     });
 
     it("boolean", () => {
       const value: boolean[] = [true, false, true];
-      let actual = "" + ComplexHandler.Version;
-      for (const item of value) {
-        const r = simpleHandler.zip("boolean", item);
-        if (r) {
-          actual += r.splitter + r.value;
-          expect(r.splitter).toBe(s.BooleanProperty);
-        }
-      }
+      const actual = TU.full(TU.a(value));
       testZip(value, actual);
     });
 
     it("simple mix", () => {
       const value: (boolean | number | string)[] = [true, 64, "third"];
-      let actual = "" + ComplexHandler.Version;
-      for (const item of value) {
-        const type = TypeUtil.getType(item);
-        const r = simpleHandler.zip(type, item);
-        if (r) {
-          actual += r.splitter + r.value;
-        }
-      }
+      const actual = TU.full(TU.a(value));
       testZip(value, actual);
     });
   });
@@ -88,21 +66,17 @@ describe("ComplexHandler", () => {
         name: "daniel",
         verified: true,
       };
-      testZip(
-        value,
-        ComplexHandler.Version +
-          "id" +
-          s.NumberProperty +
-          TU.zipN(value.id) +
-          s.Property +
-          "name" +
-          s.StringProperty +
-          value.name +
-          s.Property +
-          "verified" +
-          s.BooleanProperty +
-          TU.zipB(value.verified)
-      );
+      testZip(value, TU.full(TU.p("id", value.id), TU.p("name", value.name), TU.p("verified", value.verified)));
+    });
+
+    it("string name", () => {
+      const value = {
+        Name: "daniel",
+        child: {
+          firstName: "Alex",
+        },
+      };
+      testZip(value, TU.full(TU.obj(TU.p("Name", value.Name), TU.p("child", value.child)), TU.obj(TU.p("firstName", value.child.firstName))));
     });
   });
 

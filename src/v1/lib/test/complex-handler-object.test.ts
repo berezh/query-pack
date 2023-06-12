@@ -26,7 +26,7 @@ describe("ComplexHandler Object", () => {
           id: 11,
         },
       };
-      testZip(value, TU.full(ComplexHandler.Version, TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj(TU.propN("id", value.child.id))));
+      testZip(value, TU.full(TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj(TU.propN("id", value.child.id))));
     });
 
     it("2 child", () => {
@@ -39,10 +39,7 @@ describe("ComplexHandler Object", () => {
           id: 12,
         },
       };
-      testZip(
-        value,
-        TU.full(ComplexHandler.Version, TU.obj(TU.p("id", value.id), TU.r("first"), TU.r("second")), TU.obj(TU.p("id", value.first.id)), TU.obj(true, TU.p("id", value.second.id)))
-      );
+      testZip(value, TU.full(TU.obj(TU.p("id", value.id), TU.r("first"), TU.r("second")), TU.obj(TU.p("id", value.first.id)), TU.obj(true, TU.p("id", value.second.id))));
     });
 
     it("2 deep", () => {
@@ -57,12 +54,7 @@ describe("ComplexHandler Object", () => {
       };
       testZip(
         value,
-        TU.full(
-          ComplexHandler.Version,
-          TU.obj(TU.propN("id", value.id), TU.r("first")),
-          TU.obj(TU.propN("id", value.first.id), TU.r("second")),
-          TU.obj(true, TU.propN("id", value.first.second.id))
-        )
+        TU.full(TU.obj(TU.propN("id", value.id), TU.r("first")), TU.obj(TU.propN("id", value.first.id), TU.r("second")), TU.obj(true, TU.propN("id", value.first.second.id)))
       );
     });
 
@@ -83,7 +75,6 @@ describe("ComplexHandler Object", () => {
       testZip(
         value,
         TU.full(
-          ComplexHandler.Version,
           TU.obj(TU.propN("id", value.id), TU.r("first"), TU.r("third")),
           TU.obj(TU.propN("id", value.first.id), TU.r("second")),
           TU.obj(TU.propN("id", value.third.id)),
@@ -129,7 +120,6 @@ describe("ComplexHandler Object", () => {
       testZip(
         value,
         TU.full(
-          ComplexHandler.Version,
           TU.obj(TU.p("id", value.id), TU.r("first"), TU.r("six")),
           TU.obj(TU.p("id", value.first.id), TU.r("second"), TU.r("forth")),
           TU.obj(TU.p("id", value.six.id), TU.r("seven"), TU.r("nine")),

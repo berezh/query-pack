@@ -1,9 +1,35 @@
+import { ComplexHandler } from "../complex-handler";
 import { SimpleHandler } from "../simple-handler";
 import { UsedSigns } from "../used-signs";
 
 const s = UsedSigns.Splitter;
 export class TU {
   private static simpleHandler = new SimpleHandler();
+
+  private static splitterValue(value: string): string {
+    let result = "";
+    if (typeof value === "string") {
+      result = s.StringProperty + this.zipS(value);
+    } else if (typeof value === "number") {
+      result = s.NumberProperty + this.zipN(value);
+    } else if (typeof value === "boolean") {
+      result = s.BooleanProperty + this.zipB(value);
+    } else if (typeof value === "object") {
+      result = s.ReferenceProperty;
+    }
+
+    return result;
+  }
+
+  private static splitEnd(input: string, ...sings: string[]): string {
+    let result = input;
+
+    sings.forEach(sing => {
+      result = result.replace(new RegExp(`${sing}$`, "g"), "");
+    });
+
+    return result;
+  }
 
   public static zipN(input: number): string {
     return this.simpleHandler.zip("number", input)?.value || "";
@@ -18,17 +44,9 @@ export class TU {
   }
 
   public static p(name: string, value: any, last = false): string {
-    let stringValue = "";
-    if (typeof value === "string") {
-      stringValue = s.StringProperty + this.zipS(value);
-    } else if (typeof value === "number") {
-      stringValue = s.NumberProperty + this.zipN(value);
-    } else if (typeof value === "boolean") {
-      stringValue = s.NumberProperty + this.zipB(value);
-    } else if (typeof value === "object") {
-      stringValue = s.NumberProperty;
-    }
-    return this.zipS(name) + stringValue + (last ? "" : s.Property);
+    const stringValue = TU.splitterValue(value);
+    const r = this.zipS(name) + stringValue + (last ? "" : s.Property);
+    return r;
   }
 
   public static propN(name: string, value: number, last = false): string {
@@ -47,19 +65,11 @@ export class TU {
     return this.zipS(name) + s.ReferenceProperty + (last ? "" : s.Property);
   }
 
-  public static a(...items: any[]): string {
+  public static a(items: any[]): string {
     let result = "";
 
     items.forEach(value => {
-      if (typeof value === "string") {
-        result += s.StringProperty + this.zipS(value);
-      } else if (typeof value === "number") {
-        result += s.NumberProperty + this.zipN(value);
-      } else if (typeof value === "boolean") {
-        result += s.NumberProperty + this.zipB(value);
-      } else if (typeof value === "object") {
-        result += s.ReferenceProperty;
-      }
+      result += TU.splitterValue(value);
     });
 
     return result + s.Object;
@@ -69,12 +79,12 @@ export class TU {
     if (typeof last === "string") {
       content.unshift(last);
     }
-    const c = content.join("").replace(new RegExp(`${s.Property}$`, "g"), "");
+    const c = TU.splitEnd(content.join(""), s.Property);
     return c + (last === true ? "" : s.Object);
   }
 
-  public static full(version: number, ...objects: string[]): string {
-    const c = version + objects.join("").replace(new RegExp(`${s.Object}$`, "g"), "");
+  public static full(...objects: string[]): string {
+    const c = ComplexHandler.Version + TU.splitEnd(objects.join(""), s.Object, s.Property);
     return c;
   }
 

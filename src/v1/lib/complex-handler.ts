@@ -6,6 +6,8 @@ import { SimpleHandler } from "./simple-handler";
 import { TypeUtil } from "./type";
 import { UsedSigns } from "./used-signs";
 
+const s = UsedSigns.Splitter;
+
 export class ComplexHandler {
   private simple = new SimpleHandler();
 
@@ -176,7 +178,8 @@ export class ComplexHandler {
               } else {
                 const obj = {};
                 for (const { name, splitter, value, type } of parsedObject.properties) {
-                  obj[name] = this.simple.unzip(splitter, value);
+                  const key = this.simple.unzip<string>(s.StringProperty, name);
+                  obj[key] = this.simple.unzip(splitter, value);
                   if (type === "reference") {
                     if (lastRefIndex === -1) {
                       lastRefIndex = i + 1;
@@ -204,7 +207,8 @@ export class ComplexHandler {
         const props = this.parser.properties(restZipped);
         const obj = {};
         for (const { name, splitter, value } of props) {
-          obj[name] = this.simple.unzip(splitter, value);
+          const key = this.simple.unzip<string>(s.StringProperty, name);
+          obj[key] = this.simple.unzip(splitter, value);
         }
         return obj;
       }
