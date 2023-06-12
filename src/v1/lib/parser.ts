@@ -27,14 +27,17 @@ export class Parser {
     reference: s.ReferenceProperty,
   };
 
-  public version(zipped: string): [number, string] {
+  public version(zipped: string): [number | undefined, string] {
     const splits = zipped.match(new RegExp(`^[${RT.number32Signs}]`, "g"));
+    let ver: number | undefined = undefined;
+    let rest = zipped;
     if (splits) {
       const v = splits[0];
-      return [Number32.toNumber(v), zipped.slice(v.length)];
-    } else {
-      throw Error("Cannot parse version");
+      ver = Number32.toNumber(v);
+      rest = zipped.slice(v.length);
     }
+
+    return [ver, rest];
   }
 
   public items(zipped: string): ParsedProperty[] {

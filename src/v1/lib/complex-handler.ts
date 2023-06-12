@@ -149,7 +149,7 @@ export class ComplexHandler {
 
   public unzip(zipped: string): any {
     const [version, restZipped] = this.parser.version(zipped);
-    if ([ComplexHandler.Version].includes(version)) {
+    if ([ComplexHandler.Version].includes(version || 0)) {
       // multi objects
       if (restZipped.match(this.parser.objectReg)) {
         const parsedObjects = this.parser.objects(restZipped);

@@ -39,3 +39,5 @@ describe("UpperCaseZipper", () => {
     });
   });
 });
+
+// vectorTeamIds => vectorTEAMids => vectorUteamUids
