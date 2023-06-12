@@ -12,10 +12,16 @@ export interface ComplexPropertyResult extends SimpleResult {
   propertyName?: string;
 }
 
+export interface ComplexResultPosition {
+  level: number;
+  index: number;
+}
+
 export interface ComplexResult {
   propertyName?: string;
   type: HandledType;
   children: ComplexPropertyResult[];
+  position: ComplexResultPosition;
 }
 
 export interface ZipPropertyConverter extends Record<string, number> {}
