@@ -1,4 +1,5 @@
 import { ComplexResult, ComplexResultPosition, ZipOptions } from "../interfaces";
+import { ObjectPosition } from "./object-position";
 import { Parser } from "./parser";
 import { SimpleHandler } from "./simple-handler";
 import { TypeUtil } from "./type";
@@ -27,7 +28,8 @@ export class ComplexHandler {
     }
   }
 
-  private zipObject(results: ComplexResult[], value: object, position: ComplexResultPosition) {
+  private zipObject(results: ComplexResult[], value: object, pos: ComplexResultPosition) {
+    const position = ObjectPosition.level(pos);
     const current: ComplexResult = {
       type: "object",
       children: [],
@@ -41,6 +43,7 @@ export class ComplexHandler {
       const childValue = value[key];
       const childType = TypeUtil.getType(childValue);
       const childProperty = this.simple.zip("string", key)?.value || "";
+      const p = ObjectPosition.index(position, index);
       if (childType === "object") {
         current.children.push({
           propertyName: childProperty,
@@ -48,22 +51,17 @@ export class ComplexHandler {
           splitter: UsedSigns.Splitter.ReferenceProperty,
           value: "",
         });
-        this.zipObject(results, childValue, {
-          index,
-          level: position.level + 1,
-        });
+        this.zipObject(results, childValue, p);
       } else if (childType === "array") {
-        this.zipArray(results, childValue, childProperty, {
-          index,
-          level: position.level + 1,
-        });
+        this.zipArray(results, childValue, childProperty, p);
       } else {
         this.zipSimple(current, childValue, childProperty);
       }
     }
   }
 
-  private zipArray(results: ComplexResult[], obj: object[], propertyName: string | undefined, position: ComplexResultPosition) {
+  private zipArray(results: ComplexResult[], obj: object[], propertyName: string | undefined, pos: ComplexResultPosition) {
+    const position = ObjectPosition.level(pos);
     const current: ComplexResult = {
       propertyName,
       type: "array",
@@ -76,6 +74,7 @@ export class ComplexHandler {
     for (let index = 0; index < obj.length; index++) {
       const item = obj[index];
       const type = TypeUtil.getType(item);
+      const p = ObjectPosition.index(position, index);
       if (type === "object") {
         current.children.push({
           propertyName: "",
@@ -83,15 +82,9 @@ export class ComplexHandler {
           splitter: UsedSigns.Splitter.ReferenceProperty,
           value: "",
         });
-        this.zipObject(results, item, {
-          index,
-          level: position.level + 1,
-        });
+        this.zipObject(results, item, p);
       } else if (type === "array") {
-        this.zipArray(results, item as [], undefined, {
-          index,
-          level: position.level + 1,
-        });
+        this.zipArray(results, item as [], undefined, p);
       } else {
         this.zipSimple(current, item);
       }
@@ -102,15 +95,17 @@ export class ComplexHandler {
     const results: ComplexResult[] = [];
 
     const type = TypeUtil.getType(source);
+
+    const p = ObjectPosition.create();
     if (type === "object") {
-      this.zipObject(results, source as object, { level: 0, index: 0 });
+      this.zipObject(results, source as object, p);
     } else if (type === "array") {
-      this.zipArray(results, source as object[], undefined, { level: 0, index: 0 });
+      this.zipArray(results, source as object[], undefined, p);
     } else {
       const current: ComplexResult = {
         type,
         children: [],
-        position: { level: 0, index: 0 },
+        position: p,
       };
       results.push(current);
       this.zipSimple(current, source);

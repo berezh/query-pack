@@ -14,7 +14,8 @@ export interface ComplexPropertyResult extends SimpleResult {
 
 export interface ComplexResultPosition {
   level: number;
-  index: number;
+  levelIndex: number;
+  itemIndex: number;
 }
 
 export interface ComplexResult {
