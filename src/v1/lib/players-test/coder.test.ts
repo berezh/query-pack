@@ -22,27 +22,23 @@ describe("Coder", () => {
         naming: "number",
         useColor: false,
         showLevel: true,
-        teams: [],
-        togetherGroups: [],
-        vectorTeamIds: [],
-        matchResults: [],
-        // teams,
-        // togetherGroups: [
-        //   ["zak", "vadym", "oleg old"],
-        //   ["alan", "rezo"],
-        // ],
-        // vectorTeamIds,
-        // matchResults: [
-        //   [1, 2, 0, 1],
-        //   [1, 3, 3, 2],
-        //   [3, 1, 4, 0],
-        // ],
+        teams,
+        togetherGroups: [
+          ["zak", "vadym", "oleg old"],
+          ["alan", "rezo"],
+        ],
+        vectorTeamIds,
+        matchResults: [
+          [1, 2, 0, 1],
+          [1, 3, 3, 2],
+          [3, 1, 4, 0],
+        ],
       };
 
       const zipped = zip(data);
       const response = unzip(zipped);
 
-      expect(data).toMatchObject(response);
+      expect(data).toEqual(response);
     });
 
     it("show level - false", () => {
@@ -79,7 +75,7 @@ describe("Coder", () => {
       const { teams: _p1, ...expectObject } = param;
       const { teams: _p2, ...matchObject } = response;
 
-      expect(expectObject).toMatchObject(matchObject);
+      expect(expectObject).toEqual(matchObject);
     });
     it("naming: captain", () => {
       const teams = TournamentTestDataV3.get4Teams().map<TeamV3>(({ id, name, captain, players }) => {
@@ -106,14 +102,14 @@ describe("Coder", () => {
       const metaString = zip(param);
       const response = unzip(metaString);
 
-      for (const team of param.teams) {
-        team.name = team.captain;
-        team.players = team.players.map(x => {
-          return { ...x, level: undefined };
-        });
-      }
+      // for (const team of param.teams) {
+      //   team.name = team.captain;
+      //   team.players = team.players.map(x => {
+      //     return { ...x, level: undefined };
+      //   });
+      // }
 
-      expect(param).toMatchObject(response);
+      expect(param).toEqual(response);
     });
   });
 });

@@ -11,7 +11,7 @@ export class UpperCaseZipper extends Zipper<string> {
     super();
 
     this.zipAnyMatch = /[A-Z]+/g;
-    this.unzipAnyMatch = new RegExp(`${UsedSigns.UpperCase}[a-z]{1}([a-z]{1,}${UsedSigns.UpperCase})?`, "g");
+    this.unzipAnyMatch = new RegExp(`(${UsedSigns.UpperCase}[a-z])|(${UsedSigns.UpperCase}\\d+[a-z]+)`, "g");
   }
 
   public zip(source: string): string {
@@ -21,7 +21,7 @@ export class UpperCaseZipper extends Zipper<string> {
         if (match.length === 1) {
           return UsedSigns.UpperCase + match.toLowerCase();
         } else if (match.length > 1) {
-          return UsedSigns.UpperCase + match.toLowerCase() + UsedSigns.UpperCase;
+          return UsedSigns.UpperCase + match.length + match.toLowerCase();
         }
 
         return "";
@@ -35,7 +35,7 @@ export class UpperCaseZipper extends Zipper<string> {
     let result = zipped;
     if (typeof result === "string" && result.match(this.unzipAnyMatch)) {
       result = result.replace(this.unzipAnyMatch, match => {
-        return match.replace(new RegExp(UsedSigns.UpperCase, "g"), "").toUpperCase();
+        return match.replace(new RegExp(`${UsedSigns.UpperCase}\\d*`, "g"), "").toUpperCase();
       });
     }
     return result;
