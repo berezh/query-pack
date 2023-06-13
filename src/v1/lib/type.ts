@@ -1,4 +1,4 @@
-import { HandledType } from "../interfaces";
+import { AllHandledType, HandledType } from "../interfaces";
 
 export class TypeUtil {
   public static getType(source: unknown): HandledType {
@@ -21,6 +21,12 @@ export class TypeUtil {
   private static complexTypes: HandledType[] = ["array", "object"];
 
   public static isComplex(type: HandledType): boolean {
-    return this.complexTypes.includes(type);
+    return TypeUtil.complexTypes.includes(type);
+  }
+
+  private static complexTypeOrEmpty: AllHandledType[] = ["array", "object", "empty"];
+
+  public static isComplexOrEmpty(type: AllHandledType) {
+    return TypeUtil.complexTypeOrEmpty.includes(type);
   }
 }

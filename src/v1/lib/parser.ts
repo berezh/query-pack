@@ -103,17 +103,20 @@ export class Parser {
     const contents = zipped.split(new RegExp(s.Object));
     for (const content of contents) {
       if (content.match(this.propertyAllReg)) {
-        const ref: ParsedObject = {
+        result.push({
           type: "object",
           properties: this.properties(content),
-        };
-        result.push(ref);
+        });
       } else if (content.match(this.itemAllReg)) {
-        const ref: ParsedObject = {
+        result.push({
           type: "array",
           properties: this.items(content),
-        };
-        result.push(ref);
+        });
+      } else if (content === "") {
+        result.push({
+          type: "empty",
+          properties: [],
+        });
       }
     }
 

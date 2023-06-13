@@ -1,5 +1,7 @@
 export type HandledType = "string" | "number" | "boolean" | "object" | "array";
 
+export type AllHandledType = HandledType | "empty";
+
 export interface SimpleResult {
   type: HandledType;
   splitter: string;
@@ -43,6 +45,6 @@ export interface ParsedProperty {
 }
 
 export interface ParsedObject {
-  type: HandledType;
+  type: AllHandledType;
   properties: ParsedProperty[];
 }

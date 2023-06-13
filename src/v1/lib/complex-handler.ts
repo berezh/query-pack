@@ -1,4 +1,4 @@
-import { ComplexResult, ComplexResultPosition } from "../interfaces";
+import { ComplexResult, ComplexResultPosition, HandledType } from "../interfaces";
 import { CommonUtil } from "./common";
 import { ObjectPosition } from "./object-position";
 import { Parser } from "./parser";
@@ -161,16 +161,16 @@ export class ComplexHandler {
         const parsedObjects = this.parser.objects(restZipped);
         if (parsedObjects.length > 0) {
           const root = parsedObjects[0];
-          if (TypeUtil.isComplex(root.type)) {
+          if (TypeUtil.isComplexOrEmpty(root.type)) {
             const realObjects: any[] = [];
-            const references: [number, string | number, number][] = [];
+            const references: [HandledType, number, string | number, number][] = [];
             let lastRefIndex = -1;
             for (let i = 0; i < parsedObjects.length; i++) {
-              const parsedObject = parsedObjects[i];
-              if (parsedObject.type === "array") {
+              const { type, properties } = parsedObjects[i];
+              if (type === "array") {
                 const array: any[] = [];
-                for (let propIndex = 0; propIndex < parsedObject.properties.length; propIndex++) {
-                  const { splitter, value, type } = parsedObject.properties[propIndex];
+                for (let propIndex = 0; propIndex < properties.length; propIndex++) {
+                  const { splitter, value, type } = properties[propIndex];
                   const itemValue = this.simple.unzip(splitter, value);
                   array.push(itemValue);
                   if (TypeUtil.isComplex(type)) {
@@ -179,13 +179,13 @@ export class ComplexHandler {
                     } else {
                       lastRefIndex++;
                     }
-                    references.push([i, propIndex, lastRefIndex]);
+                    references.push([type, i, propIndex, lastRefIndex]);
                   }
                 }
                 realObjects.push(array);
-              } else if (parsedObject.type === "object") {
+              } else if (type === "object") {
                 const obj = {};
-                for (const { name, splitter, value, type } of parsedObject.properties) {
+                for (const { name, splitter, value, type } of properties) {
                   const key = this.simple.unzip<string>(s.StringProperty, name);
                   obj[key] = this.simple.unzip(splitter, value);
                   if (TypeUtil.isComplex(type)) {
@@ -194,16 +194,22 @@ export class ComplexHandler {
                     } else {
                       lastRefIndex++;
                     }
-                    references.push([i, name, lastRefIndex]);
+                    references.push([type, i, name, lastRefIndex]);
                   }
                 }
-
                 realObjects.push(obj);
+              } else if (type === "empty") {
+                realObjects.push(null);
               }
             }
 
-            for (const [containerIndex, index, childIndex] of references) {
-              realObjects[containerIndex][index] = realObjects[childIndex];
+            for (const [type, containerIndex, index, childIndex] of references) {
+              const ref = realObjects[childIndex];
+              if (ref === null) {
+                realObjects[containerIndex][index] = type === "object" ? {} : [];
+              } else {
+                realObjects[containerIndex][index] = ref;
+              }
             }
 
             return realObjects[0];

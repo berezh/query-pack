@@ -77,12 +77,9 @@ export class TU {
     return result + s.Object;
   }
 
-  public static obj(last: boolean | string, ...content: string[]): string {
-    if (typeof last === "string") {
-      content.unshift(last);
-    }
+  public static obj(...content: string[]): string {
     const c = TU.splitEnd(content.join(""), s.Property);
-    return c + (last === true ? "" : s.Object);
+    return c + s.Object;
   }
 
   public static full(...objects: string[]): string {

@@ -28,6 +28,13 @@ describe("ComplexHandler Array", () => {
   });
 
   describe("object with array", () => {
+    it("empty", () => {
+      const value = {
+        id: 1,
+        players: [],
+      };
+      testZip(value, TU.full(TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a([])));
+    });
     it("default", () => {
       const value = {
         id: 1,
