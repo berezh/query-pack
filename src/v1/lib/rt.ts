@@ -1,5 +1,5 @@
-import { Number32 } from "../lib/number32";
-import { UsedSigns } from "../lib/used-signs";
+import { Number32 } from "./number32";
+import { UsedSigns } from "./used-signs";
 
 const s = UsedSigns.Splitter;
 

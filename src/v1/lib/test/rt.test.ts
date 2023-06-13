@@ -1,4 +1,4 @@
-import { RT } from "../../zippers/rt";
+import { RT } from "../rt";
 
 describe("RT", () => {
   describe("itemAllReg", () => {

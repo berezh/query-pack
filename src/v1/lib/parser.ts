@@ -1,5 +1,5 @@
 import { ParseType, ParsedObject, ParsedProperty } from "../interfaces";
-import { RT } from "../zippers/rt";
+import { RT } from "./rt";
 import { Number32 } from "./number32";
 import { UsedSigns } from "./used-signs";
 
