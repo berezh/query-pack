@@ -27,4 +27,21 @@ describe("Number32", () => {
       }).toThrowError('"x" does not belong to base32 number');
     });
   });
+  describe("isBase32", () => {
+    it("default", () => {
+      expect(Number32.isBase32("0")).toBeTruthy();
+      expect(Number32.isBase32("bc")).toBeTruthy();
+    });
+    it("minus", () => {
+      expect(Number32.isBase32("-10")).toBeTruthy();
+    });
+    it("fraction", () => {
+      expect(Number32.isBase32("10.abc")).toBeTruthy();
+    });
+    it("no", () => {
+      expect(Number32.isBase32("")).toBeFalsy();
+      expect(Number32.isBase32("1x")).toBeFalsy();
+      expect(Number32.isBase32("y")).toBeFalsy();
+    });
+  });
 });

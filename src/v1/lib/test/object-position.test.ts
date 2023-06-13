@@ -1,11 +1,11 @@
-import { ComplexResultPosition } from "../../interfaces";
+import { ZippedRefPosition } from "../../interfaces";
 import { ObjectPosition } from "../object-position";
 
 describe("ObjectPosition", () => {
   const op = new ObjectPosition();
 
-  function positionEqual(expected: ComplexResultPosition, actual: ComplexResultPosition) {
-    expect(expected).toEqual<ComplexResultPosition>(actual);
+  function positionEqual(expected: ZippedRefPosition, actual: ZippedRefPosition) {
+    expect(expected).toEqual<ZippedRefPosition>(actual);
   }
 
   describe("cycle", () => {

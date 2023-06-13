@@ -1,4 +1,4 @@
-import { HandledType, ParsedObject, ParsedProperty } from "../interfaces";
+import { ZipType, ParsedObject, ParsedProperty } from "../interfaces";
 import { RT } from "./rt";
 import { Number32 } from "./number32";
 import { UsedSigns } from "./used-signs";
@@ -21,7 +21,7 @@ export class Parser {
     return RT.itemAllReg;
   }
 
-  private propertyTypes: Record<HandledType, string> = {
+  private propertyTypes: Record<ZipType, string> = {
     string: s.StringProperty,
     number: s.NumberProperty,
     boolean: s.BooleanProperty,
@@ -73,8 +73,8 @@ export class Parser {
     return result;
   }
 
-  public getType(splitter: string): HandledType {
-    return Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as HandledType;
+  public getType(splitter: string): ZipType {
+    return Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as ZipType;
   }
 
   public properties(zipped: string): ParsedProperty[] {

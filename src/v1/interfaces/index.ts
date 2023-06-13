@@ -1,28 +1,30 @@
-export type HandledType = "string" | "number" | "boolean" | "object" | "array";
+export type ZipType = "string" | "number" | "boolean" | "object" | "array";
 
-export type AllHandledType = HandledType | "empty";
+export type AllHandledType = ZipType | "empty";
 
-export interface SimpleResult {
-  type: HandledType;
+export interface ZippedValue {
+  type: ZipType;
+  // todo: use only splitter: remove type
   splitter: string;
   value: string;
 }
 
-export interface ComplexPropertyResult extends SimpleResult {
+export interface ZippedNamedValue extends ZippedValue {
   propertyName?: string;
+  zippedName?: string;
 }
 
-export interface ComplexResultPosition {
+export interface ZippedRefPosition {
   level: number;
   levelIndex: number;
   itemIndex: number;
 }
 
-export interface ComplexResult {
+export interface ZippedRef {
   propertyName?: string;
-  type: HandledType;
-  children: ComplexPropertyResult[];
-  position: ComplexResultPosition;
+  type: ZipType;
+  children: ZippedNamedValue[];
+  position: ZippedRefPosition;
 }
 
 export interface ZipPropertyConverter extends Record<string, number> {}
@@ -30,17 +32,18 @@ export interface ZipPropertyConverter extends Record<string, number> {}
 export interface ZipConvertor extends Record<string, number | ZipPropertyConverter> {}
 
 export interface ZipOptions {
-  convertor: ZipConvertor | ZipConvertor[];
+  convertor: ZipConvertor;
 }
 
 export interface SignReplace {
   regex: RegExp;
   replace: string;
 }
+
 export interface ParsedProperty {
   name: string;
   splitter: string;
-  type: HandledType;
+  type: ZipType;
   value: string;
 }
 

@@ -1,4 +1,4 @@
-import { HandledType, SimpleResult } from "../interfaces";
+import { ZipType, ZippedValue } from "../interfaces";
 import { BooleanZipper } from "../zippers/boolean";
 import { NumberZipper } from "../zippers/number";
 import { StringZipper } from "../zippers/string";
@@ -7,7 +7,7 @@ import { Zipper } from "../zippers/zipper";
 import { UsedSigns } from "./used-signs";
 
 interface TypeOperator {
-  type: HandledType;
+  type: ZipType;
   splitter: string;
   zippers: Zipper[];
   unzippers?: Zipper[];
@@ -37,7 +37,7 @@ export class SimpleHandler {
     },
   ];
 
-  public zip(type: HandledType, source: unknown): SimpleResult | undefined {
+  public zip(type: ZipType, source: unknown): ZippedValue | undefined {
     const operator = this.operators.find(x => x.type === type);
     if (operator) {
       let result = source;
