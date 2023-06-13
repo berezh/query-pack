@@ -194,7 +194,7 @@ export class ComplexHandler {
                     } else {
                       lastRefIndex++;
                     }
-                    references.push([type, i, name, lastRefIndex]);
+                    references.push([type, i, key, lastRefIndex]);
                   }
                 }
                 realObjects.push(obj);
