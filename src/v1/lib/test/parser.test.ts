@@ -19,12 +19,12 @@ describe("Parser", () => {
     });
 
     it("object", () => {
-      expect(parser.properties("childRYidNaYnameSjohn")).toEqual<ParsedProperty[]>([prop("R", "child"), prop("N", "id", "a"), prop("S", "name", "john")]);
-      expect(parser.properties("idNaYchildRYnameSjohn")).toEqual<ParsedProperty[]>([prop("N", "id", "a"), prop("R", "child"), prop("S", "name", "john")]);
+      expect(parser.properties("childOYidNaYnameSjohn")).toEqual<ParsedProperty[]>([prop("O", "child"), prop("N", "id", "a"), prop("S", "name", "john")]);
+      expect(parser.properties("idNaYchildOYnameSjohn")).toEqual<ParsedProperty[]>([prop("N", "id", "a"), prop("O", "child"), prop("S", "name", "john")]);
     });
 
     it("array", () => {
-      expect(parser.properties("massR")).toEqual([prop("R", "mass")]);
+      expect(parser.properties("massA")).toEqual([prop("A", "mass")]);
     });
   });
 

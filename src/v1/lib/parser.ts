@@ -1,12 +1,13 @@
-import { ParseType, ParsedObject, ParsedProperty } from "../interfaces";
+import { HandledType, ParsedObject, ParsedProperty } from "../interfaces";
 import { RT } from "./rt";
 import { Number32 } from "./number32";
 import { UsedSigns } from "./used-signs";
+import { TypeUtil } from "./type";
 
 const s = UsedSigns.Splitter;
 
 export class Parser {
-  public readonly propertySigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty, s.ReferenceProperty];
+  public readonly propertySigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty, s.ObjectProperty];
 
   public get objectReg(): RegExp {
     return new RegExp(s.Object, "g");
@@ -20,11 +21,12 @@ export class Parser {
     return RT.itemAllReg;
   }
 
-  private propertyTypes: Record<ParseType, string> = {
+  private propertyTypes: Record<HandledType, string> = {
     string: s.StringProperty,
     number: s.NumberProperty,
     boolean: s.BooleanProperty,
-    reference: s.ReferenceProperty,
+    object: s.ObjectProperty,
+    array: s.ArrayProperty,
   };
 
   public version(zipped: string): [number | undefined, string] {
@@ -49,7 +51,7 @@ export class Parser {
         if (splits) {
           const splitter = splits[0];
           const type = this.getType(splitter);
-          if (splitter === s.ReferenceProperty) {
+          if (TypeUtil.isComplex(type)) {
             result.push({
               splitter,
               type,
@@ -71,8 +73,8 @@ export class Parser {
     return result;
   }
 
-  public getType(splitter: string): ParseType {
-    return Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as ParseType;
+  public getType(splitter: string): HandledType {
+    return Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as HandledType;
   }
 
   public properties(zipped: string): ParsedProperty[] {
@@ -102,14 +104,13 @@ export class Parser {
     for (const content of contents) {
       if (content.match(this.propertyAllReg)) {
         const ref: ParsedObject = {
-          type: "reference",
+          type: "object",
           properties: this.properties(content),
         };
         result.push(ref);
       } else if (content.match(this.itemAllReg)) {
         const ref: ParsedObject = {
-          isArray: true,
-          type: "reference",
+          type: "array",
           properties: this.items(content),
         };
         result.push(ref);

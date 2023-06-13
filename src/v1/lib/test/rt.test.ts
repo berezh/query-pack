@@ -8,7 +8,10 @@ describe("RT", () => {
   });
   describe("itemSplitReg", () => {
     it("default", () => {
-      expect("N2NgR".match(RT.itemSplitReg)).toEqual(["N2", "Ng", "R"]);
+      expect("N2NgO".match(RT.itemSplitReg)).toEqual(["N2", "Ng", "O"]);
+    });
+    it("default", () => {
+      expect("N2NgA".match(RT.itemSplitReg)).toEqual(["N2", "Ng", "A"]);
     });
   });
 
@@ -16,7 +19,7 @@ describe("RT", () => {
     it("default", () => {
       expect("N2".match(RT.itemPartsSplitReg)).toEqual(["N", "2"]);
       expect("Ng".match(RT.itemPartsSplitReg)).toEqual(["N", "g"]);
-      expect("R".match(RT.itemPartsSplitReg)).toEqual(["R"]);
+      expect("O".match(RT.itemPartsSplitReg)).toEqual(["O"]);
     });
   });
 
@@ -28,7 +31,7 @@ describe("RT", () => {
     });
     it("ref", () => {
       //const refText = RT.propertyAllReg.toString();
-      const zipped = "childRidNaYnameSdanielYverifiedB1";
+      const zipped = "childOidNaYnameSdanielYverifiedB1";
       const matches = zipped.match(RT.propertyAllReg);
       expect(matches).toEqual([zipped]);
     });
@@ -46,7 +49,7 @@ describe("RT", () => {
       expect("idNa".match(RT.propertyPartsSplitReg)).toEqual(["id", "N", "a"]);
       expect("nameSdaniel".match(RT.propertyPartsSplitReg)).toEqual(["name", "S", "daniel"]);
       expect("verifiedB1".match(RT.propertyPartsSplitReg)).toEqual(["verified", "B", "1"]);
-      expect("childR".match(RT.propertyPartsSplitReg)).toEqual(["child", "R"]);
+      expect("childA".match(RT.propertyPartsSplitReg)).toEqual(["child", "A"]);
     });
   });
 });

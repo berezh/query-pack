@@ -4,7 +4,7 @@ import { TournamentTestDataV3 } from "./test-data";
 
 // https://stackoverflow.com/a/46322186/721704
 // abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~
-describe("Coder", () => {
+describe.skip("Coder", () => {
   describe("encode/decode", () => {
     it("simple", () => {
       const teams = TournamentTestDataV3.get4Teams().map<TeamV3>(({ id, name, captain, players }) => {

@@ -50,19 +50,22 @@ export class ComplexHandler {
       const childProperty = this.simple.zip("string", key)?.value || "";
       const p = this.objectPosition.index(position, index);
 
-      if (TypeUtil.isComplex(childType)) {
+      if (childType === "object") {
         current.children.push({
           propertyName: childProperty,
           type: childType,
-          splitter: UsedSigns.Splitter.ReferenceProperty,
+          splitter: s.ObjectProperty,
           value: "",
         });
-      }
-
-      if (childType === "object") {
         this.zipObject(results, childValue, p);
       } else if (childType === "array") {
-        this.zipArray(results, childValue, childProperty, p);
+        current.children.push({
+          propertyName: childProperty,
+          type: childType,
+          splitter: s.ArrayProperty,
+          value: "",
+        });
+        this.zipArray(results, childValue, "", p);
       } else {
         this.zipSimple(current, childValue, childProperty);
       }
@@ -84,18 +87,21 @@ export class ComplexHandler {
       const item = obj[index];
       const type = TypeUtil.getType(item);
       const p = this.objectPosition.index(position, index);
-      if (TypeUtil.isComplex(type)) {
+      if (type === "object") {
         current.children.push({
           propertyName: "",
           type,
-          splitter: UsedSigns.Splitter.ReferenceProperty,
+          splitter: s.ObjectProperty,
           value: "",
         });
-      }
-
-      if (type === "object") {
         this.zipObject(results, item, p);
       } else if (type === "array") {
+        current.children.push({
+          propertyName: "",
+          type,
+          splitter: s.ArrayProperty,
+          value: "",
+        });
         this.zipArray(results, item as [], undefined, p);
       } else {
         this.zipSimple(current, item);
@@ -128,7 +134,7 @@ export class ComplexHandler {
     results = CommonUtil.order(results, [x => x.position.itemIndex], [x => x.position.levelIndex], [x => x.position.level]);
 
     for (const cr of results) {
-      const propertySplitter = cr.type === "object" ? UsedSigns.Splitter.Property : "";
+      const propertySplitter = cr.type === "object" ? s.Property : "";
       const complexLine = cr.children
         .map(({ propertyName, splitter, value }) => {
           return (propertyName ? propertyName : "") + splitter + value;
@@ -143,7 +149,7 @@ export class ComplexHandler {
       lines[0] = ComplexHandler.Version.toString() + lines[0];
     }
 
-    const fullResult = lines.join(UsedSigns.Splitter.Object);
+    const fullResult = lines.join(s.Object);
     return fullResult;
   }
 
@@ -155,19 +161,19 @@ export class ComplexHandler {
         const parsedObjects = this.parser.objects(restZipped);
         if (parsedObjects.length > 0) {
           const root = parsedObjects[0];
-          if (root.type === "reference") {
+          if (TypeUtil.isComplex(root.type)) {
             const realObjects: any[] = [];
             const references: [number, string | number, number][] = [];
             let lastRefIndex = -1;
             for (let i = 0; i < parsedObjects.length; i++) {
               const parsedObject = parsedObjects[i];
-              if (parsedObject.isArray) {
+              if (parsedObject.type === "array") {
                 const array: any[] = [];
                 for (let propIndex = 0; propIndex < parsedObject.properties.length; propIndex++) {
-                  const { splitter, value, type } = parsedObject.properties[i];
+                  const { splitter, value, type } = parsedObject.properties[propIndex];
                   const itemValue = this.simple.unzip(splitter, value);
                   array.push(itemValue);
-                  if (type === "reference") {
+                  if (TypeUtil.isComplex(type)) {
                     if (lastRefIndex === -1) {
                       lastRefIndex = i + 1;
                     } else {
@@ -177,12 +183,12 @@ export class ComplexHandler {
                   }
                 }
                 realObjects.push(array);
-              } else {
+              } else if (parsedObject.type === "object") {
                 const obj = {};
                 for (const { name, splitter, value, type } of parsedObject.properties) {
                   const key = this.simple.unzip<string>(s.StringProperty, name);
                   obj[key] = this.simple.unzip(splitter, value);
-                  if (type === "reference") {
+                  if (TypeUtil.isComplex(type)) {
                     if (lastRefIndex === -1) {
                       lastRefIndex = i + 1;
                     } else {

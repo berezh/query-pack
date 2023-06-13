@@ -4,14 +4,15 @@ import { UsedSigns } from "./used-signs";
 const s = UsedSigns.Splitter;
 
 const simpleSigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty];
+const complexSigns = [s.ObjectProperty, s.ArrayProperty];
 
 export class RT {
   private static not(...sings: string[]): string {
     return `[^${sings.join("")}]+`;
   }
 
-  private static notCommon(...sings: string[]) {
-    return RT.not(...simpleSigns, s.ReferenceProperty, ...sings);
+  private static get notCommon() {
+    return RT.not(...simpleSigns, ...complexSigns);
   }
 
   private static any(text: string | string[]): string {
@@ -42,15 +43,15 @@ export class RT {
     return text.length > 1 ? `[${text}]` : `${text}?`;
   }
 
-  private static item = RT.or(RT.join(RT.any(simpleSigns), RT.notCommon()), s.ReferenceProperty);
+  private static item = RT.or(RT.join(RT.any(simpleSigns), RT.notCommon), RT.any(complexSigns));
 
-  private static itemParts = RT.or(RT.any(simpleSigns), RT.notCommon(), s.ReferenceProperty);
+  private static itemParts = RT.or(RT.any(simpleSigns), RT.notCommon, RT.any(complexSigns));
 
-  private static simpleProperty = RT.join(RT.notCommon(), RT.any(simpleSigns), RT.notCommon());
+  private static simpleProperty = RT.join(RT.notCommon, RT.any(simpleSigns), RT.notCommon);
 
-  private static referenceProperty = RT.join(RT.notCommon(), s.ReferenceProperty);
+  private static referenceProperty = RT.join(RT.notCommon, RT.any(complexSigns));
 
-  private static propertyParts = RT.or(RT.notCommon(), RT.any(simpleSigns), s.ReferenceProperty, RT.notCommon());
+  private static propertyParts = RT.or(RT.notCommon, RT.any(simpleSigns), RT.any(complexSigns), RT.notCommon);
 
   private static propertyAll = RT.full(RT.oneOrMore(RT.join(RT.g(RT.or(RT.simpleProperty, RT.referenceProperty)), RT.maybe(s.Property))));
 

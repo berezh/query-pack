@@ -1,7 +1,5 @@
 export type HandledType = "string" | "number" | "boolean" | "object" | "array";
 
-export type ParseType = "string" | "number" | "boolean" | "reference";
-
 export interface SimpleResult {
   type: HandledType;
   splitter: string;
@@ -40,12 +38,11 @@ export interface SignReplace {
 export interface ParsedProperty {
   name: string;
   splitter: string;
-  type: ParseType;
+  type: HandledType;
   value: string;
 }
 
 export interface ParsedObject {
-  type: ParseType;
-  isArray?: boolean;
+  type: HandledType;
   properties: ParsedProperty[];
 }
