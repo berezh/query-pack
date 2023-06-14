@@ -27,9 +27,7 @@ export interface ZippedRef {
   position: ZippedRefPosition;
 }
 
-export interface ZipPropertyConverter extends Record<string, number> {}
-
-export interface ZipConvertor extends Record<string, number | ZipPropertyConverter> {}
+export interface ZipConvertor extends Record<string, number | [number, ZipConvertor]> {}
 
 export interface ZipOptions {
   convertor: ZipConvertor;

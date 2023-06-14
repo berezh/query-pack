@@ -13,24 +13,30 @@ export class NameConverter {
     this.convertor = convertor;
   }
 
-  private getConverter(...names: string[]): ZipConvertor | undefined {
+  private getPropertyNumber(...names: string[]): number | undefined {
     let con: ZipConvertor | undefined = this.convertor;
+    let propNumber: number | undefined = undefined;
     for (const name of names) {
-      if (typeof con === "object") {
-        con = con[name] as ZipConvertor;
+      const child = con ? con[name] : undefined;
+      if (Array.isArray(child)) {
+        propNumber = child[0];
+        con = child[1];
+      } else if (typeof child === "number") {
+        propNumber = child;
+        con = undefined;
       } else {
+        propNumber = undefined;
         con = undefined;
         break;
       }
     }
 
-    return con;
+    return propNumber;
   }
 
   public zipName(names: string[], currentName: string): string {
-    const con = this.getConverter(...names);
-    if (con) {
-      const conValue = con[currentName];
+    if (this.convertor) {
+      const conValue = this.getPropertyNumber(...names, currentName);
       if (typeof conValue === "number") {
         return this.simpleHandler.zip("number", conValue)?.value || "";
       }
@@ -39,18 +45,73 @@ export class NameConverter {
     return this.simpleHandler.zip("string", currentName)?.value || "";
   }
 
-  public unzipName(names: string[], currentName: string): string {
-    if (Number32.isBase32(currentName)) {
-      const con = this.getConverter(...names);
-      if (con) {
-        const propNum = Number32.toNumber(currentName);
-        const keyName = Object.keys(con).find(key => con[key] === propNum);
-        if (typeof keyName === "string") {
-          return keyName;
-        }
+  private getPropertyName(names: string[], propNumber: number): string | undefined {
+    let con: ZipConvertor | undefined = this.convertor;
+    for (const name of names) {
+      const child = con ? con[name] : undefined;
+      if (Array.isArray(child)) {
+        con = child[1];
+      } else {
+        con = undefined;
+        break;
       }
     }
 
-    return this.simpleHandler.unzip(s.StringProperty, currentName);
+    if (typeof con === "object") {
+      return Object.keys(con).find(key => {
+        const conValue = (con || {})[key];
+        if (Array.isArray(conValue)) {
+          if (conValue[0] === propNumber) {
+            return true;
+          }
+        } else if (typeof conValue === "number") {
+          if (conValue === propNumber) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+
+    return undefined;
+  }
+
+  private unzipName(names: string[], zippedName: string): string {
+    if (Number32.isBase32(zippedName)) {
+      const propNumber = Number32.toNumber(zippedName);
+      const propName = this.getPropertyName(names, propNumber);
+      if (typeof propName === "string") {
+        return propName;
+      }
+    }
+
+    return this.simpleHandler.unzip(s.StringProperty, zippedName);
+  }
+
+  private init(names: string[], prop: unknown) {
+    const objectProp = prop as object;
+    const keys = Object.keys(objectProp);
+    for (const key of keys) {
+      const propName = this.unzipName(names, key);
+      if (propName !== key) {
+        const value = objectProp[key];
+        delete objectProp[key];
+        objectProp[propName] = value;
+      }
+
+      const currentValue = objectProp[propName];
+      if (typeof currentValue === "object") {
+        this.init([...names, propName], currentValue);
+      }
+    }
+  }
+
+  public unzipNames(root: object): object {
+    if (this.convertor) {
+      const names: string[] = [];
+      this.init(names, root);
+    }
+
+    return root;
   }
 }

@@ -196,15 +196,15 @@ export class ComplexHandler {
               else if (type === "object") {
                 const obj = {};
                 for (const { name, splitter, value, type } of properties) {
-                  const key = this.nameConverter.unzipName([], name); //this.simple.unzip<string>(s.StringProperty, name);
-                  obj[key] = this.simple.unzip(splitter, value);
+                  // const key = name; // this.nameConverter.unzipName([], name); //this.simple.unzip<string>(s.StringProperty, name);
+                  obj[name] = this.simple.unzip(splitter, value);
                   if (TypeUtil.isComplex(type)) {
                     if (lastRefIndex === -1) {
                       lastRefIndex = i + 1;
                     } else {
                       lastRefIndex++;
                     }
-                    references.push([type, i, key, lastRefIndex]);
+                    references.push([type, i, name, lastRefIndex]);
                   }
                 }
                 realObjects.push(obj);
@@ -222,7 +222,7 @@ export class ComplexHandler {
               }
             }
 
-            return realObjects[0];
+            return this.nameConverter.unzipNames(realObjects[0]);
           }
         }
       }
