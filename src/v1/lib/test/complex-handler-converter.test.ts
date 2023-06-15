@@ -14,15 +14,36 @@ describe("ComplexHandler Converter", () => {
   }
 
   describe("object", () => {
-    it("empty", () => {
-      const value = {
+    it("root", () => {
+      const v = {
         id: 10,
         name: "Kent",
       };
-      testZip(value, TU.full(s.Object, TU.obj(TU.p("1", value.id), TU.p("2", value.name))), {
+      testZip(v, TU.full(s.Object, TU.obj(TU.p("1", v.id), TU.p("2", v.name))), {
         convertor: {
           id: 1,
           name: 2,
+        },
+      });
+    });
+    it("child", () => {
+      const v = {
+        name: "root",
+        child: {
+          id: 10,
+          name: "Kent",
+        },
+      };
+      testZip(v, TU.full(s.Object, TU.obj(TU.p("1", "root"), TU.p("2", v.child)), TU.obj(TU.p("1", v.child.id), TU.p("2", v.child.name))), {
+        convertor: {
+          name: 1,
+          child: [
+            2,
+            {
+              id: 1,
+              name: 2,
+            },
+          ],
         },
       });
     });
@@ -30,22 +51,22 @@ describe("ComplexHandler Converter", () => {
 
   describe("array", () => {
     it("root", () => {
-      const value = [
+      const v = [
         {
           id: 10,
           name: "Kent",
         },
       ];
-      testZip(value, TU.full(TU.a(value), TU.obj(TU.p("1", value[0].id), TU.p("2", value[0].name))), {
+      testZip(v, TU.full(TU.a(v), TU.obj(TU.p("1", v[0].id), TU.p("2", v[0].name))), {
         convertor: {
           id: 1,
           name: 2,
         },
       });
     });
-    // 1 X 1N9Y2A X O X 1Na Y nameSUkent
-    it.skip("child", () => {
-      const value = {
+    // 1 X 1N9 Y 2A X O X 1Na Y nameSUkent
+    it("child", () => {
+      const v = {
         id: 9,
         child: [
           {
@@ -54,7 +75,7 @@ describe("ComplexHandler Converter", () => {
           },
         ],
       };
-      testZip(value, TU.full(s.Object, TU.p("1", value.id), TU.p("2", value.child), TU.obj(TU.p("1", value.child[0].id), TU.p("2", value.child[0].name))), {
+      testZip(v, TU.full(s.Object, TU.obj(TU.p("1", v.id), TU.p("2", v.child)), TU.obj(s.ObjectProperty), TU.obj(TU.p("1", v.child[0].id), TU.p("2", v.child[0].name))), {
         convertor: {
           id: 1,
           child: [

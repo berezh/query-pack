@@ -34,9 +34,14 @@ export class NameConverter {
     return propNumber;
   }
 
-  public zipName(names: string[], currentName: string): string {
+  public zipName(names: string[] | undefined, currentName: string): string {
     if (this.convertor) {
-      const conValue = this.getPropertyNumber(...names, currentName);
+      const path: string[] = [];
+      if (Array.isArray(names)) {
+        path.push(...names);
+      }
+      path.push(currentName);
+      const conValue = this.getPropertyNumber(...path);
       if (typeof conValue === "number") {
         return this.simpleHandler.zip("number", conValue)?.value || "";
       }

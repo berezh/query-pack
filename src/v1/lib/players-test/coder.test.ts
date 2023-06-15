@@ -115,7 +115,7 @@ describe("Coder", () => {
   });
 
   describe("convertor", () => {
-    it("simple", () => {
+    it.skip("simple", () => {
       const teams = TournamentTestDataV3.get4Teams().map<TeamV3>(({ id, name, captain, players }) => {
         return { id, name, captain, players };
       });

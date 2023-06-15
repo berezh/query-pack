@@ -20,11 +20,35 @@ export interface ZippedRefPosition {
   itemIndex: number;
 }
 
-export interface ZippedRef {
-  propertyName?: string;
-  type: ZipType;
-  children: ZippedNamedValue[];
-  position: ZippedRefPosition;
+export class ZippedRef {
+  public parent?: ZippedRef;
+
+  public propertyName?: string;
+
+  public type: ZipType;
+
+  public children: ZippedNamedValue[] = [];
+
+  public position: ZippedRefPosition;
+
+  constructor(type: ZipType, position: ZippedRefPosition, parent?: ZippedRef, propertyName?: string) {
+    this.type = type;
+    this.position = position;
+    this.parent = parent;
+    this.propertyName = propertyName;
+  }
+
+  public get rootNames(): string[] {
+    const r: string[] = [];
+    let p = this as ZippedRef | undefined;
+    while (!!p) {
+      if (p.propertyName) {
+        r.unshift(p.propertyName);
+      }
+      p = p.parent;
+    }
+    return r;
+  }
 }
 
 export interface ZipConvertor extends Record<string, number | [number, ZipConvertor]> {}

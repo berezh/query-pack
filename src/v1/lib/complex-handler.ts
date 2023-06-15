@@ -32,14 +32,11 @@ export class ComplexHandler {
     }
   }
 
-  private zipObject(results: ZippedRef[], value: unknown, pos: ZippedRefPosition) {
+  private zipObject(references: ZippedRef[], parent: ZippedRef | undefined, propertyName: string | undefined, value: unknown, pos: ZippedRefPosition) {
     const position = this.objectPosition.level(pos);
-    const current: ZippedRef = {
-      type: "object",
-      children: [],
-      position,
-    };
-    results.push(current);
+
+    const current: ZippedRef = new ZippedRef("object", position, parent, propertyName);
+    references.push(current);
 
     const objectValue = value as object;
 
@@ -50,11 +47,7 @@ export class ComplexHandler {
       const childType = TypeUtil.getType(childValue);
       const p = this.objectPosition.index(position, index);
 
-      const zipName = this.nameConverter.zipName(
-        results.filter(x => x.propertyName).map(x => x.propertyName || ""),
-        propName
-      );
-      // this.simple.zip("string", key)?.value || "";
+      const zipName = this.nameConverter.zipName(current?.rootNames, propName);
 
       if (childType === "object") {
         current.children.push({
@@ -64,7 +57,7 @@ export class ComplexHandler {
           splitter: s.ObjectProperty,
           value: "",
         });
-        this.zipObject(results, childValue, p);
+        this.zipObject(references, current, propName, childValue, p);
       } else if (childType === "array") {
         current.children.push({
           propertyName: propName,
@@ -73,22 +66,18 @@ export class ComplexHandler {
           splitter: s.ArrayProperty,
           value: "",
         });
-        this.zipArray(results, childValue, p);
+        this.zipArray(references, current, propName, childValue, p);
       } else {
         this.zipSimple(current, childValue, zipName);
       }
     }
   }
 
-  private zipArray(results: ZippedRef[], value: unknown, pos: ZippedRefPosition) {
+  private zipArray(references: ZippedRef[], parent: ZippedRef | undefined, propertyName: string | undefined, value: unknown, pos: ZippedRefPosition) {
     const position = this.objectPosition.level(pos);
-    const current: ZippedRef = {
-      type: "array",
-      children: [],
-      position,
-    };
 
-    results.push(current);
+    const current: ZippedRef = new ZippedRef("array", position, parent, propertyName);
+    references.push(current);
 
     const arrayValue = value as any[];
 
@@ -102,14 +91,14 @@ export class ComplexHandler {
           splitter: s.ObjectProperty,
           value: "",
         });
-        this.zipObject(results, item, p);
+        this.zipObject(references, current, undefined, item, p);
       } else if (type === "array") {
         current.children.push({
           type,
           splitter: s.ArrayProperty,
           value: "",
         });
-        this.zipArray(results, item, p);
+        this.zipArray(references, current, undefined, item, p);
       } else {
         this.zipSimple(current, item);
       }
@@ -117,30 +106,26 @@ export class ComplexHandler {
   }
 
   public zip(source: unknown): string {
-    let results: ZippedRef[] = [];
+    let references: ZippedRef[] = [];
 
     const type = TypeUtil.getType(source);
 
     const p = this.objectPosition.reset();
     if (type === "object") {
-      this.zipObject(results, source, p);
+      this.zipObject(references, undefined, undefined, source, p);
     } else if (type === "array") {
-      this.zipArray(results, source, p);
+      this.zipArray(references, undefined, undefined, source, p);
     } else {
-      const current: ZippedRef = {
-        type,
-        children: [],
-        position: p,
-      };
-      results.push(current);
+      const current: ZippedRef = new ZippedRef(type, p);
+      references.push(current);
       this.zipSimple(current, source);
     }
 
     const lines: string[] = [];
 
-    results = CommonUtil.order(results, [x => x.position.itemIndex], [x => x.position.levelIndex], [x => x.position.level]);
+    references = CommonUtil.order(references, [x => x.position.itemIndex], [x => x.position.levelIndex], [x => x.position.level]);
 
-    for (const cr of results) {
+    for (const cr of references) {
       const propertySplitter = cr.type === "object" ? s.Property : "";
       const complexLine = cr.children
         .map(({ zippedName, splitter, value }) => {
@@ -151,8 +136,8 @@ export class ComplexHandler {
       lines.push(complexLine);
     }
 
-    if (results.length && lines.length) {
-      const firstParsed = results[0];
+    if (references.length && lines.length) {
+      const firstParsed = references[0];
       if (firstParsed?.type === "object") {
         // when first is object - add object splitter
         lines.unshift(ComplexHandler.Version.toString());
@@ -176,7 +161,7 @@ export class ComplexHandler {
           const root = parsedObjects[0];
           if (TypeUtil.isComplexOrEmpty(root.type)) {
             const realObjects: any[] = [];
-            const references: [ZipType, number, string | number, number][] = [];
+            const links: [ZipType, number, string | number, number][] = [];
             let lastRefIndex = -1;
             for (let i = 0; i < parsedObjects.length; i++) {
               const { type, properties } = parsedObjects[i];
@@ -193,7 +178,7 @@ export class ComplexHandler {
                     } else {
                       lastRefIndex++;
                     }
-                    references.push([type, i, propIndex, lastRefIndex]);
+                    links.push([type, i, propIndex, lastRefIndex]);
                   }
                 }
                 realObjects.push(array);
@@ -209,7 +194,7 @@ export class ComplexHandler {
                     } else {
                       lastRefIndex++;
                     }
-                    references.push([type, i, name, lastRefIndex]);
+                    links.push([type, i, name, lastRefIndex]);
                   }
                 }
                 realObjects.push(obj);
@@ -218,7 +203,7 @@ export class ComplexHandler {
               }
             }
 
-            for (const [type, containerIndex, index, childIndex] of references) {
+            for (const [type, containerIndex, index, childIndex] of links) {
               const ref = realObjects[childIndex];
               if (ref === null) {
                 realObjects[containerIndex][index] = type === "object" ? {} : [];
