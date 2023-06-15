@@ -115,7 +115,7 @@ describe("Coder", () => {
   });
 
   describe("convertor", () => {
-    it.skip("simple", () => {
+    it("simple", () => {
       const teams = TournamentTestDataV3.get4Teams().map<TeamV3>(({ id, name, captain, players }) => {
         return { id, name, captain, players };
       });
@@ -158,7 +158,13 @@ describe("Coder", () => {
             id: 1,
             name: 2,
             captain: 3,
-            players: 4,
+            players: [
+              4,
+              {
+                name: 1,
+                level: 2,
+              },
+            ],
           },
         ],
         togetherGroups: 9,
