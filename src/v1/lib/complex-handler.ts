@@ -47,7 +47,7 @@ export class ComplexHandler {
       const childType = TypeUtil.getType(childValue);
       const p = this.objectPosition.index(position, index);
 
-      const zipName = this.nameConverter.zipName(current?.rootNames, propName);
+      const zipName = this.nameConverter.zip(current?.rootNames, propName);
 
       if (childType === "object") {
         current.children.push({
@@ -237,7 +237,7 @@ export class ComplexHandler {
         }
       }
 
-      return result ? this.nameConverter.unzipNames(result) : undefined;
+      return result ? this.nameConverter.unzip(result) : undefined;
     } else {
       throw Error(`${version} is not supported`);
     }

@@ -3,11 +3,11 @@ import { Number32 } from "../number32";
 
 describe("FieldConverter", () => {
   function testZip(c: FieldConverter, names: string[], name: string, number: number) {
-    expect(c.zipName(names, name)).toEqual(Number32.toBase32(number));
+    expect(c.zip(names, name)).toEqual(Number32.toBase32(number));
   }
 
   function testUnzip(c: FieldConverter, zipObject: object, unzipObject: object) {
-    expect(c.unzipNames(zipObject)).toEqual(unzipObject);
+    expect(c.unzip(zipObject)).toEqual(unzipObject);
   }
 
   describe("simple", () => {

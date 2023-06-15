@@ -54,7 +54,7 @@ export class FieldConverter {
     return propNumber;
   }
 
-  public zipName(names: string[] | undefined, currentName: string): string {
+  public zip(names: string[] | undefined, currentName: string): string {
     if (this.convertor) {
       const path: string[] = [];
       if (Array.isArray(names)) {
@@ -137,7 +137,7 @@ export class FieldConverter {
     }
   }
 
-  public unzipNames(root: object): object {
+  public unzip(root: object): object {
     if (this.convertor) {
       const names: string[] = [];
       this.init(names, root);
