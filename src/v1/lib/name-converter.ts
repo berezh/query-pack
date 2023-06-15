@@ -11,6 +11,25 @@ export class NameConverter {
 
   constructor(convertor: ZipConvertor) {
     this.convertor = convertor;
+    this.validateConvertor([], convertor);
+  }
+
+  private validateConvertor(names: string[], c: ZipConvertor) {
+    const keyValues: [string, number][] = [];
+    for (const key in c) {
+      let value = c[key];
+      if (Array.isArray(value)) {
+        this.validateConvertor([...names, key], value[1]);
+        value = value[0];
+      }
+      keyValues.push([key, value]);
+
+      const duplication = keyValues.filter(x => x[1] === value);
+      if (duplication.length > 1) {
+        const message = `Converter fields: ${duplication.map(x => `${names.join(".")}.${x[0]}`).join(", ")} have same value ${duplication[0][1]}.`;
+        throw new Error(message);
+      }
+    }
   }
 
   private getPropertyNumber(...names: string[]): number | undefined {

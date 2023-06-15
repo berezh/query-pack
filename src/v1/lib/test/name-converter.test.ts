@@ -110,4 +110,28 @@ describe("NameConverter", () => {
       );
     });
   });
+  describe("exceptions", () => {
+    it("key duplication", () => {
+      expect(() => {
+        new NameConverter({
+          id: 1,
+          name: 1,
+        });
+      }).toThrowError();
+    });
+    it("deep key duplication", () => {
+      expect(() => {
+        new NameConverter({
+          name: 1,
+          child: [
+            2,
+            {
+              id: 1,
+              name: 1,
+            },
+          ],
+        });
+      }).toThrowError();
+    });
+  });
 });

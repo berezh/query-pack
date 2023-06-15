@@ -13,6 +13,13 @@ describe("ComplexHandler Converter", () => {
     expect(handler.unzip(zipped)).toEqual(input);
   }
 
+  function testCycle(source: any, options: ZipOptions) {
+    const handler = new ComplexHandler(options);
+    const zipped = handler.zip(source);
+    const unzipped = handler.unzip(zipped);
+    expect(source).toEqual(unzipped);
+  }
+
   describe("object", () => {
     it("root", () => {
       const v = {
@@ -34,7 +41,7 @@ describe("ComplexHandler Converter", () => {
           name: "Kent",
         },
       };
-      testZip(v, TU.full(s.Object, TU.obj(TU.p("1", "root"), TU.p("2", v.child)), TU.obj(TU.p("1", v.child.id), TU.p("2", v.child.name))), {
+      testCycle(v, {
         convertor: {
           name: 1,
           child: [
@@ -47,6 +54,51 @@ describe("ComplexHandler Converter", () => {
         },
       });
     });
+    it("many child", () => {
+      testCycle(
+        {
+          name: "root",
+          child1: {
+            id: 1,
+            name: "Kent",
+          },
+          child2: {
+            id: 2,
+            name: "Dana",
+            child3: {
+              id: 3,
+              name: "Pepe",
+            },
+          },
+        },
+        {
+          convertor: {
+            name: 1,
+            child1: [
+              2,
+              {
+                id: 1,
+                name: 2,
+              },
+            ],
+            child2: [
+              3,
+              {
+                id: 1,
+                name: 2,
+                child3: [
+                  3,
+                  {
+                    id: 1,
+                    name: 2,
+                  },
+                ],
+              },
+            ],
+          },
+        }
+      );
+    });
   });
 
   describe("array", () => {
@@ -57,7 +109,7 @@ describe("ComplexHandler Converter", () => {
           name: "Kent",
         },
       ];
-      testZip(v, TU.full(TU.a(v), TU.obj(TU.p("1", v[0].id), TU.p("2", v[0].name))), {
+      testCycle(v, {
         convertor: {
           id: 1,
           name: 2,
@@ -75,7 +127,7 @@ describe("ComplexHandler Converter", () => {
           },
         ],
       };
-      testZip(v, TU.full(s.Object, TU.obj(TU.p("1", v.id), TU.p("2", v.child)), TU.obj(s.ObjectProperty), TU.obj(TU.p("1", v.child[0].id), TU.p("2", v.child[0].name))), {
+      testCycle(v, {
         convertor: {
           id: 1,
           child: [
