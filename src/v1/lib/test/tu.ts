@@ -82,8 +82,8 @@ export class TU {
     return c + s.Object;
   }
 
-  public static full(...objects: string[]): string {
-    const c = ComplexHandler.Version + TU.splitEnd(objects.join(""), s.Object, s.Property);
+  public static full(...contents: string[]): string {
+    const c = ComplexHandler.Version + TU.splitEnd(contents.join(""), s.Object, s.Property);
     return c;
   }
 

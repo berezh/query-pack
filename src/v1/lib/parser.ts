@@ -37,6 +37,9 @@ export class Parser {
       const v = splits[0];
       ver = Number32.toNumber(v);
       rest = zipped.slice(v.length);
+      if (rest.match(new RegExp(`^${s.Object}`, "g"))) {
+        rest = rest.slice(s.Object.length);
+      }
     }
 
     return [ver, rest];

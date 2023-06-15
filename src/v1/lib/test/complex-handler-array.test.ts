@@ -33,14 +33,14 @@ describe("ComplexHandler Array", () => {
         id: 1,
         players: [],
       };
-      testZip(value, TU.full(TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a([])));
+      testZip(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a([])));
     });
     it("default", () => {
       const value = {
         id: 1,
         players: ["first", "second"],
       };
-      testZip(value, TU.full(TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a(["first", "second"])));
+      testZip(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a(["first", "second"])));
     });
   });
 
@@ -50,7 +50,7 @@ describe("ComplexHandler Array", () => {
         id: 1,
         players: ["first", "second"],
       };
-      testZip(value, TU.full(TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a(["first", "second"])));
+      testZip(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a(["first", "second"])));
     });
   });
 
@@ -60,7 +60,13 @@ describe("ComplexHandler Array", () => {
         id: 1,
         players: [{ id: 2 }, ["first", "second"]],
       };
-      const zipped = TU.full(TU.obj(TU.p("id", 1), TU.p("players", value.players)), TU.obj(s.ObjectProperty, s.ArrayProperty), TU.obj(TU.p("id", 2)), TU.a(["first", "second"]));
+      const zipped = TU.full(
+        s.Object,
+        TU.obj(TU.p("id", 1), TU.p("players", value.players)),
+        TU.obj(s.ObjectProperty, s.ArrayProperty),
+        TU.obj(TU.p("id", 2)),
+        TU.a(["first", "second"])
+      );
       testZip(value, zipped);
     });
   });

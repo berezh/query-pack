@@ -152,7 +152,15 @@ describe("Coder", () => {
         naming: 5,
         userColor: 6,
         showLevel: 7,
-        teams: 8,
+        teams: [
+          8,
+          {
+            id: 1,
+            name: 2,
+            captain: 3,
+            players: 4,
+          },
+        ],
         togetherGroups: 9,
         vectorTeamIds: 10,
         matchResults: 11,

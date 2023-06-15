@@ -151,9 +151,14 @@ export class ComplexHandler {
       lines.push(complexLine);
     }
 
-    // when object is one = no splitters
-    if (lines.length) {
-      lines[0] = ComplexHandler.Version.toString() + lines[0];
+    if (results.length && lines.length) {
+      const firstParsed = results[0];
+      if (firstParsed?.type === "object") {
+        // when first is object - add object splitter
+        lines.unshift(ComplexHandler.Version.toString());
+      } else {
+        lines[0] = ComplexHandler.Version.toString() + lines[0];
+      }
     }
 
     const fullResult = lines.join(s.Object);
