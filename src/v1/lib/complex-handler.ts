@@ -1,6 +1,6 @@
 import { ZippedRef, ZippedRefPosition, ZipType, ZipOptions } from "../interfaces";
 import { CommonUtil } from "./common";
-import { NameConverter } from "./name-converter";
+import { FieldConverter } from "./field-converter";
 import { ObjectPosition } from "./object-position";
 import { Parser } from "./parser";
 import { SimpleHandler } from "./simple-handler";
@@ -16,12 +16,12 @@ export class ComplexHandler {
 
   private objectPosition = new ObjectPosition();
 
-  private nameConverter: NameConverter;
+  private nameConverter: FieldConverter;
 
   private parser = new Parser();
 
   constructor(options?: ZipOptions) {
-    this.nameConverter = new NameConverter(options?.fields || {});
+    this.nameConverter = new FieldConverter(options?.fields || {});
   }
 
   private zipSimple(current: ZippedRef, value: unknown, propertyName?: string) {

@@ -4,7 +4,8 @@ import { SimpleHandler } from "./simple-handler";
 import { UsedSigns } from "./used-signs";
 
 const s = UsedSigns.Splitter;
-export class NameConverter {
+
+export class FieldConverter {
   private convertor: ZipFieldConvertor;
 
   private simpleHandler = new SimpleHandler();
@@ -26,7 +27,7 @@ export class NameConverter {
 
       const duplication = keyValues.filter(x => x[1] === value);
       if (duplication.length > 1) {
-        const message = `Converter fields: ${duplication.map(x => `${names.join(".")}.${x[0]}`).join(", ")} have same value ${duplication[0][1]}.`;
+        const message = `Field converter fields: ${duplication.map(x => `${names.join(".")}.${x[0]}`).join(", ")} have same value ${duplication[0][1]}.`;
         throw new Error(message);
       }
     }

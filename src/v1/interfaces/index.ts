@@ -53,7 +53,7 @@ export class ZippedRef {
 
 export interface ZipFieldConvertor extends Record<string, number | [number, ZipFieldConvertor]> {}
 
-export interface ZipValueConvertor extends Record<string, string | number | ZipFieldConvertor> {}
+export interface ZipValueConvertor extends Record<string, string | number | ZipValueConvertor> {}
 
 export interface ZipOptions {
   fields?: ZipFieldConvertor;

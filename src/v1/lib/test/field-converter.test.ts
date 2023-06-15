@@ -1,18 +1,18 @@
-import { NameConverter } from "../name-converter";
+import { FieldConverter } from "../field-converter";
 import { Number32 } from "../number32";
 
-describe("NameConverter", () => {
-  function testZip(c: NameConverter, names: string[], name: string, number: number) {
+describe("FieldConverter", () => {
+  function testZip(c: FieldConverter, names: string[], name: string, number: number) {
     expect(c.zipName(names, name)).toEqual(Number32.toBase32(number));
   }
 
-  function testUnzip(c: NameConverter, zipObject: object, unzipObject: object) {
+  function testUnzip(c: FieldConverter, zipObject: object, unzipObject: object) {
     expect(c.unzipNames(zipObject)).toEqual(unzipObject);
   }
 
   describe("simple", () => {
     it("root", () => {
-      const c = new NameConverter({
+      const c = new FieldConverter({
         id: 1,
         name: 2,
       });
@@ -30,7 +30,7 @@ describe("NameConverter", () => {
       );
     });
     it("deep 2", () => {
-      const c = new NameConverter({
+      const c = new FieldConverter({
         name: 1,
         child: [
           2,
@@ -59,7 +59,7 @@ describe("NameConverter", () => {
     });
 
     it("array", () => {
-      const c = new NameConverter({
+      const c = new FieldConverter({
         id: 1,
         name: 2,
       });
@@ -80,7 +80,7 @@ describe("NameConverter", () => {
     });
 
     it("child array", () => {
-      const c = new NameConverter({
+      const c = new FieldConverter({
         name: 1,
         child: [
           2,
@@ -113,7 +113,7 @@ describe("NameConverter", () => {
   describe("exceptions", () => {
     it("key duplication", () => {
       expect(() => {
-        new NameConverter({
+        new FieldConverter({
           id: 1,
           name: 1,
         });
@@ -121,7 +121,7 @@ describe("NameConverter", () => {
     });
     it("deep key duplication", () => {
       expect(() => {
-        new NameConverter({
+        new FieldConverter({
           name: 1,
           child: [
             2,
