@@ -88,20 +88,26 @@ export class NameConverter {
     return this.simpleHandler.unzip(s.StringProperty, zippedName);
   }
 
-  private init(names: string[], prop: unknown) {
-    const objectProp = prop as object;
-    const keys = Object.keys(objectProp);
-    for (const key of keys) {
-      const propName = this.unzipName(names, key);
-      if (propName !== key) {
-        const value = objectProp[key];
-        delete objectProp[key];
-        objectProp[propName] = value;
+  private init(names: string[], value: unknown) {
+    if (Array.isArray(value)) {
+      for (const valueItem of value) {
+        this.init(names, valueItem);
       }
+    } else if (typeof value === "object") {
+      const objectValue = value as object;
+      const keys = Object.keys(objectValue);
+      for (const key of keys) {
+        const propName = this.unzipName(names, key);
+        if (propName !== key) {
+          const value = objectValue[key];
+          delete objectValue[key];
+          objectValue[propName] = value;
+        }
 
-      const currentValue = objectProp[propName];
-      if (typeof currentValue === "object") {
-        this.init([...names, propName], currentValue);
+        const currentValue = objectValue[propName];
+        if (typeof currentValue === "object") {
+          this.init([...names, propName], currentValue);
+        }
       }
     }
   }

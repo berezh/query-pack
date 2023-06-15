@@ -57,5 +57,26 @@ describe("NameConverter", () => {
         }
       );
     });
+
+    it("array", () => {
+      const c = new NameConverter({
+        id: 1,
+        name: 2,
+      });
+
+      testZip(c, [], "id", 1);
+      testZip(c, [], "name", 2);
+
+      testUnzip(
+        c,
+        [{ 1: 10, 2: "kent" }],
+        [
+          {
+            id: 10,
+            name: "kent",
+          },
+        ]
+      );
+    });
   });
 });
