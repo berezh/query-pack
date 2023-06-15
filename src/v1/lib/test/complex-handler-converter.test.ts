@@ -16,7 +16,7 @@ describe("ComplexHandler Converter", () => {
         id: 10,
         name: "Kent",
       };
-      testZip(value, TU.full(TU.obj(TU.p("id", value.id), TU.p("name", value.name))), {
+      testZip(value, TU.full(TU.obj(TU.p("1", value.id), TU.p("2", value.name))), {
         convertor: {
           id: 1,
           name: 2,

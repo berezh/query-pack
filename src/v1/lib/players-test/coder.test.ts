@@ -1,4 +1,5 @@
 import { unzip, zip } from "../..";
+import { ZipConvertor } from "../../interfaces";
 import { PlayerDataV3, TeamV3 } from "./interfaces";
 import { TournamentTestDataV3 } from "./test-data";
 
@@ -110,6 +111,57 @@ describe("Coder", () => {
       // }
 
       expect(param).toEqual(response);
+    });
+  });
+
+  describe("convertor", () => {
+    it("simple", () => {
+      const teams = TournamentTestDataV3.get4Teams().map<TeamV3>(({ id, name, captain, players }) => {
+        return { id, name, captain, players };
+      });
+
+      // random flow
+      const vectorTeamIds = teams.map(x => x.id);
+
+      const data: PlayerDataV3 = {
+        date: "",
+        time: "19:30",
+        duration: "120",
+        brake: "0",
+        naming: "number",
+        useColor: false,
+        showLevel: true,
+        teams,
+        togetherGroups: [
+          ["zak", "vadym", "oleg old"],
+          ["alan", "rezo"],
+        ],
+        vectorTeamIds,
+        matchResults: [
+          [1, 2, 0, 1],
+          [1, 3, 3, 2],
+          [3, 1, 4, 0],
+        ],
+      };
+
+      const convertor: ZipConvertor = {
+        date: 1,
+        time: 2,
+        duration: 3,
+        brake: 4,
+        naming: 5,
+        userColor: 6,
+        showLevel: 7,
+        teams: 8,
+        togetherGroups: 9,
+        vectorTeamIds: 10,
+        matchResults: 11,
+      };
+
+      const zipped = zip(data, { convertor });
+      const response = unzip(zipped, { convertor });
+
+      expect(data).toEqual(response);
     });
   });
 });

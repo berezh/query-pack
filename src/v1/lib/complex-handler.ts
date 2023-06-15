@@ -51,7 +51,7 @@ export class ComplexHandler {
       const p = this.objectPosition.index(position, index);
 
       const zipName = this.nameConverter.zipName(
-        results.map(x => x.propertyName || ""),
+        results.filter(x => x.propertyName).map(x => x.propertyName || ""),
         propName
       );
       // this.simple.zip("string", key)?.value || "";
@@ -163,6 +163,7 @@ export class ComplexHandler {
   public unzip(zipped: string): any {
     const [version, restZipped] = this.parser.version(zipped);
     if ([ComplexHandler.Version].includes(version || 0)) {
+      let result: object | undefined = undefined;
       // multi objects
       if (restZipped.match(this.parser.objectReg)) {
         const parsedObjects = this.parser.objects(restZipped);
@@ -196,7 +197,6 @@ export class ComplexHandler {
               else if (type === "object") {
                 const obj = {};
                 for (const { name, splitter, value, type } of properties) {
-                  // const key = name; // this.nameConverter.unzipName([], name); //this.simple.unzip<string>(s.StringProperty, name);
                   obj[name] = this.simple.unzip(splitter, value);
                   if (TypeUtil.isComplex(type)) {
                     if (lastRefIndex === -1) {
@@ -222,7 +222,7 @@ export class ComplexHandler {
               }
             }
 
-            return this.nameConverter.unzipNames(realObjects[0]);
+            result = realObjects[0];
           }
         }
       }
@@ -234,7 +234,7 @@ export class ComplexHandler {
           const key = this.simple.unzip<string>(s.StringProperty, name);
           obj[key] = this.simple.unzip(splitter, value);
         }
-        return obj;
+        result = obj;
       }
       // simple value or array
       else if (restZipped.match(this.parser.itemAllReg)) {
@@ -243,11 +243,11 @@ export class ComplexHandler {
           return this.simple.unzip(splitter, value);
         });
         if (values.length) {
-          return values.length === 1 ? values[0] : values;
+          result = (values.length === 1 ? values[0] : values) as object;
         }
       }
 
-      return undefined;
+      return result ? this.nameConverter.unzipNames(result) : undefined;
     } else {
       throw Error(`${version} is not supported`);
     }
