@@ -21,7 +21,7 @@ export class ComplexHandler {
   private parser = new Parser();
 
   constructor(options?: ZipOptions) {
-    this.nameConverter = new NameConverter(options?.convertor || {});
+    this.nameConverter = new NameConverter(options?.fields || {});
   }
 
   private zipSimple(current: ZippedRef, value: unknown, propertyName?: string) {

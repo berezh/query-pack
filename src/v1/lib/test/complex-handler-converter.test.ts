@@ -27,7 +27,7 @@ describe("ComplexHandler Converter", () => {
         name: "Kent",
       };
       testZip(v, TU.full(s.Object, TU.obj(TU.p("1", v.id), TU.p("2", v.name))), {
-        convertor: {
+        fields: {
           id: 1,
           name: 2,
         },
@@ -42,7 +42,7 @@ describe("ComplexHandler Converter", () => {
         },
       };
       testCycle(v, {
-        convertor: {
+        fields: {
           name: 1,
           child: [
             2,
@@ -72,7 +72,7 @@ describe("ComplexHandler Converter", () => {
           },
         },
         {
-          convertor: {
+          fields: {
             name: 1,
             child1: [
               2,
@@ -110,7 +110,7 @@ describe("ComplexHandler Converter", () => {
         },
       ];
       testCycle(v, {
-        convertor: {
+        fields: {
           id: 1,
           name: 2,
         },
@@ -128,7 +128,7 @@ describe("ComplexHandler Converter", () => {
         ],
       };
       testCycle(v, {
-        convertor: {
+        fields: {
           id: 1,
           child: [
             2,

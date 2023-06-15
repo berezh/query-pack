@@ -51,15 +51,13 @@ export class ZippedRef {
   }
 }
 
-export interface ZipConvertor extends Record<string, number | [number, ZipConvertor]> {}
+export interface ZipFieldConvertor extends Record<string, number | [number, ZipFieldConvertor]> {}
+
+export interface ZipValueConvertor extends Record<string, string | number | ZipFieldConvertor> {}
 
 export interface ZipOptions {
-  convertor: ZipConvertor;
-}
-
-export interface SignReplace {
-  regex: RegExp;
-  replace: string;
+  fields?: ZipFieldConvertor;
+  values?: ZipValueConvertor;
 }
 
 export interface ParsedProperty {

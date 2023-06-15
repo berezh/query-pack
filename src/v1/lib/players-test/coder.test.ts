@@ -1,5 +1,5 @@
 import { unzip, zip } from "../..";
-import { ZipConvertor } from "../../interfaces";
+import { ZipFieldConvertor } from "../../interfaces";
 import { PlayerDataV3, TeamV3 } from "./interfaces";
 import { TournamentTestDataV3 } from "./test-data";
 
@@ -144,7 +144,7 @@ describe("Coder", () => {
         ],
       };
 
-      const convertor: ZipConvertor = {
+      const convertor: ZipFieldConvertor = {
         date: 1,
         time: 2,
         duration: 3,
@@ -172,8 +172,8 @@ describe("Coder", () => {
         matchResults: 11,
       };
 
-      const zipped = zip(data, { convertor });
-      const response = unzip(zipped, { convertor });
+      const zipped = zip(data, { fields: convertor });
+      const response = unzip(zipped, { fields: convertor });
 
       expect(data).toEqual(response);
     });
