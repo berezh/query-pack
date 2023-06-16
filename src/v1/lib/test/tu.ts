@@ -6,16 +6,18 @@ const s = UsedSigns.Splitter;
 export class TU {
   private static simpleHandler = new SimpleHandler();
 
-  private static splitterValue(value: string): string {
+  private static splitterValue(value: unknown): string {
     let result = "";
-    if (typeof value === "string") {
+    if (Array.isArray(value)) {
+      result = s.ArrayProperty;
+    } else if (typeof value === "string") {
       result = s.StringProperty + this.zipS(value);
     } else if (typeof value === "number") {
       result = s.NumberProperty + this.zipN(value);
     } else if (typeof value === "boolean") {
       result = s.BooleanProperty + this.zipB(value);
     } else if (typeof value === "object") {
-      result = s.ReferenceProperty;
+      result = s.ObjectProperty;
     }
 
     return result;
@@ -62,7 +64,7 @@ export class TU {
   }
 
   public static r(name: string, last = false): string {
-    return this.zipS(name) + s.ReferenceProperty + (last ? "" : s.Property);
+    return this.zipS(name) + s.ObjectProperty + (last ? "" : s.Property);
   }
 
   public static a(items: any[]): string {
@@ -75,16 +77,13 @@ export class TU {
     return result + s.Object;
   }
 
-  public static obj(last: boolean | string, ...content: string[]): string {
-    if (typeof last === "string") {
-      content.unshift(last);
-    }
+  public static obj(...content: string[]): string {
     const c = TU.splitEnd(content.join(""), s.Property);
-    return c + (last === true ? "" : s.Object);
+    return c + s.Object;
   }
 
-  public static full(...objects: string[]): string {
-    const c = ComplexHandler.Version + TU.splitEnd(objects.join(""), s.Object, s.Property);
+  public static full(...contents: string[]): string {
+    const c = ComplexHandler.Version + TU.splitEnd(contents.join(""), s.Object, s.Property);
     return c;
   }
 

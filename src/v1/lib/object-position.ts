@@ -1,9 +1,9 @@
-import { ComplexResultPosition } from "../interfaces";
+import { ZippedRefPosition } from "../interfaces";
 
 export class ObjectPosition {
   private deep: number[] = [];
 
-  public reset(): ComplexResultPosition {
+  public reset(): ZippedRefPosition {
     this.deep = [];
     return {
       level: 0,
@@ -12,7 +12,7 @@ export class ObjectPosition {
     };
   }
 
-  public level(p: ComplexResultPosition): ComplexResultPosition {
+  public level(p: ZippedRefPosition): ZippedRefPosition {
     const level = p.level + 1;
 
     let levelIndex = 0;
@@ -31,7 +31,7 @@ export class ObjectPosition {
     };
   }
 
-  public index(p: ComplexResultPosition, index: number): ComplexResultPosition {
+  public index(p: ZippedRefPosition, index: number): ZippedRefPosition {
     return {
       ...p,
       itemIndex: index,

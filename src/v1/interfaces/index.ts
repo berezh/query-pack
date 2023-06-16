@@ -1,51 +1,73 @@
-export type HandledType = "string" | "number" | "boolean" | "object" | "array";
+export type ZipType = "string" | "number" | "boolean" | "object" | "array";
 
-export type ParseType = "string" | "number" | "boolean" | "reference";
+export type AllHandledType = ZipType | "empty";
 
-export interface SimpleResult {
-  type: HandledType;
+export interface ZippedValue {
+  type: ZipType;
+  // todo: use only splitter: remove type
   splitter: string;
   value: string;
 }
 
-export interface ComplexPropertyResult extends SimpleResult {
+export interface ZippedNamedValue extends ZippedValue {
   propertyName?: string;
+  zippedName?: string;
 }
 
-export interface ComplexResultPosition {
+export interface ZippedRefPosition {
   level: number;
   levelIndex: number;
   itemIndex: number;
 }
 
-export interface ComplexResult {
-  propertyName?: string;
-  type: HandledType;
-  children: ComplexPropertyResult[];
-  position: ComplexResultPosition;
+export class ZippedRef {
+  public parent?: ZippedRef;
+
+  public propertyName?: string;
+
+  public type: ZipType;
+
+  public children: ZippedNamedValue[] = [];
+
+  public position: ZippedRefPosition;
+
+  constructor(type: ZipType, position: ZippedRefPosition, parent?: ZippedRef, propertyName?: string) {
+    this.type = type;
+    this.position = position;
+    this.parent = parent;
+    this.propertyName = propertyName;
+  }
+
+  public get rootNames(): string[] {
+    const r: string[] = [];
+    let p = this as ZippedRef | undefined;
+    while (!!p) {
+      if (p.propertyName) {
+        r.unshift(p.propertyName);
+      }
+      p = p.parent;
+    }
+    return r;
+  }
 }
 
-export interface ZipPropertyConverter extends Record<string, number> {}
+export interface ZipFieldConvertor extends Record<string, number | [number, ZipFieldConvertor]> {}
 
-export interface ZipConvertor extends Record<string, number | ZipPropertyConverter> {}
+export interface ZipValueConvertor extends Record<string, string | number | ZipValueConvertor> {}
 
 export interface ZipOptions {
-  convertor: ZipConvertor | ZipConvertor[];
+  fields?: ZipFieldConvertor;
+  values?: ZipValueConvertor;
 }
 
-export interface SignReplace {
-  regex: RegExp;
-  replace: string;
-}
 export interface ParsedProperty {
   name: string;
   splitter: string;
-  type: ParseType;
+  type: ZipType;
   value: string;
 }
 
 export interface ParsedObject {
-  type: ParseType;
-  isArray?: boolean;
+  type: AllHandledType;
   properties: ParsedProperty[];
 }

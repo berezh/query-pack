@@ -12,8 +12,8 @@ export class UsedSigns {
     // BigIntProperty: "I",
     BooleanProperty: "B",
     // DateProperty: "D",
-    ReferenceProperty: "R",
-    // ArrayProperty: "A",
+    ObjectProperty: "O",
+    ArrayProperty: "A",
   };
 
   public static UpperCase = "U";
@@ -25,13 +25,13 @@ export class UsedSigns {
     QuestionMark: "Q",
     Plus: "P",
     Comma: "C",
-    Equals: "L",
+    Equals: "J",
     At: "M",
     Semicolon: "T",
     Colon: "K",
     Apostrophe: "H",
-    LeftParenthesis: "J",
-    RightParenthesis: "O",
+    LeftParenthesis: "L",
+    RightParenthesis: "R",
     Quotation: "H",
   };
 }

@@ -1,12 +1,13 @@
-import { ParseType, ParsedObject, ParsedProperty } from "../interfaces";
-import { RT } from "../zippers/rt";
+import { ZipType, ParsedObject, ParsedProperty } from "../interfaces";
+import { RT } from "./rt";
 import { Number32 } from "./number32";
 import { UsedSigns } from "./used-signs";
+import { TypeUtil } from "./type";
 
 const s = UsedSigns.Splitter;
 
 export class Parser {
-  public readonly propertySigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty, s.ReferenceProperty];
+  public readonly propertySigns = [s.StringProperty, s.NumberProperty, s.BooleanProperty, s.ObjectProperty];
 
   public get objectReg(): RegExp {
     return new RegExp(s.Object, "g");
@@ -20,21 +21,28 @@ export class Parser {
     return RT.itemAllReg;
   }
 
-  private propertyTypes: Record<ParseType, string> = {
+  private propertyTypes: Record<ZipType, string> = {
     string: s.StringProperty,
     number: s.NumberProperty,
     boolean: s.BooleanProperty,
-    reference: s.ReferenceProperty,
+    object: s.ObjectProperty,
+    array: s.ArrayProperty,
   };
 
-  public version(zipped: string): [number, string] {
+  public version(zipped: string): [number | undefined, string] {
     const splits = zipped.match(new RegExp(`^[${RT.number32Signs}]`, "g"));
+    let ver: number | undefined = undefined;
+    let rest = zipped;
     if (splits) {
       const v = splits[0];
-      return [Number32.toNumber(v), zipped.slice(v.length)];
-    } else {
-      throw Error("Cannot parse version");
+      ver = Number32.toNumber(v);
+      rest = zipped.slice(v.length);
+      if (rest.match(new RegExp(`^${s.Object}`, "g"))) {
+        rest = rest.slice(s.Object.length);
+      }
     }
+
+    return [ver, rest];
   }
 
   public items(zipped: string): ParsedProperty[] {
@@ -46,7 +54,7 @@ export class Parser {
         if (splits) {
           const splitter = splits[0];
           const type = this.getType(splitter);
-          if (splitter === s.ReferenceProperty) {
+          if (TypeUtil.isComplex(type)) {
             result.push({
               splitter,
               type,
@@ -68,8 +76,8 @@ export class Parser {
     return result;
   }
 
-  public getType(splitter: string): ParseType {
-    return Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as ParseType;
+  public getType(splitter: string): ZipType {
+    return Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as ZipType;
   }
 
   public properties(zipped: string): ParsedProperty[] {
@@ -98,18 +106,20 @@ export class Parser {
     const contents = zipped.split(new RegExp(s.Object));
     for (const content of contents) {
       if (content.match(this.propertyAllReg)) {
-        const ref: ParsedObject = {
-          type: "reference",
+        result.push({
+          type: "object",
           properties: this.properties(content),
-        };
-        result.push(ref);
+        });
       } else if (content.match(this.itemAllReg)) {
-        const ref: ParsedObject = {
-          isArray: true,
-          type: "reference",
+        result.push({
+          type: "array",
           properties: this.items(content),
-        };
-        result.push(ref);
+        });
+      } else if (content === "") {
+        result.push({
+          type: "empty",
+          properties: [],
+        });
       }
     }
 

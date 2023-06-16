@@ -1,7 +1,7 @@
-import { HandledType } from "../interfaces";
+import { AllHandledType, ZipType } from "../interfaces";
 
 export class TypeUtil {
-  public static getType(source: unknown): HandledType {
+  public static getType(source: unknown): ZipType {
     if (Array.isArray(source)) {
       return "array";
     }
@@ -18,9 +18,15 @@ export class TypeUtil {
     return "string";
   }
 
-  private static complexTypes: HandledType[] = ["array", "object"];
+  private static complexTypes: ZipType[] = ["array", "object"];
 
-  public static isComplex(type: HandledType): boolean {
-    return this.complexTypes.includes(type);
+  public static isComplex(type: ZipType): boolean {
+    return TypeUtil.complexTypes.includes(type);
+  }
+
+  private static complexTypeOrEmpty: AllHandledType[] = ["array", "object", "empty"];
+
+  public static isComplexOrEmpty(type: AllHandledType) {
+    return TypeUtil.complexTypeOrEmpty.includes(type);
   }
 }

@@ -37,6 +37,11 @@ export class Number32 {
     v: 31,
   };
 
+  private static get MatchReg(): RegExp {
+    const sings = Object.keys(Number32.numbers);
+    return new RegExp(`^\\-?[${sings}]+(\\.[${sings}]+)?$`, "g");
+  }
+
   private static baseNumber32 = 32;
 
   private static toIntBase32(input: number): string {
@@ -114,5 +119,9 @@ export class Number32 {
     }
 
     return parseFloat(result);
+  }
+
+  public static isBase32(text: string): boolean {
+    return !!text.match(Number32.MatchReg);
   }
 }

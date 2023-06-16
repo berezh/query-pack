@@ -66,7 +66,7 @@ describe("ComplexHandler", () => {
         name: "daniel",
         verified: true,
       };
-      testZip(value, TU.full(TU.p("id", value.id), TU.p("name", value.name), TU.p("verified", value.verified)));
+      testZip(value, TU.full(s.Object, TU.p("id", value.id), TU.p("name", value.name), TU.p("verified", value.verified)));
     });
 
     it("string name", () => {
@@ -76,7 +76,7 @@ describe("ComplexHandler", () => {
           firstName: "Alex",
         },
       };
-      testZip(value, TU.full(TU.obj(TU.p("Name", value.Name), TU.p("child", value.child)), TU.obj(TU.p("firstName", value.child.firstName))));
+      testZip(value, TU.full(s.Object, TU.obj(TU.p("Name", value.Name), TU.p("child", value.child)), TU.obj(TU.p("firstName", value.child.firstName))));
     });
   });
 
@@ -86,7 +86,7 @@ describe("ComplexHandler", () => {
         NamE: "daniel",
       };
       const zipped = handler.zip(obj);
-      expect(zipped).toBe(ComplexHandler.Version + TU.zipS("NamE") + s.StringProperty + obj.NamE);
+      expect(zipped).toBe(ComplexHandler.Version + s.Object + TU.zipS("NamE") + s.StringProperty + obj.NamE);
     });
   });
 });
