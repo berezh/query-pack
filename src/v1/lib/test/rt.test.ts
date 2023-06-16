@@ -1,6 +1,10 @@
 import { RT } from "../rt";
 
 describe("RT", () => {
+  function fullMatch(reg: RegExp, matchText) {
+    const matches = matchText.match(reg);
+    expect(matches).toEqual([matchText]);
+  }
   describe("itemAllReg", () => {
     it("default", () => {
       expect("N2NgN40".match(RT.itemAllReg)).toBeTruthy();
@@ -25,21 +29,16 @@ describe("RT", () => {
 
   describe("propertyAllReg", () => {
     it("default", () => {
-      const zipped = "idNaYnameSdanielYverifiedB1";
-      const matches = zipped.match(RT.propertyAllReg);
-      expect(matches).toEqual([zipped]);
+      fullMatch(RT.propertyAllReg, "idNaYnameSdanielYverifiedB1");
     });
     it("ref", () => {
-      //const refText = RT.propertyAllReg.toString();
-      const zipped = "childOidNaYnameSdanielYverifiedB1";
-      const matches = zipped.match(RT.propertyAllReg);
-      expect(matches).toEqual([zipped]);
+      fullMatch(RT.propertyAllReg, "childOidNaYnameSdanielYverifiedB1");
     });
-    // idNb
     it("one prop", () => {
-      const zipped = "idNb";
-      const matches = zipped.match(RT.propertyAllReg);
-      expect(matches).toEqual([zipped]);
+      fullMatch(RT.propertyAllReg, "idNb");
+    });
+    it("empty string", () => {
+      fullMatch(RT.propertyAllReg, "nameSE");
     });
   });
 

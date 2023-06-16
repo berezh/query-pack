@@ -1,5 +1,5 @@
 // abcdefghijklmnopqrstuvwxyz
-// (A)(B)(C)(D)EFG(H)(I)(J)(K)(L)(M)(N)(O)(P)(Q)(R)(S)(T)(U)V(W)(X)YZ
+// (A)(B)(C)(D)(E)FG(H)(I)(J)(K)(L)(M)(N)(O)(P)(Q)(R)(S)(T)(U)V(W)(X)(Y)Z
 // 0123456789
 // -_.~
 
@@ -33,5 +33,6 @@ export class UsedSigns {
     LeftParenthesis: "L",
     RightParenthesis: "R",
     Quotation: "H",
+    Empty: "E",
   };
 }

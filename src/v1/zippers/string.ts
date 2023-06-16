@@ -6,7 +6,7 @@
 import { UsedSigns } from "../lib/used-signs";
 import { Zipper } from "./zipper";
 
-// !*'();:@&=+$,/?#[]
+const s = UsedSigns.String;
 
 interface SignInfo {
   alt: string;
@@ -14,25 +14,21 @@ interface SignInfo {
   special?: boolean;
 }
 
-export type IItemType = typeof UsedSigns.String.WhiteSpace | typeof UsedSigns.String.Apostrophe;
-
-// https://www.threesl.com/blog/special-characters-regular-expressions-escape/
-// regex special: ., +, *, ?, ^, $, (, ), [, ], {, }, |, \.
-
+export type IItemType = typeof s.WhiteSpace | typeof s.Apostrophe;
 export class StringZipper extends Zipper<string> {
   private readonly signs: Record<string, SignInfo> = {
-    " ": { alt: UsedSigns.String.WhiteSpace, altRegex: "\\s" },
-    "'": { alt: UsedSigns.String.Apostrophe },
-    "(": { alt: UsedSigns.String.LeftParenthesis, special: true },
-    ")": { alt: UsedSigns.String.RightParenthesis, special: true },
-    ";": { alt: UsedSigns.String.Semicolon },
-    ":": { alt: UsedSigns.String.Colon },
-    "@": { alt: UsedSigns.String.At },
-    "=": { alt: UsedSigns.String.Equals },
-    "+": { alt: UsedSigns.String.Plus, special: true },
-    ",": { alt: UsedSigns.String.Comma },
-    "?": { alt: UsedSigns.String.QuestionMark, special: true },
-    '"': { alt: UsedSigns.String.Quotation },
+    " ": { alt: s.WhiteSpace, altRegex: "\\s" },
+    "'": { alt: s.Apostrophe },
+    "(": { alt: s.LeftParenthesis, special: true },
+    ")": { alt: s.RightParenthesis, special: true },
+    ";": { alt: s.Semicolon },
+    ":": { alt: s.Colon },
+    "@": { alt: s.At },
+    "=": { alt: s.Equals },
+    "+": { alt: s.Plus, special: true },
+    ",": { alt: s.Comma },
+    "?": { alt: s.QuestionMark, special: true },
+    '"': { alt: s.Quotation },
   };
 
   private zipAnyMatch: RegExp;
@@ -58,11 +54,16 @@ export class StringZipper extends Zipper<string> {
 
   public zip(source: string): string {
     let result = source;
-    if (typeof result === "string" && result.match(this.zipAnyMatch)) {
-      result = result.replace(this.zipAnyMatch, match => {
-        const info = this.signs[match];
-        return info?.alt;
-      });
+    if (typeof result === "string") {
+      if (result.match(this.zipAnyMatch)) {
+        result = result.replace(this.zipAnyMatch, match => {
+          const info = this.signs[match];
+          return info?.alt;
+        });
+      }
+      if (result === "") {
+        result = s.Empty;
+      }
     }
 
     return result;
@@ -70,11 +71,16 @@ export class StringZipper extends Zipper<string> {
 
   public unzip(zipped: string): string {
     let result = zipped;
-    if (typeof result === "string" && result.match(this.unzipAnyMatch)) {
-      result = result.replace(this.unzipAnyMatch, match => {
-        const key = Object.keys(this.signs).find(key => this.signs[key].alt === match);
-        return key || "";
-      });
+    if (typeof result === "string") {
+      if (result.match(this.unzipAnyMatch)) {
+        result = result.replace(this.unzipAnyMatch, match => {
+          const key = Object.keys(this.signs).find(key => this.signs[key].alt === match);
+          return key || "";
+        });
+      }
+      if (result === s.Empty) {
+        result = "";
+      }
     }
     return result;
   }

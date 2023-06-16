@@ -10,8 +10,11 @@ describe.skip("ComplexHandler Simple", () => {
   const convert = TU.converter(handler);
 
   describe("string", () => {
-    it("default", () => {
+    it("empty", () => {
       convert("", TU.full(s.StringProperty));
+    });
+    it("object empty", () => {
+      convert({ name: "" }, TU.full(TU.obj(TU.p("name", ""))));
     });
   });
 });
