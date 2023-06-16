@@ -1,5 +1,5 @@
 import { unzip, zip } from "../..";
-import { ZipFieldConvertor } from "../../interfaces";
+import { ZipOptions } from "../../interfaces";
 import { PlayerDataV3, TeamV3 } from "./interfaces";
 import { TournamentTestDataV3 } from "./test-data";
 
@@ -144,36 +144,57 @@ describe("Coder", () => {
         ],
       };
 
-      const convertor: ZipFieldConvertor = {
-        date: 1,
-        time: 2,
-        duration: 3,
-        brake: 4,
-        naming: 5,
-        userColor: 6,
-        showLevel: 7,
-        teams: [
-          8,
-          {
-            id: 1,
-            name: 2,
-            captain: 3,
-            players: [
-              4,
-              {
-                name: 1,
-                level: 2,
-              },
-            ],
+      const options: ZipOptions = {
+        values: {
+          naming: {
+            captain: "c",
+            number: "n",
+            animal: "a",
+            europeClub: "e",
           },
-        ],
-        togetherGroups: 9,
-        vectorTeamIds: 10,
-        matchResults: 11,
+          teams: {
+            players: {
+              level: {
+                unknown: 1,
+                notbad: 2,
+                normal: 3,
+                good: 4,
+                star: 5,
+              },
+            },
+          },
+        },
+        fields: {
+          date: 1,
+          time: 2,
+          duration: 3,
+          brake: 4,
+          naming: 5,
+          userColor: 6,
+          showLevel: 7,
+          teams: [
+            8,
+            {
+              id: 1,
+              name: 2,
+              captain: 3,
+              players: [
+                4,
+                {
+                  name: 1,
+                  level: 2,
+                },
+              ],
+            },
+          ],
+          togetherGroups: 9,
+          vectorTeamIds: 10,
+          matchResults: 11,
+        },
       };
 
-      const zipped = zip(data, { fields: convertor });
-      const response = unzip(zipped, { fields: convertor });
+      const zipped = zip(data, options);
+      const response = unzip(zipped, options);
 
       expect(data).toEqual(response);
     });

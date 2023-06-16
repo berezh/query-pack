@@ -28,12 +28,11 @@ export class ComplexHandler {
     this.valueConverter = new ValueConverter(options?.values || {});
   }
 
-  private zipSimple(current: ZippedRef, propertyName: string | undefined, value: unknown) {
+  private zipSimple(current: ZippedRef, zippedName: string | undefined, value: unknown) {
     const type = TypeUtil.getType(value);
-    const zipValue = this.valueConverter.zip(current.rootNames, propertyName || "", value as any);
-    const simpleResult = this.simple.zip(type, zipValue);
+    const simpleResult = this.simple.zip(type, value);
     if (simpleResult) {
-      current.children.push({ ...simpleResult, zippedName: propertyName });
+      current.children.push({ ...simpleResult, zippedName });
     }
   }
 
@@ -73,7 +72,8 @@ export class ComplexHandler {
         });
         this.zipArray(references, current, propName, childValue, p);
       } else {
-        this.zipSimple(current, zipName, childValue);
+        const zipValue = this.valueConverter.zip(current.rootNames, propName, childValue);
+        this.zipSimple(current, zipName, zipValue);
       }
     }
   }
