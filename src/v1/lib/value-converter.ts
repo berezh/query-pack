@@ -43,12 +43,12 @@ export class ValueConverter {
     return r;
   }
 
-  public zip(roots: string[], name: string, value: string | number): string | number {
+  public zip(roots: string[], name: string, value: string): string {
     const c = this.find([...roots, name]);
     if (c) {
       const alt = c[value];
       if (typeof alt === "string" || typeof alt === "number") {
-        return alt;
+        return `${alt}`;
       }
     }
     return value;
@@ -57,7 +57,7 @@ export class ValueConverter {
   public unzipValue(roots: string[], name: string, value: string | number): string | number {
     const c = this.find([...roots, name]);
     if (c) {
-      const originalValue = Object.keys(c).find(key => c[key] === value);
+      const originalValue = Object.keys(c).find(key => `${c[key]}` === `${value}`);
       if (typeof originalValue === "string" || typeof originalValue === "number") {
         return originalValue;
       }
@@ -76,7 +76,7 @@ export class ValueConverter {
       for (const key of keys) {
         const zippedValue = objectValue[key];
         if (zippedValue !== null) {
-          if (typeof zippedValue === "string" || typeof zippedValue === "number") {
+          if (typeof zippedValue === "string") {
             objectValue[key] = this.unzipValue(names, key, zippedValue);
           } else if (typeof zippedValue === "object") {
             this.init([...names, key], zippedValue);

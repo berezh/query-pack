@@ -1,8 +1,8 @@
 import { ValueConverter } from "../value-converter";
 
 describe("ValueConverter", () => {
-  function testZip(c: ValueConverter, roots: string[], name: string, value: string | number, zippedValue: string | number) {
-    expect(c.zip(roots, name, value)).toEqual(zippedValue);
+  function testZip(c: ValueConverter, roots: string[], name: string, value: string | number, zippedValue: string) {
+    expect(c.zip(roots, name, `${value}`)).toEqual(zippedValue);
   }
 
   function testUnzip(c: ValueConverter, roots: string[], name: string, value: string | number, zippedValue: string | number) {
@@ -18,8 +18,8 @@ describe("ValueConverter", () => {
         },
       });
 
-      testZip(c, [], "name", "literal1", 1);
-      testZip(c, [], "name", "literal2", 2);
+      testZip(c, [], "name", "literal1", "1");
+      testZip(c, [], "name", "literal2", "2");
 
       testUnzip(c, [], "name", 1, "literal1");
       testUnzip(c, [], "name", 2, "literal2");
@@ -32,8 +32,8 @@ describe("ValueConverter", () => {
           literal2: 2,
         },
       });
-      testZip(c, ["child"], "name", "literal1", 1);
-      testZip(c, ["child"], "name", "literal2", 2);
+      testZip(c, ["child"], "name", "literal1", "1");
+      testZip(c, ["child"], "name", "literal2", "2");
 
       testUnzip(c, ["child"], "name", 1, "literal1");
       testUnzip(c, ["child"], "name", 2, "literal2");

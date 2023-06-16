@@ -13,7 +13,7 @@ describe("ValueConverter", () => {
   }
 
   describe("object", () => {
-    it("root", () => {
+    it("simple: string key", () => {
       testZip(
         {
           name: "Kent",
@@ -24,6 +24,21 @@ describe("ValueConverter", () => {
         {
           name: {
             Kent: "k",
+          },
+        }
+      );
+    });
+    it("simple: number key", () => {
+      testZip(
+        {
+          name: "Kent",
+        },
+        {
+          name: "1",
+        },
+        {
+          name: {
+            Kent: 1,
           },
         }
       );

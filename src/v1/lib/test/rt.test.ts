@@ -47,7 +47,6 @@ describe("RT", () => {
   // propertyPartsSplitReg
   describe("propertyPartsSplitReg", () => {
     it("default", () => {
-      const s = RT.propertyPartsSplitReg.toString();
       expect("idNa".match(RT.propertyPartsSplitReg)).toEqual(["id", "N", "a"]);
       expect("nameSdaniel".match(RT.propertyPartsSplitReg)).toEqual(["name", "S", "daniel"]);
       expect("verifiedB1".match(RT.propertyPartsSplitReg)).toEqual(["verified", "B", "1"]);
