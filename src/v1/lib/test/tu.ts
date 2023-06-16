@@ -10,6 +10,10 @@ export class TU {
     let result = "";
     if (Array.isArray(value)) {
       result = s.ArrayProperty;
+    } else if (value === null) {
+      result = s.NullProperty;
+    } else if (value === undefined) {
+      result = s.UndefinedProperty;
     } else if (typeof value === "string") {
       result = s.StringProperty + this.zipS(value);
     } else if (typeof value === "number") {

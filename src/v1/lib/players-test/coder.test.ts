@@ -113,7 +113,7 @@ describe("Coder", () => {
       expect(param).toEqual(response);
     });
 
-    it.skip("level: undefined", () => {
+    it("level: undefined", () => {
       const teams = TournamentTestDataV3.get4Teams().map<TeamV3>(({ id, name, captain, players }) => {
         return { id, name, captain, players };
       });
@@ -189,11 +189,11 @@ describe("Coder", () => {
           teams: {
             players: {
               level: {
-                unknown: 1,
-                notbad: 2,
-                normal: 3,
-                good: 4,
-                star: 5,
+                unknown: "u",
+                notbad: "n",
+                normal: "r",
+                good: "g",
+                star: "s",
               },
             },
           },

@@ -1,4 +1,4 @@
-export type ZipType = "string" | "number" | "boolean" | "object" | "array";
+export type ZipType = "string" | "number" | "boolean" | "object" | "array" | "undefined" | "null";
 
 export type AllHandledType = ZipType | "empty";
 

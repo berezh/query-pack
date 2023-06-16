@@ -1,5 +1,5 @@
 // abcdefghijklmnopqrstuvwxyz
-// (A)(B)(C)(D)(E)FG(H)(I)(J)(K)(L)(M)(N)(O)(P)(Q)(R)(S)(T)(U)V(W)(X)(Y)Z
+// (A)(B)(C)(D)(E)(F)(G)(H)(I)(J)(K)(L)(M)(N)(O)(P)(Q)(R)(S)(T)(U)V(W)(X)(Y)Z
 // 0123456789
 // -_.~
 
@@ -14,9 +14,13 @@ export class UsedSigns {
     // DateProperty: "D",
     ObjectProperty: "O",
     ArrayProperty: "A",
+    UndefinedProperty: "F",
+    NullProperty: "L",
   };
 
   public static UpperCase = "U";
+
+  public static EmptyString = "E";
 
   public static FractionSeparator = ".";
 
@@ -30,9 +34,8 @@ export class UsedSigns {
     Semicolon: "T",
     Colon: "K",
     Apostrophe: "H",
-    LeftParenthesis: "L",
+    LeftParenthesis: "G",
     RightParenthesis: "R",
     Quotation: "H",
-    Empty: "E",
   };
 }

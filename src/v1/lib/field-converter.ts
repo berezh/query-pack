@@ -130,7 +130,7 @@ export class FieldConverter {
         }
 
         const currentValue = objectValue[propName];
-        if (typeof currentValue === "object") {
+        if (currentValue !== null && typeof currentValue === "object") {
           this.init([...names, propName], currentValue);
         }
       }

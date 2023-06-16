@@ -1,10 +1,14 @@
 import { ZipType, ZippedValue } from "../interfaces";
 import { BooleanZipper } from "../zippers/boolean";
+import { NullZipper } from "../zippers/null";
 import { NumberZipper } from "../zippers/number";
 import { StringZipper } from "../zippers/string";
+import { UndefinedZipper } from "../zippers/undefined";
 import { UpperCaseZipper } from "../zippers/upper-case";
 import { Zipper } from "../zippers/zipper";
 import { UsedSigns } from "./used-signs";
+
+const s = UsedSigns.Splitter;
 
 interface TypeOperator {
   type: ZipType;
@@ -21,19 +25,29 @@ export class SimpleHandler {
   private operators: TypeOperator[] = [
     {
       type: "string",
-      splitter: UsedSigns.Splitter.StringProperty,
+      splitter: s.StringProperty,
       zippers: [this.upperCaseZipper, this.stringZipper],
       unzippers: [this.stringZipper, this.upperCaseZipper],
     },
     {
       type: "number",
-      splitter: UsedSigns.Splitter.NumberProperty,
+      splitter: s.NumberProperty,
       zippers: [new NumberZipper()],
     },
     {
       type: "boolean",
-      splitter: UsedSigns.Splitter.BooleanProperty,
+      splitter: s.BooleanProperty,
       zippers: [new BooleanZipper()],
+    },
+    {
+      type: "null",
+      splitter: s.NullProperty,
+      zippers: [new NullZipper()],
+    },
+    {
+      type: "undefined",
+      splitter: s.UndefinedProperty,
+      zippers: [new UndefinedZipper()],
     },
   ];
 

@@ -29,6 +29,28 @@ describe("ComplexHandler Object", () => {
       };
       testZip(value, TU.full(s.Object, TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj()));
     });
+
+    describe("empty", () => {
+      it("undefined", () => {
+        const v = {
+          name: "kant",
+          child: undefined,
+        };
+        testZip(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)));
+      });
+      it("null", () => {
+        const v = {
+          name: "kant",
+          child: null,
+        };
+        testZip(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)));
+      });
+
+      // it("array", () => {
+      //   const v = ["Kant", undefined];
+      //   testZip(v, ComplexHandler.Version + `SUkant`);
+      // });
+    });
   });
 
   describe("container", () => {

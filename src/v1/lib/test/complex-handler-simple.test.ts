@@ -13,6 +13,9 @@ describe.skip("ComplexHandler Simple", () => {
     it("empty", () => {
       convert("", TU.full(s.StringProperty));
     });
+    it("undefined", () => {
+      convert(undefined, TU.full(s.UndefinedProperty));
+    });
     it("object empty", () => {
       convert({ name: "" }, TU.full(TU.obj(TU.p("name", ""))));
     });

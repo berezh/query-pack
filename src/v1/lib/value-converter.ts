@@ -75,10 +75,12 @@ export class ValueConverter {
       const keys = Object.keys(objectValue);
       for (const key of keys) {
         const zippedValue = objectValue[key];
-        if (typeof zippedValue === "string" || typeof zippedValue === "number") {
-          objectValue[key] = this.unzipValue(names, key, zippedValue);
-        } else if (typeof zippedValue === "object") {
-          this.init([...names, key], zippedValue);
+        if (zippedValue !== null) {
+          if (typeof zippedValue === "string" || typeof zippedValue === "number") {
+            objectValue[key] = this.unzipValue(names, key, zippedValue);
+          } else if (typeof zippedValue === "object") {
+            this.init([...names, key], zippedValue);
+          }
         }
       }
     }

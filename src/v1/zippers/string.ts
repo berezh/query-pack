@@ -62,7 +62,7 @@ export class StringZipper extends Zipper<string> {
         });
       }
       if (result === "") {
-        result = s.Empty;
+        result = UsedSigns.EmptyString;
       }
     }
 
@@ -78,7 +78,7 @@ export class StringZipper extends Zipper<string> {
           return key || "";
         });
       }
-      if (result === s.Empty) {
+      if (result === UsedSigns.EmptyString) {
         result = "";
       }
     }

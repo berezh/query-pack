@@ -27,6 +27,8 @@ export class Parser {
     boolean: s.BooleanProperty,
     object: s.ObjectProperty,
     array: s.ArrayProperty,
+    null: s.NullProperty,
+    undefined: s.UndefinedProperty,
   };
 
   public version(zipped: string): [number | undefined, string] {

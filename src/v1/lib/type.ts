@@ -1,27 +1,42 @@
 import { AllHandledType, ZipType } from "../interfaces";
 
 export class TypeUtil {
-  public static getType(source: unknown): ZipType {
+  public static getType(source: unknown): ZipType | undefined {
     if (Array.isArray(source)) {
       return "array";
     }
-
-    const standardType = typeof source;
-    if (standardType === "boolean") {
-      return "boolean";
-    } else if (standardType === "number") {
-      return "number";
-    } else if (standardType === "object") {
-      return "object";
+    if (source === null) {
+      return "null";
     }
 
-    return "string";
+    switch (typeof source) {
+      case "object":
+        return "object";
+      case "number":
+        return "number";
+      case "boolean":
+        return "boolean";
+      case "string":
+        return "string";
+      case "undefined":
+        return "undefined";
+    }
+
+    return undefined;
   }
 
   private static complexTypes: ZipType[] = ["array", "object"];
 
+  private static simpleTypes: ZipType[] = ["number", "boolean", "string"];
+
+  private static emptyTypes: ZipType[] = ["undefined", "null"];
+
   public static isComplex(type: ZipType): boolean {
     return TypeUtil.complexTypes.includes(type);
+  }
+
+  public static isSimple(type: ZipType): boolean {
+    return TypeUtil.simpleTypes.includes(type);
   }
 
   private static complexTypeOrEmpty: AllHandledType[] = ["array", "object", "empty"];
