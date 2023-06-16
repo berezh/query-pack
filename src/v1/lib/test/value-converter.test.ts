@@ -6,7 +6,7 @@ describe("ValueConverter", () => {
   }
 
   function testUnzip(c: ValueConverter, roots: string[], name: string, value: string | number, zippedValue: string | number) {
-    expect(c.unzip(roots, name, value)).toEqual(zippedValue);
+    expect(c.unzipValue(roots, name, value)).toEqual(zippedValue);
   }
 
   describe("simple", () => {

@@ -1,20 +1,20 @@
-import { ZipOptions } from "../../interfaces";
+import { ZipFieldConvertor } from "../../interfaces";
 import { ComplexHandler } from "../complex-handler";
 import { UsedSigns } from "../used-signs";
 import { TU } from "./tu";
 
 const s = UsedSigns.Splitter;
 
-describe("ComplexHandler Converter", () => {
-  function testZip(input: any, zipped: string, options: ZipOptions) {
-    const handler = new ComplexHandler(options);
+describe("FieldConverter", () => {
+  function testZip(input: any, zipped: string, converter: ZipFieldConvertor) {
+    const handler = new ComplexHandler({ fields: converter });
     const zipResult = handler.zip(input);
     expect(zipResult).toEqual(zipped);
     expect(handler.unzip(zipped)).toEqual(input);
   }
 
-  function testCycle(source: any, options: ZipOptions) {
-    const handler = new ComplexHandler(options);
+  function testCycle(source: any, converter: ZipFieldConvertor) {
+    const handler = new ComplexHandler({ fields: converter });
     const zipped = handler.zip(source);
     const unzipped = handler.unzip(zipped);
     expect(source).toEqual(unzipped);
@@ -27,10 +27,8 @@ describe("ComplexHandler Converter", () => {
         name: "Kent",
       };
       testZip(v, TU.full(s.Object, TU.obj(TU.p("1", v.id), TU.p("2", v.name))), {
-        fields: {
-          id: 1,
-          name: 2,
-        },
+        id: 1,
+        name: 2,
       });
     });
     it("child", () => {
@@ -42,16 +40,14 @@ describe("ComplexHandler Converter", () => {
         },
       };
       testCycle(v, {
-        fields: {
-          name: 1,
-          child: [
-            2,
-            {
-              id: 1,
-              name: 2,
-            },
-          ],
-        },
+        name: 1,
+        child: [
+          2,
+          {
+            id: 1,
+            name: 2,
+          },
+        ],
       });
     });
     it("many child", () => {
@@ -72,30 +68,28 @@ describe("ComplexHandler Converter", () => {
           },
         },
         {
-          fields: {
-            name: 1,
-            child1: [
-              2,
-              {
-                id: 1,
-                name: 2,
-              },
-            ],
-            child2: [
-              3,
-              {
-                id: 1,
-                name: 2,
-                child3: [
-                  3,
-                  {
-                    id: 1,
-                    name: 2,
-                  },
-                ],
-              },
-            ],
-          },
+          name: 1,
+          child1: [
+            2,
+            {
+              id: 1,
+              name: 2,
+            },
+          ],
+          child2: [
+            3,
+            {
+              id: 1,
+              name: 2,
+              child3: [
+                3,
+                {
+                  id: 1,
+                  name: 2,
+                },
+              ],
+            },
+          ],
         }
       );
     });
@@ -110,10 +104,8 @@ describe("ComplexHandler Converter", () => {
         },
       ];
       testCycle(v, {
-        fields: {
-          id: 1,
-          name: 2,
-        },
+        id: 1,
+        name: 2,
       });
     });
     // 1 X 1N9 Y 2A X O X 1Na Y nameSUkent
@@ -128,16 +120,14 @@ describe("ComplexHandler Converter", () => {
         ],
       };
       testCycle(v, {
-        fields: {
-          id: 1,
-          child: [
-            2,
-            {
-              id: 1,
-              name: 2,
-            },
-          ],
-        },
+        id: 1,
+        child: [
+          2,
+          {
+            id: 1,
+            name: 2,
+          },
+        ],
       });
     });
   });

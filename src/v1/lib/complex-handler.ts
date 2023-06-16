@@ -6,6 +6,7 @@ import { Parser } from "./parser";
 import { SimpleHandler } from "./simple-handler";
 import { TypeUtil } from "./type";
 import { UsedSigns } from "./used-signs";
+import { ValueConverter } from "./value-converter";
 
 const s = UsedSigns.Splitter;
 
@@ -16,17 +17,21 @@ export class ComplexHandler {
 
   private objectPosition = new ObjectPosition();
 
-  private nameConverter: FieldConverter;
+  private fieldConverter: FieldConverter;
+
+  private valueConverter: ValueConverter;
 
   private parser = new Parser();
 
   constructor(options?: ZipOptions) {
-    this.nameConverter = new FieldConverter(options?.fields || {});
+    this.fieldConverter = new FieldConverter(options?.fields || {});
+    this.valueConverter = new ValueConverter(options?.values || {});
   }
 
-  private zipSimple(current: ZippedRef, value: unknown, propertyName?: string) {
+  private zipSimple(current: ZippedRef, propertyName: string | undefined, value: unknown) {
     const type = TypeUtil.getType(value);
-    const simpleResult = this.simple.zip(type, value);
+    const zipValue = this.valueConverter.zip(current.rootNames, propertyName || "", value as any);
+    const simpleResult = this.simple.zip(type, zipValue);
     if (simpleResult) {
       current.children.push({ ...simpleResult, zippedName: propertyName });
     }
@@ -47,7 +52,7 @@ export class ComplexHandler {
       const childType = TypeUtil.getType(childValue);
       const p = this.objectPosition.index(position, index);
 
-      const zipName = this.nameConverter.zip(current?.rootNames, propName);
+      const zipName = this.fieldConverter.zip(current?.rootNames, propName);
 
       if (childType === "object") {
         current.children.push({
@@ -68,7 +73,7 @@ export class ComplexHandler {
         });
         this.zipArray(references, current, propName, childValue, p);
       } else {
-        this.zipSimple(current, childValue, zipName);
+        this.zipSimple(current, zipName, childValue);
       }
     }
   }
@@ -100,7 +105,7 @@ export class ComplexHandler {
         });
         this.zipArray(references, current, undefined, item, p);
       } else {
-        this.zipSimple(current, item);
+        this.zipSimple(current, undefined, item);
       }
     }
   }
@@ -118,7 +123,7 @@ export class ComplexHandler {
     } else {
       const current: ZippedRef = new ZippedRef(type, p);
       references.push(current);
-      this.zipSimple(current, source);
+      this.zipSimple(current, undefined, source);
     }
 
     const lines: string[] = [];
@@ -237,7 +242,12 @@ export class ComplexHandler {
         }
       }
 
-      return result ? this.nameConverter.unzip(result) : undefined;
+      if (result) {
+        result = this.fieldConverter.unzip(result);
+        result = this.valueConverter.unzip(result);
+      }
+
+      return result;
     } else {
       throw Error(`${version} is not supported`);
     }
