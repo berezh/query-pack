@@ -112,6 +112,40 @@ describe("Coder", () => {
 
       expect(param).toEqual(response);
     });
+
+    it.skip("level: undefined", () => {
+      const teams = TournamentTestDataV3.get4Teams().map<TeamV3>(({ id, name, captain, players }) => {
+        return { id, name, captain, players };
+      });
+
+      // random flow
+      const vectorTeamIds = teams.map(x => x.id);
+
+      const param: PlayerDataV3 = {
+        date: "",
+        time: "19:30",
+        duration: "120",
+        brake: "0",
+        naming: "captain",
+        useColor: false,
+        showLevel: false,
+        teams,
+        togetherGroups: [],
+        vectorTeamIds,
+        matchResults: [],
+      };
+      for (const team of param.teams) {
+        team.name = team.captain;
+        team.players = team.players.map(x => {
+          return { ...x, level: undefined };
+        });
+      }
+
+      const metaString = zip(param);
+      const response = unzip(metaString);
+
+      expect(param).toEqual(response);
+    });
   });
 
   describe("convertor", () => {
