@@ -1,6 +1,6 @@
 {
   "name": "query-pack",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Encode or decode query parameter",
   "keywords": [
     "query parameter",
@@ -13,11 +13,11 @@
     "url optimization"
   ],
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "module": "dist/index.esm.js",
   "scripts": {
     "test": "jest --config jest.config.js",
     "build": "rollup -c --bundleConfigAsCjs",
+    "build:dev": "cross-env BUILD=dev rollup -c --bundleConfigAsCjs",
     "build-tsc": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -32,6 +32,7 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.1",
     "@types/jest": "^24.9.1",
+    "cross-env": "^7.0.3",
     "eslint-config-varp-common": "^1.0.0",
     "eslint-plugin-tsc": "^2.0.0",
     "jest": "^24.9.0",
