@@ -22,7 +22,12 @@ describe("ComplexHandler Object", () => {
   }
 
   describe("simple", () => {
-    it("empty", () => {
+    it("empty object", () => {
+      const v = {};
+      testZip(v, ComplexHandler.Version.toString() + s.Object);
+    });
+
+    it("empty child property", () => {
       const value = {
         id: 10,
         child: {},
@@ -45,11 +50,6 @@ describe("ComplexHandler Object", () => {
         };
         testZip(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)));
       });
-
-      // it("array", () => {
-      //   const v = ["Kant", undefined];
-      //   testZip(v, ComplexHandler.Version + `SUkant`);
-      // });
     });
   });
 

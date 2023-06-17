@@ -118,7 +118,7 @@ export class FieldConverter {
       for (const valueItem of value) {
         this.init(names, valueItem);
       }
-    } else if (typeof value === "object") {
+    } else if (value !== null && typeof value === "object") {
       const objectValue = value as object;
       const keys = Object.keys(objectValue);
       for (const key of keys) {
@@ -129,9 +129,9 @@ export class FieldConverter {
           objectValue[propName] = value;
         }
 
-        const currentValue = objectValue[propName];
-        if (currentValue !== null && typeof currentValue === "object") {
-          this.init([...names, propName], currentValue);
+        const propValue = objectValue[propName];
+        if (propValue !== null && typeof propValue === "object") {
+          this.init([...names, propName], propValue);
         }
       }
     }

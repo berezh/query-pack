@@ -39,6 +39,10 @@ export class TypeUtil {
     return TypeUtil.simpleTypes.includes(type);
   }
 
+  public static isEmpty(type: ZipType): boolean {
+    return TypeUtil.emptyTypes.includes(type);
+  }
+
   private static complexTypeOrEmpty: AllHandledType[] = ["array", "object", "empty"];
 
   public static isComplexOrEmpty(type: AllHandledType) {

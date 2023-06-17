@@ -153,10 +153,24 @@ export class ComplexHandler {
         this.zipObject(references, undefined, undefined, source, p);
       } else if (type === "array") {
         this.zipArray(references, undefined, undefined, source, p);
-      } else if (TypeUtil.isSimple(type)) {
+      } else if (TypeUtil.isSimple(type) || TypeUtil.isEmpty(type)) {
         const current: ZippedRef = new ZippedRef(type, p);
         references.push(current);
-        this.zipSimple(current, undefined, type, source);
+        if (TypeUtil.isSimple(type)) {
+          this.zipSimple(current, undefined, type, source);
+        } else if (type === "undefined") {
+          current.children.push({
+            type,
+            splitter: s.UndefinedProperty,
+            value: "",
+          });
+        } else if (type === "null") {
+          current.children.push({
+            type,
+            splitter: s.NullProperty,
+            value: "",
+          });
+        }
       }
 
       references = CommonUtil.order(references, [x => x.position.itemIndex], [x => x.position.levelIndex], [x => x.position.level]);
@@ -272,6 +286,10 @@ export class ComplexHandler {
         if (values.length) {
           result = (values.length === 1 ? values[0] : values) as object;
         }
+      }
+      // empty object
+      else if (restZipped === "") {
+        result = {};
       }
 
       if (result) {

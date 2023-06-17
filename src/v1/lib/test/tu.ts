@@ -55,6 +55,10 @@ export class TU {
     return r;
   }
 
+  public static i(value: any): string {
+    return TU.splitterValue(value);
+  }
+
   public static propN(name: string, value: number, last = false): string {
     return this.zipS(name) + s.NumberProperty + this.zipN(value) + (last ? "" : s.Property);
   }

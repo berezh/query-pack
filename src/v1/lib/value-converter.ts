@@ -70,7 +70,7 @@ export class ValueConverter {
       for (const valueItem of value) {
         this.init(names, valueItem);
       }
-    } else if (typeof value === "object") {
+    } else if (value !== null && typeof value === "object") {
       const objectValue = value as object;
       const keys = Object.keys(objectValue);
       for (const key of keys) {

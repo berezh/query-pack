@@ -1,4 +1,5 @@
 import { ComplexHandler } from "../complex-handler";
+import { RT } from "../rt";
 import { UsedSigns } from "../used-signs";
 import { TU } from "./tu";
 
@@ -12,6 +13,17 @@ describe("ComplexHandler Array", () => {
   const handler = new ComplexHandler();
 
   const testZip = TU.converter(handler);
+
+  describe("root", () => {
+    it("contains undefined", () => {
+      const v = ["kant", undefined, 1];
+      testZip(v, ComplexHandler.Version + TU.i("kant") + TU.i(undefined) + TU.i(1));
+    });
+    it("contains null", () => {
+      const v = ["kant", null, 1];
+      testZip(v, ComplexHandler.Version + TU.i("kant") + TU.i(null) + TU.i(1));
+    });
+  });
 
   describe("array of objects", () => {
     it("default", () => {
