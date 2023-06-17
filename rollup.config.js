@@ -6,7 +6,7 @@ import pkg from "./package.json";
 
 const plugins = [typescript()];
 
-if (process.env.BUILD === "production") {
+if (process.env.BUILD !== "dev") {
   plugins.push(obfuscator());
 }
 
