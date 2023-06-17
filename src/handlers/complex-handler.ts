@@ -1,4 +1,4 @@
-import { ZippedRef, ZippedRefPosition, ZipType, ZipOptions } from "../interfaces";
+import { ZippedRef, ZippedRefPosition, ZipType, PackOptions } from "../interfaces";
 import { CommonUtil } from "../lib/common";
 import { ObjectPosition } from "./object-position";
 import { Parser } from "../lib/parser";
@@ -25,7 +25,7 @@ export class ComplexHandler {
 
   private parser = new Parser();
 
-  constructor(options?: ZipOptions) {
+  constructor(options?: PackOptions) {
     const { fields = {}, values = {}, includeUndefinedProperty = false } = options || {};
     this.fieldConverter = new FieldConverter(fields);
     this.valueConverter = new ValueConverter(values);

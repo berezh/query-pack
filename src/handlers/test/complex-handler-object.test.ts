@@ -1,5 +1,5 @@
 import { ComplexHandler } from "../../handlers/complex-handler";
-import { ZipOptions } from "../../interfaces";
+import { PackOptions } from "../../interfaces";
 import { TU } from "../../lib/test/tu";
 import { UsedSigns } from "../../lib/used-signs";
 
@@ -14,7 +14,7 @@ interface TestContainer extends TestObject {
 }
 
 describe("ComplexHandler Object", () => {
-  function testZip(input: any, zipped: string, options?: ZipOptions) {
+  function testZip(input: any, zipped: string, options?: PackOptions) {
     const handler = new ComplexHandler(options);
     const zipResult = handler.zip(input);
     expect(zipResult).toEqual(zipped);

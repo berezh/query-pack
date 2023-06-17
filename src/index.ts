@@ -1,16 +1,16 @@
-import { ZipOptions } from "./interfaces";
+import { PackOptions } from "./interfaces";
 import { ComplexHandler } from "./handlers/complex-handler";
 import { Parser } from "./lib/parser";
 
-export { ZipOptions };
+export { PackOptions };
 
-export function encode<T = unknown>(source: T, options?: ZipOptions): string {
+export function encode<T = unknown>(source: T, options?: PackOptions): string {
   const handler = new ComplexHandler(options);
   const result = handler.zip(source);
   return encodeURIComponent(result);
 }
 
-export function decode<T = any>(zipped: string, options?: ZipOptions): T {
+export function decode<T = any>(zipped: string, options?: PackOptions): T {
   const decodedInput = decodeURIComponent(zipped);
   const handler = new ComplexHandler(options);
   const result = handler.unzip(decodedInput);

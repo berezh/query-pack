@@ -6,7 +6,7 @@
 
 ---
 
-## Encode-Decode Query Parameter
+## Encode - Decode Query Parameter
 
 - [Usage](#usage)
 - [Options](#options)
@@ -17,7 +17,7 @@
 
 ## Usage
 
-Intallation:
+Installation:
 
 ```js
 npm install query-pack
@@ -25,7 +25,7 @@ npm install query-pack
 
 ### String example
 
-Zips string value:
+Encodes string value:
 
 ```ts
 import  { encode } from 'query-pack';
@@ -36,7 +36,7 @@ console.log(url);
 // =>  https://mydomain.com?q=UheyCWhowWareWyouQ
 ```
 
-Unzips string value:
+Decodes string value:
 
 ```ts
 import  { decode } from 'query-pack';
@@ -50,7 +50,7 @@ console.log(value);
 
 ### Object example
 
-Zips object value:
+Encodes object value:
 
 ```ts
 import  { encode } from 'query-pack';
@@ -65,7 +65,7 @@ console.log(url);
 // =>  https://mydomain.com?q=1XidN1YnameSUteamW1YcaptainSzak
 ```
 
-Unzips object value:
+Decodes object value:
 
 ```ts
 import  { decode } from 'query-pack';
@@ -83,7 +83,7 @@ console.log(value);
 
 ## Options
 
-Options is a zipping settigns passed as a second parameter to the `encode` or `decode` functions. Has `ZipOptions` type.
+Options is a encoding settings passed as a second parameter to the `encode` or `decode` functions. Has `PackOptions` type.
 
 | Name                     | Description                                                                                                                                                     |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -96,9 +96,9 @@ Options is a zipping settigns passed as a second parameter to the `encode` or `d
 Here we have a team object. Its field's names are replaced with numbers (`id`=> 1, ...). Since numbers are shorter and as result we will have shorter encoded result. 
 
 ```ts
-import  { encode, decode, ZipOptions } from 'query-pack';
+import  { encode, decode, PackOptions } from 'query-pack';
 ...
-const zipOptions: ZipOptions = {
+const packOptions: PackOptions = {
     fields:{
         id: 1,
         name: 2,
@@ -110,12 +110,12 @@ const qParam = encode({
     id: 1,
     name: "Team 1",
     captain: "zak",
-}, options);
+}, packOptions);
 
 console.log(qParam);
 // =>  1X1N1Y2SUteamW1YcaptainSzak
 
-const team = decode(qParam, options);
+const team = decode(qParam, packOptions);
 console.log(team);
 // =>  {
 //   id: 1,
@@ -127,12 +127,12 @@ console.log(team);
 
 ### Values Optimization
 
-Here we have a player object with `level` field. Possible values for it are strings: `unknown`, `notbad`, `normal`, `good`, `star`. We replacing them with numbers. In our case the player object has `good` level value. So while zipping it would receive value of `4`. This makes encoded result shorter.
+Here we have a player object with `level` field. Possible values for it are strings: `unknown`, `notbad`, `normal`, `good`, `star`. We replacing them with numbers. In our case the player object has `good` level value. So while encoding it would receive value of `4`. This makes encoded result shorter.
 
 ```ts
-import  { encode, decode, ZipOptions } from 'query-pack';
+import  { encode, decode, PackOptions } from 'query-pack';
 ...
-const zipOptions: ZipOptions = {
+const packOptions: PackOptions = {
     values:{
         level: {
             unknown: 1,
@@ -147,12 +147,12 @@ const zipOptions: ZipOptions = {
 const qParam = encode({
     name: "zak",
     level: "good",
-}, options);
+}, packOptions);
 
 console.log(qParam);
 // =>  1XnameSzakYlevelS4
 
-const team = decode(qParam, options);
+const team = decode(qParam, packOptions);
 console.log(team);
 // =>  {
 //   name: "zak",
@@ -170,7 +170,7 @@ There is and example of using `query-pack`. This is the tournament team construc
 
 ## Base
 
-`query-pack` zips `string`, `number`, `boolean`, `array`, `object` values into a string for using it in URL's query paramter.
+`query-pack` encodes`string`, `number`, `boolean`, `array`, `object` values into a string for using it in URL's query paramter.
 
 This is kind of alternative of using `encodeURIComponent` and `decodeURIComponent`, but with differences. The primitive types like `string`, `number`, and `boolean` `query-pack` makes shorter in coparances to `encodeURIComponent` function with the [Primitive Strategies](#primitive-strategies). Also, the `query-pack` can encode complex types like `object` or `array` with the [Complex Strategies](#complex-strategies) where the `encodeURIComponent` does not support compolex types.
 
@@ -270,7 +270,7 @@ Let's imaging we have the team object:
 }
 ```
 
-After zipping into a string:
+After encoding into a string:
 
 ```text
 idN1YnameSUteamW1YcaptainSzak

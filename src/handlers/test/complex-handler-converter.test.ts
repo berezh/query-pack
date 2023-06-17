@@ -1,8 +1,8 @@
-import { ZipOptions } from "../../interfaces";
+import { PackOptions } from "../../interfaces";
 import { ComplexHandler } from "../../handlers/complex-handler";
 
 describe("Combine Converters", () => {
-  function testZip(source: any, alt: any, options: ZipOptions) {
+  function testZip(source: any, alt: any, options: PackOptions) {
     const handler = new ComplexHandler(options);
     const zipSource = handler.zip(source);
     const zipAlt = new ComplexHandler().zip(alt);

@@ -55,7 +55,7 @@ export interface ZipFieldConvertor extends Record<string, number | [number, ZipF
 
 export interface ZipValueConvertor extends Record<string, string | number | ZipValueConvertor> {}
 
-export interface ZipOptions {
+export interface PackOptions {
   fields?: ZipFieldConvertor;
   values?: ZipValueConvertor;
   includeUndefinedProperty?: boolean;

@@ -1,5 +1,5 @@
 import { decode, encode } from "../..";
-import { ZipOptions } from "../../interfaces";
+import { PackOptions } from "../../interfaces";
 import { PlayerDataV3, TeamV3 } from "./interfaces";
 import { TournamentTestDataV3 } from "./test-data";
 
@@ -141,7 +141,7 @@ describe("Coder", () => {
         });
       }
 
-      const options: ZipOptions = {
+      const options: PackOptions = {
         includeUndefinedProperty: true,
       };
 
@@ -182,7 +182,7 @@ describe("Coder", () => {
         ],
       };
 
-      const options: ZipOptions = {
+      const options: PackOptions = {
         values: {
           naming: {
             captain: "c",
