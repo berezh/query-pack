@@ -14,6 +14,12 @@ describe("ComplexHandler Array", () => {
   const testZip = TU.converter(handler);
 
   describe("root", () => {
+    it("example", () => {
+      testZip([12, 34, 56], "1NcN12N1o", { zip: true });
+      testZip(["cat", "dog", "mouse"], "1ScatSdogSmouse", { zip: true });
+      testZip([12, "dog", true], "1NcSdogB1", { zip: true });
+    });
+
     it("contains undefined", () => {
       const v = ["kant", undefined, 1];
       testZip(v, ComplexHandler.Version + TU.i("kant") + TU.i(undefined) + TU.i(1));

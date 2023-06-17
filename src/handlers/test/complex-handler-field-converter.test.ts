@@ -31,6 +31,21 @@ describe("FieldConverter", () => {
         name: 2,
       });
     });
+    it("example", () => {
+      testZip(
+        {
+          id: 1,
+          name: "Team 1",
+          captain: "zak",
+        },
+        "1X1N1Y2SUteamW1YcaptainSzak",
+        {
+          id: 1,
+          name: 2,
+          capitan: 3,
+        }
+      );
+    });
     it("child", () => {
       const v = {
         name: "root",

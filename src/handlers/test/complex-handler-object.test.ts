@@ -27,6 +27,17 @@ describe("ComplexHandler Object", () => {
       testZip(v, ComplexHandler.Version.toString() + s.Object);
     });
 
+    it("team object", () => {
+      testZip(
+        {
+          id: 1,
+          name: "Team 1",
+          captain: "zak",
+        },
+        "1XidN1YnameSUteamW1YcaptainSzak"
+      );
+    });
+
     it("empty child property", () => {
       const value = {
         id: 10,

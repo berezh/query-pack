@@ -28,6 +28,28 @@ describe("ValueConverter", () => {
         }
       );
     });
+
+    it("example", () => {
+      testZip(
+        {
+          name: "zak",
+          level: "good",
+        },
+        {
+          name: "zak",
+          level: "4",
+        },
+        {
+          level: {
+            unknown: 1,
+            notbad: 2,
+            normal: 3,
+            good: 4,
+            star: 5,
+          },
+        }
+      );
+    });
     it("simple: number key", () => {
       testZip(
         {

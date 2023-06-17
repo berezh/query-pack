@@ -1,3 +1,7 @@
 # base32: 
   minus support
   dot support (on upper levels)
+#general:
+  URL max length exception(domain length)
+#test
+  encoded char: cyrillic, etc

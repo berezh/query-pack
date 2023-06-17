@@ -12,4 +12,10 @@
     "markdown",
     "json"
   ],
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true
+    },
+  },
 }

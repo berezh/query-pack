@@ -5,7 +5,8 @@ describe("StringZipper", () => {
   const zipper = new StringZipper();
 
   function stringTest(source: string, zipped: string) {
-    expect(zipper.zip(source)).toBe(zipped);
+    const curZipped = zipper.zip(source);
+    expect(curZipped).toBe(zipped);
     expect(zipper.unzip(zipped)).toBe(source);
   }
 

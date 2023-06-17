@@ -1,7 +1,17 @@
 {
   "name": "qzip",
-  "version": "0.0.6",
-  "description": "",
+  "version": "0.0.7",
+  "description": "Zip and unzip query parameter",
+  "keywords": [
+    "query parameter",
+    "encode url",
+    "decode url",
+    "encode uri component",
+    "decode uri component",
+    "zip url",
+    "unzip url",
+    "url optimization"
+  ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {

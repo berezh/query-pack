@@ -2,7 +2,8 @@ import { Number32 } from "../number32";
 
 describe("Number32", () => {
   function convert(input: number, base32: string) {
-    expect(Number32.toBase32(input)).toBe(base32);
+    const curZipped = Number32.toBase32(input);
+    expect(curZipped).toBe(base32);
     expect(Number32.toNumber(base32)).toBe(input);
   }
 
@@ -18,6 +19,10 @@ describe("Number32", () => {
 
     it("fraction", () => {
       convert(1000.53, "v8.1l");
+    });
+
+    it("fraction 2", () => {
+      convert(123456.789, "3oi0.ol");
     });
   });
   describe("toNumber", () => {

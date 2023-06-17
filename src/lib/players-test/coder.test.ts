@@ -113,7 +113,7 @@ describe("Coder", () => {
       expect(param).toEqual(response);
     });
 
-    it("level: undefined", () => {
+    it("includeUndefinedProperty: level: undefined", () => {
       const teams = TournamentTestDataV3.get4Teams().map<TeamV3>(({ id, name, captain, players }) => {
         return { id, name, captain, players };
       });
@@ -141,8 +141,12 @@ describe("Coder", () => {
         });
       }
 
-      const metaString = zip(param);
-      const response = unzip(metaString);
+      const options: ZipOptions = {
+        includeUndefinedProperty: true,
+      };
+
+      const metaString = zip(param, options);
+      const response = unzip(metaString, options);
 
       expect(param).toEqual(response);
     });
@@ -189,11 +193,11 @@ describe("Coder", () => {
           teams: {
             players: {
               level: {
-                unknown: "u",
-                notbad: "n",
-                normal: "r",
-                good: "g",
-                star: "s",
+                unknown: 1,
+                notbad: 2,
+                normal: 3,
+                good: 4,
+                star: 5,
               },
             },
           },
