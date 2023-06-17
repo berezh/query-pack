@@ -1,4 +1,4 @@
-import { unzip, zip } from "../..";
+import { decode, encode } from "../..";
 import { ZipOptions } from "../../interfaces";
 import { PlayerDataV3, TeamV3 } from "./interfaces";
 import { TournamentTestDataV3 } from "./test-data";
@@ -36,8 +36,8 @@ describe("Coder", () => {
         ],
       };
 
-      const zipped = zip(data);
-      const response = unzip(zipped);
+      const zipped = encode(data);
+      const response = decode(zipped);
 
       expect(data).toEqual(response);
     });
@@ -64,8 +64,8 @@ describe("Coder", () => {
         matchResults: [],
       };
 
-      const metaString = zip(param);
-      const response = unzip(metaString);
+      const metaString = encode(param);
+      const response = decode(metaString);
 
       for (const team of param.teams) {
         team.players = team.players.map(x => {
@@ -100,8 +100,8 @@ describe("Coder", () => {
         matchResults: [],
       };
 
-      const metaString = zip(param);
-      const response = unzip(metaString);
+      const metaString = encode(param);
+      const response = decode(metaString);
 
       // for (const team of param.teams) {
       //   team.name = team.captain;
@@ -145,8 +145,8 @@ describe("Coder", () => {
         includeUndefinedProperty: true,
       };
 
-      const metaString = zip(param, options);
-      const response = unzip(metaString, options);
+      const metaString = encode(param, options);
+      const response = decode(metaString, options);
 
       expect(param).toEqual(response);
     });
@@ -231,8 +231,8 @@ describe("Coder", () => {
         },
       };
 
-      const zipped = zip(data, options);
-      const response = unzip(zipped, options);
+      const zipped = encode(data, options);
+      const response = decode(zipped, options);
 
       expect(data).toEqual(response);
     });

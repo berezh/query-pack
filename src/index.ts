@@ -4,13 +4,13 @@ import { Parser } from "./lib/parser";
 
 export { ZipOptions };
 
-export function zip<T = unknown>(source: T, options?: ZipOptions): string {
+export function encode<T = unknown>(source: T, options?: ZipOptions): string {
   const handler = new ComplexHandler(options);
   const result = handler.zip(source);
   return encodeURIComponent(result);
 }
 
-export function unzip<T = any>(zipped: string, options?: ZipOptions): T {
+export function decode<T = any>(zipped: string, options?: ZipOptions): T {
   const decodedInput = decodeURIComponent(zipped);
   const handler = new ComplexHandler(options);
   const result = handler.unzip(decodedInput);

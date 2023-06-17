@@ -1,12 +1,12 @@
-# qzip
+# query-pack
 
-<a href="https://www.npmjs.com/package/qzip">
-    <img src="https://nodei.co/npm/qzip.png?mini=true">
+<a href="https://www.npmjs.com/package/query-pack">
+    <img src="https://nodei.co/npm/query-pack.png?mini=true">
 </a>
 
 ---
 
-## Zips-Unzips Query Parameter
+## Encode-Decode Query Parameter
 
 - [Usage](#usage)
 - [Options](#options)
@@ -20,7 +20,7 @@
 Intallation:
 
 ```js
-npm install qzip
+npm install query-pack
 ```
 
 ### String example
@@ -28,9 +28,9 @@ npm install qzip
 Zips string value:
 
 ```ts
-import  { zip } from 'qzip';
+import  { encode } from 'query-pack';
 ...
-const qParam = zip('Hey, how are you?')
+const qParam = encode('Hey, how are you?')
 const url = `https://mydomain.com?q=${qParam}`;
 console.log(url);
 // =>  https://mydomain.com?q=UheyCWhowWareWyouQ
@@ -39,11 +39,11 @@ console.log(url);
 Unzips string value:
 
 ```ts
-import  { unzip } from 'qzip';
+import  { decode } from 'query-pack';
 ...
 let params = (new URL(document.location)).searchParams;
 let qParam = params.get("q");
-const value = unzip(qParam);
+const value = decode(qParam);
 console.log(value);
 // =>  Hey, how are you?
 ```
@@ -53,9 +53,9 @@ console.log(value);
 Zips object value:
 
 ```ts
-import  { zip } from 'qzip';
+import  { encode } from 'query-pack';
 ...
-const qParam = zip({
+const qParam = encode({
   id: 1,
   name: "Team 1",
   captain: "zak",
@@ -68,11 +68,11 @@ console.log(url);
 Unzips object value:
 
 ```ts
-import  { unzip } from 'qzip';
+import  { decode } from 'query-pack';
 ...
 let params = (new URL(document.location)).searchParams;
 let qParam = params.get("q");
-const value = unzip(qParam);
+const value = decode(qParam);
 console.log(value);
 // =>  {
 //   id: 1,
@@ -83,20 +83,20 @@ console.log(value);
 
 ## Options
 
-Options is a zipping settigns passed as a second parameter to the `zip` or `unzip` functions. Has `ZipOptions` type.
+Options is a zipping settigns passed as a second parameter to the `encode` or `decode` functions. Has `ZipOptions` type.
 
 | Name                     | Description                                                                                                                                                     |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| fields                   | Replaces the names of the object's fields into numbers in order to make zipped result shorter. [Example of using fields optimization](#fields-optimization)                  |
-| values                   | Replaces the values of the object's field into numbers or short strings in order to make zipped result shorter. [Example of using values optimization](#values-optimization) |
-| includeUndefinedProperty | Indicates if property of object with `undefined` value must be included into zipped result. Default value is `false`                                            |
+| fields                   | Replaces the names of the object's fields into numbers in order to make encoded result shorter. [Example of using fields optimization](#fields-optimization)                  |
+| values                   | Replaces the values of the object's field into numbers or short strings in order to make encoded result shorter. [Example of using values optimization](#values-optimization) |
+| includeUndefinedProperty | Indicates if property of object with `undefined` value must be included into encoded result. Default value is `false`                                            |
 
 ### Fields Optimization
 
-Here we have a team object. Its field's names are replaced with numbers (`id`=> 1, ...). Since numbers are shorter and as result we will have shorter zipped result. 
+Here we have a team object. Its field's names are replaced with numbers (`id`=> 1, ...). Since numbers are shorter and as result we will have shorter encoded result. 
 
 ```ts
-import  { zip, unzip, ZipOptions } from 'qzip';
+import  { encode, decode, ZipOptions } from 'query-pack';
 ...
 const zipOptions: ZipOptions = {
     fields:{
@@ -106,7 +106,7 @@ const zipOptions: ZipOptions = {
     }
 }
 ...
-const qParam = zip({
+const qParam = encode({
     id: 1,
     name: "Team 1",
     captain: "zak",
@@ -115,7 +115,7 @@ const qParam = zip({
 console.log(qParam);
 // =>  1X1N1Y2SUteamW1YcaptainSzak
 
-const team = unzip(qParam, options);
+const team = decode(qParam, options);
 console.log(team);
 // =>  {
 //   id: 1,
@@ -127,10 +127,10 @@ console.log(team);
 
 ### Values Optimization
 
-Here we have a player object with `level` field. Possible values for it are strings: `unknown`, `notbad`, `normal`, `good`, `star`. We replacing them with numbers. In our case the player object has `good` level value. So while zipping it would receive value of `4`. This makes zipped result shorter.
+Here we have a player object with `level` field. Possible values for it are strings: `unknown`, `notbad`, `normal`, `good`, `star`. We replacing them with numbers. In our case the player object has `good` level value. So while zipping it would receive value of `4`. This makes encoded result shorter.
 
 ```ts
-import  { zip, unzip, ZipOptions } from 'qzip';
+import  { encode, decode, ZipOptions } from 'query-pack';
 ...
 const zipOptions: ZipOptions = {
     values:{
@@ -144,7 +144,7 @@ const zipOptions: ZipOptions = {
     }
 }
 ...
-const qParam = zip({
+const qParam = encode({
     name: "zak",
     level: "good",
 }, options);
@@ -152,7 +152,7 @@ const qParam = zip({
 console.log(qParam);
 // =>  1XnameSzakYlevelS4
 
-const team = unzip(qParam, options);
+const team = decode(qParam, options);
 console.log(team);
 // =>  {
 //   name: "zak",
@@ -166,13 +166,13 @@ console.log(team);
 The maximum length of URL is 2048 characters. This is enough space for encoding data for small or medium page.
 What's more, in this case you don't need to have database or API.
 
-There is and example of using `qzip`. This is the tournament team constructor witch generates the tournament data into URL's query parameter. That's it, no API or database the tournament data is stored into the URL. [This link](https://varp.com/p/?d=1X5ScY1SEY2S19K30Y3S90Y4S2YuseUcolorB0Y7B0Y8AYaAY9AYbAXOOOOXN4N3N2N1XAXAAAAAAX1N1Y2SviktorY3SviktorY4AX1N2Y2SodysseyY3SodysseyY4AX1N3Y2SolegWoldY3SolegWoldY4AX1N4Y2SdavidY3SdavidY4AXSdavidSyaraXN4N1N1N2XN3N2N3N2XN4N2N3N0XN1N3N3N1XN4N3N3N5XN2N1N2N4XOOOOOOXOOOOOOXOOOOOOXOOOOOOX1SviktorX1SandreiX1SiliaX1SalanX1SandreiWianX1SalexisX1SodysseyX1SrezoX1SmaxWhX1SalexX1SalexanderWdX1SmikaX1SolegWoldX1SnikolayX1SsergioX1SsergX1SigorX1SantonWtX1SdavidX1SantonX1SiskanderX1SyaraX1SmikhailX1SantonWa) has 512 chars and this is enough for encoding information about 4 teams and 24 players, games between teams, scheduel and results.
+There is and example of using `query-pack`. This is the tournament team constructor witch generates the tournament data into URL's query parameter. That's it, no API or database the tournament data is stored into the URL. [This link](https://varp.com/p/?d=1X5ScY1SEY2S19K30Y3S90Y4S2YuseUcolorB0Y7B0Y8AYaAY9AYbAXOOOOXN4N3N2N1XAXAAAAAAX1N1Y2SviktorY3SviktorY4AX1N2Y2SodysseyY3SodysseyY4AX1N3Y2SolegWoldY3SolegWoldY4AX1N4Y2SdavidY3SdavidY4AXSdavidSyaraXN4N1N1N2XN3N2N3N2XN4N2N3N0XN1N3N3N1XN4N3N3N5XN2N1N2N4XOOOOOOXOOOOOOXOOOOOOXOOOOOOX1SviktorX1SandreiX1SiliaX1SalanX1SandreiWianX1SalexisX1SodysseyX1SrezoX1SmaxWhX1SalexX1SalexanderWdX1SmikaX1SolegWoldX1SnikolayX1SsergioX1SsergX1SigorX1SantonWtX1SdavidX1SantonX1SiskanderX1SyaraX1SmikhailX1SantonWa) has 512 chars and this is enough for encoding information about 4 teams and 24 players, games between teams, scheduel and results.
 
 ## Base
 
-`qzip` zips `string`, `number`, `boolean`, `array`, `object` values into a string for using it in URL's query paramter.
+`query-pack` zips `string`, `number`, `boolean`, `array`, `object` values into a string for using it in URL's query paramter.
 
-This is kind of alternative of using `encodeURIComponent` and `decodeURIComponent`, but with differences. The primitive types like `string`, `number`, and `boolean` `qzip` makes shorter in coparances to `encodeURIComponent` function with the [Primitive Strategies](#primitive-strategies). Also, the `qzip` can encode complex types like `object` or `array` with the [Complex Strategies](#complex-strategies) where the `encodeURIComponent` does not support compolex types.
+This is kind of alternative of using `encodeURIComponent` and `decodeURIComponent`, but with differences. The primitive types like `string`, `number`, and `boolean` `query-pack` makes shorter in coparances to `encodeURIComponent` function with the [Primitive Strategies](#primitive-strategies). Also, the `query-pack` can encode complex types like `object` or `array` with the [Complex Strategies](#complex-strategies) where the `encodeURIComponent` does not support compolex types.
 
 ## Primitive Strategies
 
@@ -180,7 +180,7 @@ This is kind of alternative of using `encodeURIComponent` and `decodeURIComponen
 
 In URL encoding there are not replacing chars: numbers, upper and lower case English letters, `-`, `_`, `.`, `~`. All other has encodes with extra chars, for instance `@` encodes as `%40`. `zqip` replace upper case chars on the text with `U` + `upper case char` or `U{X}` + `X upper case chars`.
 
-| Text  | Zipped   |
+| Text  | Encoded   |
 | ----- | -------- |
 | Hello | `U`hello |
 | HTML  | `U5`html |
@@ -191,7 +191,7 @@ This helps to release all other upper case English letters for further encoding 
 
 Most used chars are replaced with upper case chars.
 
-| Char    | URL Encoding | qzip |
+| Char    | URL Encoding | query-pack |
 | ------- | ------------ | ---- |
 | `space` | %20          | W    |
 | '       | %27          | H    |
@@ -206,7 +206,7 @@ Most used chars are replaced with upper case chars.
 | ?       | %3F          | Q    |
 | "       | %22          | H    |
 
-|        | String            | URL Encoding                | qzip               |
+|        | String            | URL Encoding                | query-pack               |
 | ------ | ----------------- | --------------------------- | ------------------ |
 | Text   | Hey, how are you? | Hey%2C%20how%20are%20you%3F | UheyCWhowWareWyouQ |
 | Length | 17                | 27                          | 18                 |
@@ -215,7 +215,7 @@ Most used chars are replaced with upper case chars.
 
 Decimal numbers replaces with based32 numbers.
 
-|        | Number     | qzip    |
+|        | Number     | query-pack    |
 | ------ | ---------- | ------- |
 | Value  | 123456.789 | 3oi0.ol |
 | Length | 10         | 7       |
@@ -224,7 +224,7 @@ Decimal numbers replaces with based32 numbers.
 
 Replaces with `0` and `1`.
 
-| Boolean | qzip |
+| Boolean | query-pack |
 | ------- | ---- |
 | `false` | 0    |
 | `true`  | 1    |
@@ -233,7 +233,7 @@ Replaces with `0` and `1`.
 
 Complex strategy provides the way of converting into a string the object with properties or array of items. To list values need to split them somehow and indicate their type. The below table contains type indicators:
 
-| Type        | `qzip` type indicator |
+| Type        | `query-pack` type indicator |
 | ----------- | --------------------- |
 | `string`    | S                     |
 | `number`    | N                     |
@@ -245,7 +245,7 @@ Complex strategy provides the way of converting into a string the object with pr
 
 Next table contains splitters:
 
-| `qzip` splitter | Description |
+| `query-pack` splitter | Description |
 | --------------- | ----------- |
 | `Y`             | Property    |
 | `X`             | Object      |

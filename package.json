@@ -1,15 +1,15 @@
 {
   "name": "query-pack",
-  "version": "0.0.1",
-  "description": "Zip and unzip query parameter",
+  "version": "0.0.2",
+  "description": "Encode or decode query parameter",
   "keywords": [
     "query parameter",
     "encode url",
     "decode url",
     "encode uri component",
     "decode uri component",
-    "zip url",
-    "unzip url",
+    "pack url",
+    "unpack url",
     "url optimization"
   ],
   "main": "lib/index.js",
