@@ -1,7 +1,7 @@
 import { ZipFieldConvertor } from "../../interfaces";
-import { ComplexHandler } from "../complex-handler";
-import { UsedSigns } from "../used-signs";
-import { TU } from "./tu";
+import { ComplexHandler } from "../../handlers/complex-handler";
+import { TU } from "../../lib/test/tu";
+import { UsedSigns } from "../../lib/used-signs";
 
 const s = UsedSigns.Splitter;
 

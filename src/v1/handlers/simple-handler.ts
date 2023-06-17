@@ -6,7 +6,7 @@ import { StringZipper } from "../zippers/string";
 import { UndefinedZipper } from "../zippers/undefined";
 import { UpperCaseZipper } from "../zippers/upper-case";
 import { Zipper } from "../zippers/zipper";
-import { UsedSigns } from "./used-signs";
+import { UsedSigns } from "../lib/used-signs";
 
 const s = UsedSigns.Splitter;
 

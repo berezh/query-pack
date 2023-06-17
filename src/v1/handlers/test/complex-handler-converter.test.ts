@@ -1,5 +1,5 @@
 import { ZipOptions } from "../../interfaces";
-import { ComplexHandler } from "../complex-handler";
+import { ComplexHandler } from "../../handlers/complex-handler";
 
 describe("Combine Converters", () => {
   function testZip(source: any, alt: any, options: ZipOptions) {

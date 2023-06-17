@@ -1,6 +1,6 @@
 import { ZippedValue } from "../../interfaces";
 import { SimpleHandler } from "../simple-handler";
-import { UsedSigns } from "../used-signs";
+import { UsedSigns } from "../../lib/used-signs";
 
 const s = UsedSigns.Splitter;
 

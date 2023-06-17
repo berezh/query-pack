@@ -1,5 +1,5 @@
-import { ComplexHandler } from "../complex-handler";
-import { SimpleHandler } from "../simple-handler";
+import { ComplexHandler } from "../../handlers/complex-handler";
+import { SimpleHandler } from "../../handlers/simple-handler";
 import { UsedSigns } from "../used-signs";
 
 const s = UsedSigns.Splitter;

@@ -1,5 +1,5 @@
 import { ZipOptions } from "./interfaces";
-import { ComplexHandler } from "./lib/complex-handler";
+import { ComplexHandler } from "./handlers/complex-handler";
 import { Parser } from "./lib/parser";
 
 export function zip(source: unknown, options?: ZipOptions): string {

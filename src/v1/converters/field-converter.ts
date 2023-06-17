@@ -1,7 +1,7 @@
+import { SimpleHandler } from "../handlers/simple-handler";
 import { ZipFieldConvertor } from "../interfaces";
-import { Number32 } from "./number32";
-import { SimpleHandler } from "./simple-handler";
-import { UsedSigns } from "./used-signs";
+import { Number32 } from "../lib/number32";
+import { UsedSigns } from "../lib/used-signs";
 
 const s = UsedSigns.Splitter;
 

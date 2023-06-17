@@ -1,5 +1,5 @@
+import { Number32 } from "../../lib/number32";
 import { FieldConverter } from "../field-converter";
-import { Number32 } from "../number32";
 
 describe("FieldConverter", () => {
   function testZip(c: FieldConverter, names: string[], name: string, number: number) {

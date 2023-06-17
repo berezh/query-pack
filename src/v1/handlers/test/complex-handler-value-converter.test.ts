@@ -1,5 +1,5 @@
 import { ZipValueConvertor } from "../../interfaces";
-import { ComplexHandler } from "../complex-handler";
+import { ComplexHandler } from "../../handlers/complex-handler";
 
 describe("ValueConverter", () => {
   function testZip(source: any, alt: any, converter: ZipValueConvertor) {
