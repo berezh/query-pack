@@ -1,12 +1,12 @@
 import { ZippedRef, ZippedRefPosition, ZipType, ZipOptions } from "../interfaces";
 import { CommonUtil } from "../lib/common";
-import { FieldConverter } from "../lib/field-converter";
-import { ObjectPosition } from "../lib/object-position";
+import { ObjectPosition } from "./object-position";
 import { Parser } from "../lib/parser";
 import { SimpleHandler } from "./simple-handler";
 import { TypeUtil } from "../lib/type";
 import { UsedSigns } from "../lib/used-signs";
 import { ValueConverter } from "../converters/value-converter";
+import { FieldConverter } from "../converters/field-converter";
 
 const s = UsedSigns.Splitter;
 
