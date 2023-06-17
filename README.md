@@ -206,6 +206,8 @@ Most used chars are replaced with upper case chars.
 | ?       | %3F          | Q    |
 | "       | %22          | H    |
 
+
+
 |        | String            | URL Encoding                | query-pack               |
 | ------ | ----------------- | --------------------------- | ------------------ |
 | Text   | Hey, how are you? | Hey%2C%20how%20are%20you%3F | UheyCWhowWareWyouQ |
