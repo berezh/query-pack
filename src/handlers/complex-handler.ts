@@ -21,11 +21,15 @@ export class ComplexHandler {
 
   private valueConverter: ValueConverter;
 
+  private includeUndefinedProperty: boolean;
+
   private parser = new Parser();
 
   constructor(options?: ZipOptions) {
-    this.fieldConverter = new FieldConverter(options?.fields || {});
-    this.valueConverter = new ValueConverter(options?.values || {});
+    const { fields = {}, values = {}, includeUndefinedProperty = false } = options || {};
+    this.fieldConverter = new FieldConverter(fields);
+    this.valueConverter = new ValueConverter(values);
+    this.includeUndefinedProperty = includeUndefinedProperty;
   }
 
   private zipSimple(current: ZippedRef, zippedName: string | undefined, type: ZipType, value: unknown) {
@@ -79,13 +83,15 @@ export class ComplexHandler {
             value: "",
           });
         } else if (type === "undefined") {
-          current.children.push({
-            propertyName: propName,
-            zippedName: zipName,
-            type: type,
-            splitter: s.UndefinedProperty,
-            value: "",
-          });
+          if (this.includeUndefinedProperty) {
+            current.children.push({
+              propertyName: propName,
+              zippedName: zipName,
+              type: type,
+              splitter: s.UndefinedProperty,
+              value: "",
+            });
+          }
         } else if (TypeUtil.isSimple(type)) {
           const zipValue = this.valueConverter.zip(current.rootNames, propName, childValue);
           this.zipSimple(current, zipName, type, zipValue);

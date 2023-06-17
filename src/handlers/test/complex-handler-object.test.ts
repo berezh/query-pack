@@ -1,4 +1,5 @@
 import { ComplexHandler } from "../../handlers/complex-handler";
+import { ZipOptions } from "../../interfaces";
 import { TU } from "../../lib/test/tu";
 import { UsedSigns } from "../../lib/used-signs";
 
@@ -13,9 +14,8 @@ interface TestContainer extends TestObject {
 }
 
 describe("ComplexHandler Object", () => {
-  const handler = new ComplexHandler();
-
-  function testZip(input: any, zipped: string) {
+  function testZip(input: any, zipped: string, options?: ZipOptions) {
+    const handler = new ComplexHandler(options);
     const zipResult = handler.zip(input);
     expect(zipResult).toEqual(zipped);
     expect(handler.unzip(zipped)).toEqual(input);
@@ -35,14 +35,23 @@ describe("ComplexHandler Object", () => {
       testZip(value, TU.full(s.Object, TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj()));
     });
 
-    describe("empty", () => {
-      it("undefined", () => {
+    describe("undefined", () => {
+      it("undefined default", () => {
         const v = {
           name: "kant",
           child: undefined,
         };
-        testZip(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)));
+        testZip(v, TU.full(s.Object, TU.p("name", v.name)));
       });
+      it("undefined includeUndefinedProperty", () => {
+        const v = {
+          name: "kant",
+          child: undefined,
+        };
+        testZip(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)), { includeUndefinedProperty: true });
+      });
+    });
+    describe("null", () => {
       it("null", () => {
         const v = {
           name: "kant",

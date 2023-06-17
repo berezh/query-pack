@@ -58,7 +58,7 @@ export interface ZipValueConvertor extends Record<string, string | number | ZipV
 export interface ZipOptions {
   fields?: ZipFieldConvertor;
   values?: ZipValueConvertor;
-  ignoreUndefinedProperty?: boolean;
+  includeUndefinedProperty?: boolean;
 }
 
 export interface ParsedProperty {
