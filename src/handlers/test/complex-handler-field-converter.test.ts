@@ -38,11 +38,11 @@ describe("FieldConverter", () => {
           name: "Team 1",
           captain: "zak",
         },
-        "1X1N1Y2SUteamW1YcaptainSzak",
+        "1X1N1Y2SUteamW1Y3Szak",
         {
           id: 1,
           name: 2,
-          capitan: 3,
+          captain: 3,
         }
       );
     });

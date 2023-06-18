@@ -83,7 +83,7 @@ console.log(value);
 
 ## Options
 
-Options is a encoding settings passed as a second parameter to the `encode` or `decode` functions. Has `PackOptions` type.
+Options is an encoding settings passed as a second parameter to the `encode` or `decode` functions. Has `PackOptions` type.
 
 | Name                     | Description                                                                                                                                                     |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -102,7 +102,7 @@ const packOptions: PackOptions = {
     fields:{
         id: 1,
         name: 2,
-        capitan: 3
+        captain: 3
     }
 }
 ...
@@ -113,7 +113,7 @@ const qParam = encode({
 }, packOptions);
 
 console.log(qParam);
-// =>  1X1N1Y2SUteamW1YcaptainSzak
+// =>  1X1N1Y2SUteamW1Y3Szak
 
 const team = decode(qParam, packOptions);
 console.log(team);
