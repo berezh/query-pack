@@ -5,3 +5,4 @@ tslint.json
 .*
 jest*
 todo
+test_*
