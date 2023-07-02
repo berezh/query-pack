@@ -1,7 +1,7 @@
 import { QpErrorCode } from "./code";
 
 export class QpError extends Error {
-  private readonly code: QpErrorCode;
+  public readonly code: QpErrorCode;
 
   constructor(c: QpErrorCode, message: string) {
     super(message);
