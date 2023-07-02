@@ -2,6 +2,8 @@ export type ZipType = "string" | "number" | "boolean" | "object" | "array" | "un
 
 export type AllHandledType = ZipType | "empty";
 
+export const MAX_URL_LENGTH = 2048;
+
 export interface ZippedValue {
   type: ZipType;
   // todo: use only splitter: remove type
@@ -59,6 +61,8 @@ export interface PackOptions {
   fields?: ZipFieldConvertor;
   values?: ZipValueConvertor;
   includeUndefinedProperty?: boolean;
+  maxLength?: number; // 2048
+  domainOriginLength?: number;
 }
 
 export interface ParsedProperty {

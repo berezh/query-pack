@@ -1,4 +1,4 @@
-import { ZippedRef, ZippedRefPosition, ZipType, PackOptions } from "../interfaces";
+import { ZippedRef, ZippedRefPosition, ZipType, PackOptions, MAX_URL_LENGTH } from "../interfaces";
 import { CommonUtil } from "../lib/common";
 import { ObjectPosition } from "./object-position";
 import { Parser } from "../lib/parser";
@@ -7,6 +7,8 @@ import { TypeUtil } from "../lib/type";
 import { UsedSigns } from "../lib/used-signs";
 import { ValueConverter } from "../converters/value-converter";
 import { FieldConverter } from "../converters/field-converter";
+import { QpError } from "../lib/error";
+import { QpErrorCode } from "../lib/error/code";
 
 const s = UsedSigns.Splitter;
 
@@ -23,13 +25,21 @@ export class ComplexHandler {
 
   private includeUndefinedProperty: boolean;
 
+  private maxLength = MAX_URL_LENGTH;
+
   private parser = new Parser();
 
   constructor(options?: PackOptions) {
-    const { fields = {}, values = {}, includeUndefinedProperty = false } = options || {};
+    const { fields = {}, values = {}, includeUndefinedProperty = false, maxLength: optionMaxLength, domainOriginLength } = options || {};
     this.fieldConverter = new FieldConverter(fields);
     this.valueConverter = new ValueConverter(values);
     this.includeUndefinedProperty = includeUndefinedProperty;
+    if (optionMaxLength) {
+      this.maxLength = optionMaxLength;
+    }
+    if (domainOriginLength) {
+      this.maxLength = this.maxLength - domainOriginLength;
+    }
   }
 
   private zipSimple(current: ZippedRef, zippedName: string | undefined, type: ZipType, value: unknown) {
@@ -204,6 +214,11 @@ export class ComplexHandler {
     }
 
     const fullResult = lines.join(s.Object);
+
+    if (fullResult?.length > this.maxLength) {
+      throw new QpError(QpErrorCode.MAX_LENGTH, `${fullResult.length} is more than max URL length(${this.maxLength})`);
+    }
+
     return fullResult;
   }
 

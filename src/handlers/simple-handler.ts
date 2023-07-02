@@ -1,4 +1,3 @@
-import { ZipType, ZippedValue } from "../interfaces";
 import { BooleanZipper } from "../zippers/boolean";
 import { NullZipper } from "../zippers/null";
 import { NumberZipper } from "../zippers/number";
@@ -7,6 +6,7 @@ import { UndefinedZipper } from "../zippers/undefined";
 import { UpperCaseZipper } from "../zippers/upper-case";
 import { Zipper } from "../zippers/zipper";
 import { UsedSigns } from "../lib/used-signs";
+import { ZipType, ZippedValue } from "../interfaces";
 
 const s = UsedSigns.Splitter;
 

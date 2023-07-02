@@ -1,5 +1,5 @@
-import { PackOptions } from "./interfaces";
 import { ComplexHandler } from "./handlers/complex-handler";
+import { PackOptions } from "./interfaces";
 import { Parser } from "./lib/parser";
 
 export { PackOptions };
