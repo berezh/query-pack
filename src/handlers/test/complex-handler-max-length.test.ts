@@ -1,3 +1,4 @@
+import { encode } from "../..";
 import { QpError } from "../../lib/error";
 import { QpErrorCode } from "../../lib/error/code";
 import { ComplexHandler } from "../complex-handler";
@@ -12,6 +13,16 @@ describe("ComplexHandler MaxLength", () => {
 
       try {
         handler.zip(team);
+      } catch (error) {
+        expect((error as QpError).code).toBe(QpErrorCode.MAX_LENGTH);
+      }
+    });
+
+    it("encode", () => {
+      const maxLength = 10;
+
+      try {
+        encode(team, { maxLength });
       } catch (error) {
         expect((error as QpError).code).toBe(QpErrorCode.MAX_LENGTH);
       }
