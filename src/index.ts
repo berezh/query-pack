@@ -1,5 +1,5 @@
 import { ComplexHandler } from "./handlers/complex-handler";
-import { PackOptions } from "./interfaces";
+import { MAX_URL_LENGTH, PackOptions } from "./interfaces";
 import { Parser } from "./lib/parser";
 
 export { PackOptions };
@@ -20,4 +20,15 @@ export function decode<T = any>(zipped: string, options?: PackOptions): T {
 export function version(zipped: string): number | undefined {
   const [version] = new Parser().version(zipped);
   return version;
+}
+
+export function verifyLength(
+  encodedString: string,
+  options?: {
+    maxLength?: number; // 2048
+    domainOriginLength?: number;
+  }
+): boolean {
+  const { maxLength = MAX_URL_LENGTH, domainOriginLength = 0 } = options || {};
+  return encodedString?.length + domainOriginLength <= maxLength;
 }

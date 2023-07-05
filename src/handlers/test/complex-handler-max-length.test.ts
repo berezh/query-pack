@@ -18,6 +18,12 @@ describe("ComplexHandler MaxLength", () => {
       }
     });
 
+    it("ignoreMaxLength", () => {
+      const maxLength = 10;
+      const handler = new ComplexHandler({ maxLength, ignoreMaxLength: true });
+      expect(handler.zip(team)).toBeTruthy();
+    });
+
     it("encode", () => {
       const maxLength = 10;
 

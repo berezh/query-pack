@@ -63,6 +63,7 @@ export interface PackOptions {
   includeUndefinedProperty?: boolean;
   maxLength?: number; // 2048
   domainOriginLength?: number;
+  ignoreMaxLength?: boolean;
 }
 
 export interface ParsedProperty {

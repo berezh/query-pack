@@ -29,13 +29,24 @@ export class ComplexHandler {
 
   private domainOriginLength = 0;
 
+  private ignoreMaxLength = false;
+
   private parser = new Parser();
 
   constructor(options?: PackOptions) {
-    const { fields = {}, values = {}, includeUndefinedProperty = false, maxLength: optionMaxLength, domainOriginLength: optionDomainOriginLength } = options || {};
+    const {
+      fields = {},
+      values = {},
+      includeUndefinedProperty = false,
+      maxLength: optionMaxLength,
+      domainOriginLength: optionDomainOriginLength,
+      ignoreMaxLength: optionIgnoreMaxLength,
+    } = options || {};
     this.fieldConverter = new FieldConverter(fields);
     this.valueConverter = new ValueConverter(values);
     this.includeUndefinedProperty = includeUndefinedProperty;
+    this.ignoreMaxLength = !!optionIgnoreMaxLength;
+
     if (optionMaxLength) {
       this.maxLength = optionMaxLength;
     }
@@ -217,7 +228,7 @@ export class ComplexHandler {
 
     const fullResult = lines.join(s.Object);
 
-    if (fullResult?.length + this.domainOriginLength > this.maxLength) {
+    if (!this.ignoreMaxLength && fullResult?.length + this.domainOriginLength > this.maxLength) {
       throw new QpError(QpErrorCode.MAX_LENGTH, `The max length of URL is ${this.maxLength}. You have - ${fullResult.length + this.domainOriginLength}`);
     }
 
