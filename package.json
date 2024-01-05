@@ -1,6 +1,6 @@
 {
   "name": "query-pack",
-  "version": "0.0.12",
+  "version": "0.1.0",
   "description": "Encode or decode query parameter",
   "keywords": [
     "query parameter",
@@ -23,7 +23,8 @@
     "lint:fix": "eslint . --fix"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "git+https://github.com/berezh/query-pack.git"
   },
   "author": "",
   "license": "ISC",
