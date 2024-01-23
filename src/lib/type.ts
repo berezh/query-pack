@@ -1,7 +1,7 @@
-import { AllHandledType, ZipType } from "../interfaces";
+import { AllHandledType, PackType } from "../interfaces";
 
 export class TypeUtil {
-  public static getType(source: unknown): ZipType | undefined {
+  public static getType(source: unknown): PackType | undefined {
     if (Array.isArray(source)) {
       return "array";
     }
@@ -25,21 +25,21 @@ export class TypeUtil {
     return undefined;
   }
 
-  private static complexTypes: ZipType[] = ["array", "object"];
+  private static complexTypes: PackType[] = ["array", "object"];
 
-  private static simpleTypes: ZipType[] = ["number", "boolean", "string"];
+  private static simpleTypes: PackType[] = ["number", "boolean", "string"];
 
-  private static emptyTypes: ZipType[] = ["undefined", "null"];
+  private static emptyTypes: PackType[] = ["undefined", "null"];
 
-  public static isComplex(type: ZipType): boolean {
+  public static isComplex(type: PackType): boolean {
     return TypeUtil.complexTypes.includes(type);
   }
 
-  public static isSimple(type: ZipType): boolean {
+  public static isSimple(type: PackType): boolean {
     return TypeUtil.simpleTypes.includes(type);
   }
 
-  public static isEmpty(type: ZipType): boolean {
+  public static isEmpty(type: PackType): boolean {
     return TypeUtil.emptyTypes.includes(type);
   }
 

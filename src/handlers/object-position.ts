@@ -1,9 +1,9 @@
-import { ZippedRefPosition } from "../interfaces";
+import { PackedRefPosition } from "../interfaces";
 
 export class ObjectPosition {
   private deep: number[] = [];
 
-  public reset(): ZippedRefPosition {
+  public reset(): PackedRefPosition {
     this.deep = [];
     return {
       level: 0,
@@ -12,7 +12,7 @@ export class ObjectPosition {
     };
   }
 
-  public level(p: ZippedRefPosition): ZippedRefPosition {
+  public level(p: PackedRefPosition): PackedRefPosition {
     const level = p.level + 1;
 
     let levelIndex = 0;
@@ -31,7 +31,7 @@ export class ObjectPosition {
     };
   }
 
-  public index(p: ZippedRefPosition, index: number): ZippedRefPosition {
+  public index(p: PackedRefPosition, index: number): PackedRefPosition {
     return {
       ...p,
       itemIndex: index,

@@ -1,4 +1,4 @@
-import { ZippedValue } from "../../interfaces";
+import { PackedValue } from "../../interfaces";
 import { SimpleHandler } from "../simple-handler";
 import { UsedSigns } from "../../lib/used-signs";
 
@@ -10,7 +10,7 @@ describe("SimpleHandler", () => {
   function convert(input: string, result: string) {
     // result: ZippedValue) {
     const curZipped = handler.zip("string", input);
-    expect(curZipped).toEqual<ZippedValue>({ value: result, type: "string", splitter: s.StringProperty });
+    expect(curZipped).toEqual<PackedValue>({ value: result, type: "string", splitter: s.StringProperty });
     const unzipValue = handler.unzip(s.StringProperty, result);
     expect(unzipValue).toEqual(input);
   }

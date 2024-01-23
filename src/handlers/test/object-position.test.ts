@@ -1,11 +1,11 @@
-import { ZippedRefPosition } from "../../interfaces";
+import { PackedRefPosition } from "../../interfaces";
 import { ObjectPosition } from "../object-position";
 
 describe("ObjectPosition", () => {
   const op = new ObjectPosition();
 
-  function positionEqual(expected: ZippedRefPosition, actual: ZippedRefPosition) {
-    expect(expected).toEqual<ZippedRefPosition>(actual);
+  function positionEqual(expected: PackedRefPosition, actual: PackedRefPosition) {
+    expect(expected).toEqual<PackedRefPosition>(actual);
   }
 
   describe("cycle", () => {

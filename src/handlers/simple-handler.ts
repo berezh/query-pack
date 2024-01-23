@@ -6,12 +6,12 @@ import { UndefinedZipper } from "../zippers/undefined";
 import { UpperCaseZipper } from "../zippers/upper-case";
 import { Zipper } from "../zippers/zipper";
 import { UsedSigns } from "../lib/used-signs";
-import { ZipType, ZippedValue } from "../interfaces";
+import { PackType, PackedValue } from "../interfaces";
 
 const s = UsedSigns.Splitter;
 
 interface TypeOperator {
-  type: ZipType;
+  type: PackType;
   splitter: string;
   zippers: Zipper[];
   unzippers?: Zipper[];
@@ -51,7 +51,7 @@ export class SimpleHandler {
     },
   ];
 
-  public zip(type: ZipType, source: unknown): ZippedValue | undefined {
+  public zip(type: PackType, source: unknown): PackedValue | undefined {
     const operator = this.operators.find(x => x.type === type);
     if (operator) {
       let result = source;

@@ -1,4 +1,4 @@
-import { ZippedRef, ZippedRefPosition, ZipType, PackOptions, MAX_URL_LENGTH } from "../interfaces";
+import { PackedRef, PackedRefPosition, PackType, PackOptions, MAX_URL_LENGTH } from "../interfaces";
 import { CommonUtil } from "../lib/common";
 import { ObjectPosition } from "./object-position";
 import { Parser } from "../lib/parser";
@@ -55,17 +55,17 @@ export class ComplexHandler {
     }
   }
 
-  private zipSimple(current: ZippedRef, zippedName: string | undefined, type: ZipType, value: unknown) {
+  private zipSimple(current: PackedRef, zippedName: string | undefined, type: PackType, value: unknown) {
     const simpleResult = this.simple.zip(type, value);
     if (simpleResult) {
       current.children.push({ ...simpleResult, zippedName });
     }
   }
 
-  private zipObject(references: ZippedRef[], parent: ZippedRef | undefined, propertyName: string | undefined, value: unknown, pos: ZippedRefPosition) {
+  private zipObject(references: PackedRef[], parent: PackedRef | undefined, propertyName: string | undefined, value: unknown, pos: PackedRefPosition) {
     const position = this.objectPosition.level(pos);
 
-    const current: ZippedRef = new ZippedRef("object", position, parent, propertyName);
+    const current: PackedRef = new PackedRef("object", position, parent, propertyName);
     references.push(current);
 
     const objectValue = value as object;
@@ -123,10 +123,10 @@ export class ComplexHandler {
     }
   }
 
-  private zipArray(references: ZippedRef[], parent: ZippedRef | undefined, propertyName: string | undefined, value: unknown, pos: ZippedRefPosition) {
+  private zipArray(references: PackedRef[], parent: PackedRef | undefined, propertyName: string | undefined, value: unknown, pos: PackedRefPosition) {
     const position = this.objectPosition.level(pos);
 
-    const current: ZippedRef = new ZippedRef("array", position, parent, propertyName);
+    const current: PackedRef = new PackedRef("array", position, parent, propertyName);
     references.push(current);
 
     const arrayValue = value as any[];
@@ -171,7 +171,7 @@ export class ComplexHandler {
   }
 
   public zip(source: unknown): string {
-    let references: ZippedRef[] = [];
+    let references: PackedRef[] = [];
     const lines: string[] = [];
 
     const type = TypeUtil.getType(source);
@@ -183,7 +183,7 @@ export class ComplexHandler {
       } else if (type === "array") {
         this.zipArray(references, undefined, undefined, source, p);
       } else if (TypeUtil.isSimple(type) || TypeUtil.isEmpty(type)) {
-        const current: ZippedRef = new ZippedRef(type, p);
+        const current: PackedRef = new PackedRef(type, p);
         references.push(current);
         if (TypeUtil.isSimple(type)) {
           this.zipSimple(current, undefined, type, source);
@@ -246,7 +246,7 @@ export class ComplexHandler {
           const root = parsedObjects[0];
           if (TypeUtil.isComplexOrEmpty(root.type)) {
             const realObjects: any[] = [];
-            const links: [ZipType, number, string | number, number][] = [];
+            const links: [PackType, number, string | number, number][] = [];
             let lastRefIndex = -1;
             for (let i = 0; i < parsedObjects.length; i++) {
               const { type, properties } = parsedObjects[i];

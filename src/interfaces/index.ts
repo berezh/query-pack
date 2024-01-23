@@ -1,39 +1,39 @@
-export type ZipType = "string" | "number" | "boolean" | "object" | "array" | "undefined" | "null";
+export type PackType = "string" | "number" | "boolean" | "object" | "array" | "undefined" | "null";
 
-export type AllHandledType = ZipType | "empty";
+export type AllHandledType = PackType | "empty";
 
 export const MAX_URL_LENGTH = 2048;
 
-export interface ZippedValue {
-  type: ZipType;
+export interface PackedValue {
+  type: PackType;
   // todo: use only splitter: remove type
   splitter: string;
   value: string;
 }
 
-export interface ZippedNamedValue extends ZippedValue {
+export interface PackedNamedValue extends PackedValue {
   propertyName?: string;
   zippedName?: string;
 }
 
-export interface ZippedRefPosition {
+export interface PackedRefPosition {
   level: number;
   levelIndex: number;
   itemIndex: number;
 }
 
-export class ZippedRef {
-  public parent?: ZippedRef;
+export class PackedRef {
+  public parent?: PackedRef;
 
   public propertyName?: string;
 
-  public type: ZipType;
+  public type: PackType;
 
-  public children: ZippedNamedValue[] = [];
+  public children: PackedNamedValue[] = [];
 
-  public position: ZippedRefPosition;
+  public position: PackedRefPosition;
 
-  constructor(type: ZipType, position: ZippedRefPosition, parent?: ZippedRef, propertyName?: string) {
+  constructor(type: PackType, position: PackedRefPosition, parent?: PackedRef, propertyName?: string) {
     this.type = type;
     this.position = position;
     this.parent = parent;
@@ -42,7 +42,7 @@ export class ZippedRef {
 
   public get rootNames(): string[] {
     const r: string[] = [];
-    let p = this as ZippedRef | undefined;
+    let p = this as PackedRef | undefined;
     while (!!p) {
       if (p.propertyName) {
         r.unshift(p.propertyName);
@@ -69,7 +69,7 @@ export interface PackOptions {
 export interface ParsedProperty {
   name: string;
   splitter: string;
-  type: ZipType;
+  type: PackType;
   value: string;
 }
 

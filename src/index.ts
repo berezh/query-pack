@@ -4,18 +4,22 @@ import { Parser } from "./lib/parser";
 
 export { PackOptions, PackFieldConvertor, PackValueConvertor };
 
-export function encode<T = unknown>(source: T, options?: PackOptions): string {
+export const encode = <T = unknown>(source: T, options?: PackOptions): string => {
   const handler = new ComplexHandler(options);
   const result = handler.zip(source);
   return encodeURIComponent(result);
-}
+};
 
-export function decode<T = any>(zipped: string, options?: PackOptions): T {
+export const pack = encode;
+
+export const decode = <T = any>(zipped: string, options?: PackOptions): T => {
   const decodedInput = decodeURIComponent(zipped);
   const handler = new ComplexHandler(options);
   const result = handler.unzip(decodedInput);
   return result;
-}
+};
+
+export const unpack = encode;
 
 export function version(zipped: string): number | undefined {
   const [version] = new Parser().version(zipped);
