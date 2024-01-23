@@ -1,8 +1,8 @@
-import { ZipValueConvertor } from "../../interfaces";
+import { PackValueConvertor } from "../../interfaces";
 import { ComplexHandler } from "../../handlers/complex-handler";
 
 describe("ValueConverter", () => {
-  function testZip(source: any, alt: any, converter: ZipValueConvertor) {
+  function testZip(source: any, alt: any, converter: PackValueConvertor) {
     const handler = new ComplexHandler({ values: converter });
     const zipSource = handler.zip(source);
     const zipAlt = new ComplexHandler().zip(alt);

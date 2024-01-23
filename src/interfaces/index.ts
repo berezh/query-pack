@@ -53,13 +53,13 @@ export class ZippedRef {
   }
 }
 
-export interface ZipFieldConvertor extends Record<string, number | [number, ZipFieldConvertor]> {}
+export interface PackFieldConvertor extends Record<string, number | [number, PackFieldConvertor]> {}
 
-export interface ZipValueConvertor extends Record<string, string | number | ZipValueConvertor> {}
+export interface PackValueConvertor extends Record<string, string | number | PackValueConvertor> {}
 
 export interface PackOptions {
-  fields?: ZipFieldConvertor;
-  values?: ZipValueConvertor;
+  fields?: PackFieldConvertor;
+  values?: PackValueConvertor;
   includeUndefinedProperty?: boolean;
   maxLength?: number; // 2048
   domainOriginLength?: number;

@@ -1,14 +1,14 @@
-import { ZipValueConvertor } from "../interfaces";
+import { PackValueConvertor } from "../interfaces";
 
 export class ValueConverter {
-  private convertor: ZipValueConvertor;
+  private convertor: PackValueConvertor;
 
-  constructor(convertor: ZipValueConvertor) {
+  constructor(convertor: PackValueConvertor) {
     this.convertor = convertor;
     this.validateConvertor([], this.convertor);
   }
 
-  private validateConvertor(names: string[], c: ZipValueConvertor) {
+  private validateConvertor(names: string[], c: PackValueConvertor) {
     const keyValues: [string, number | string][] = [];
     for (const key in c) {
       let value = c[key];
@@ -27,8 +27,8 @@ export class ValueConverter {
     }
   }
 
-  private find(roots: string[]): ZipValueConvertor | undefined {
-    let r: ZipValueConvertor | undefined = this.convertor;
+  private find(roots: string[]): PackValueConvertor | undefined {
+    let r: PackValueConvertor | undefined = this.convertor;
     for (const root of roots) {
       if (r) {
         const v = r[root];

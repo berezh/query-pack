@@ -1,21 +1,21 @@
 import { SimpleHandler } from "../handlers/simple-handler";
-import { ZipFieldConvertor } from "../interfaces";
+import { PackFieldConvertor } from "../interfaces";
 import { Number32 } from "../lib/number32";
 import { UsedSigns } from "../lib/used-signs";
 
 const s = UsedSigns.Splitter;
 
 export class FieldConverter {
-  private convertor: ZipFieldConvertor;
+  private convertor: PackFieldConvertor;
 
   private simpleHandler = new SimpleHandler();
 
-  constructor(convertor: ZipFieldConvertor) {
+  constructor(convertor: PackFieldConvertor) {
     this.convertor = convertor;
     this.validateConvertor([], convertor);
   }
 
-  private validateConvertor(names: string[], c: ZipFieldConvertor) {
+  private validateConvertor(names: string[], c: PackFieldConvertor) {
     const keyValues: [string, number][] = [];
     for (const key in c) {
       let value = c[key];
@@ -34,7 +34,7 @@ export class FieldConverter {
   }
 
   private getPropertyNumber(...names: string[]): number | undefined {
-    let con: ZipFieldConvertor | undefined = this.convertor;
+    let con: PackFieldConvertor | undefined = this.convertor;
     let propNumber: number | undefined = undefined;
     for (const name of names) {
       const child = con ? con[name] : undefined;
@@ -71,7 +71,7 @@ export class FieldConverter {
   }
 
   private getPropertyName(names: string[], propNumber: number): string | undefined {
-    let con: ZipFieldConvertor | undefined = this.convertor;
+    let con: PackFieldConvertor | undefined = this.convertor;
     for (const name of names) {
       const child = con ? con[name] : undefined;
       if (Array.isArray(child)) {

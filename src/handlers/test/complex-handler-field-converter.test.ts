@@ -1,4 +1,4 @@
-import { ZipFieldConvertor } from "../../interfaces";
+import { PackFieldConvertor } from "../../interfaces";
 import { ComplexHandler } from "../../handlers/complex-handler";
 import { TU } from "../../lib/test/tu";
 import { UsedSigns } from "../../lib/used-signs";
@@ -6,14 +6,14 @@ import { UsedSigns } from "../../lib/used-signs";
 const s = UsedSigns.Splitter;
 
 describe("FieldConverter", () => {
-  function testZip(input: any, zipped: string, converter: ZipFieldConvertor) {
+  function testZip(input: any, zipped: string, converter: PackFieldConvertor) {
     const handler = new ComplexHandler({ fields: converter });
     const zipResult = handler.zip(input);
     expect(zipResult).toEqual(zipped);
     expect(handler.unzip(zipped)).toEqual(input);
   }
 
-  function testCycle(source: any, converter: ZipFieldConvertor) {
+  function testCycle(source: any, converter: PackFieldConvertor) {
     const handler = new ComplexHandler({ fields: converter });
     const zipped = handler.zip(source);
     const unzipped = handler.unzip(zipped);

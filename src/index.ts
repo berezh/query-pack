@@ -1,8 +1,8 @@
 import { ComplexHandler } from "./handlers/complex-handler";
-import { MAX_URL_LENGTH, PackOptions } from "./interfaces";
+import { MAX_URL_LENGTH, PackOptions, PackFieldConvertor, PackValueConvertor } from "./interfaces";
 import { Parser } from "./lib/parser";
 
-export { PackOptions };
+export { PackOptions, PackFieldConvertor, PackValueConvertor };
 
 export function encode<T = unknown>(source: T, options?: PackOptions): string {
   const handler = new ComplexHandler(options);
