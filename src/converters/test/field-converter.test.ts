@@ -2,12 +2,12 @@ import { Number32 } from "../../lib/number32";
 import { FieldConverter } from "../field-converter";
 
 describe("FieldConverter", () => {
-  function testZip(c: FieldConverter, names: string[], name: string, number: number) {
-    expect(c.zip(names, name)).toEqual(Number32.toBase32(number));
+  function testPack(c: FieldConverter, names: string[], name: string, number: number) {
+    expect(c.pack(names, name)).toEqual(Number32.toBase32(number));
   }
 
-  function testUnzip(c: FieldConverter, zipObject: object, unzipObject: object) {
-    expect(c.unzip(zipObject)).toEqual(unzipObject);
+  function testUnpack(c: FieldConverter, packObject: object, unpackObject: object) {
+    expect(c.unpack(packObject)).toEqual(unpackObject);
   }
 
   describe("simple", () => {
@@ -17,10 +17,10 @@ describe("FieldConverter", () => {
         name: 2,
       });
 
-      testZip(c, [], "id", 1);
-      testZip(c, [], "name", 2);
+      testPack(c, [], "id", 1);
+      testPack(c, [], "name", 2);
 
-      testUnzip(
+      testUnpack(
         c,
         { 1: 0, 2: "alex" },
         {
@@ -41,11 +41,11 @@ describe("FieldConverter", () => {
         ],
       });
 
-      testZip(c, [], "name", 1);
-      testZip(c, ["child"], "id", 1);
-      testZip(c, ["child"], "name", 2);
+      testPack(c, [], "name", 1);
+      testPack(c, ["child"], "id", 1);
+      testPack(c, ["child"], "name", 2);
 
-      testUnzip(
+      testUnpack(
         c,
         { 1: "anton", 2: { 1: 10, 2: "dan" } },
         {
@@ -64,10 +64,10 @@ describe("FieldConverter", () => {
         name: 2,
       });
 
-      testZip(c, [], "id", 1);
-      testZip(c, [], "name", 2);
+      testPack(c, [], "id", 1);
+      testPack(c, [], "name", 2);
 
-      testUnzip(
+      testUnpack(
         c,
         [{ 1: 10, 2: "kent" }],
         [
@@ -91,11 +91,11 @@ describe("FieldConverter", () => {
         ],
       });
 
-      testZip(c, [], "name", 1);
-      testZip(c, ["child"], "id", 1);
-      testZip(c, ["child"], "name", 2);
+      testPack(c, [], "name", 1);
+      testPack(c, ["child"], "id", 1);
+      testPack(c, ["child"], "name", 2);
 
-      testUnzip(
+      testUnpack(
         c,
         { 1: "root", 2: [{ 1: 10, 2: "kent" }] },
         {

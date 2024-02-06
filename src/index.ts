@@ -6,23 +6,23 @@ export { PackOptions, PackFieldConvertor, PackValueConvertor };
 
 export const encode = <T = unknown>(source: T, options?: PackOptions): string => {
   const handler = new ComplexHandler(options);
-  const result = handler.zip(source);
+  const result = handler.pack(source);
   return encodeURIComponent(result);
 };
 
 export const pack = encode;
 
-export const decode = <T = any>(zipped: string, options?: PackOptions): T => {
-  const decodedInput = decodeURIComponent(zipped);
+export const decode = <T = any>(packed: string, options?: PackOptions): T => {
+  const decodedInput = decodeURIComponent(packed);
   const handler = new ComplexHandler(options);
-  const result = handler.unzip(decodedInput);
+  const result = handler.unpack(decodedInput);
   return result;
 };
 
 export const unpack = encode;
 
-export function version(zipped: string): number | undefined {
-  const [version] = new Parser().version(zipped);
+export function version(packed: string): number | undefined {
+  const [version] = new Parser().version(packed);
   return version;
 }
 

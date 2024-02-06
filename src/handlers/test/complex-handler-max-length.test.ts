@@ -12,7 +12,7 @@ describe("ComplexHandler MaxLength", () => {
       const handler = new ComplexHandler({ maxLength });
 
       try {
-        handler.zip(team);
+        handler.pack(team);
       } catch (error) {
         expect((error as QpError).code).toBe(QpErrorCode.MAX_LENGTH);
       }
@@ -21,7 +21,7 @@ describe("ComplexHandler MaxLength", () => {
     it("ignoreMaxLength", () => {
       const maxLength = 10;
       const handler = new ComplexHandler({ maxLength, ignoreMaxLength: true });
-      expect(handler.zip(team)).toBeTruthy();
+      expect(handler.pack(team)).toBeTruthy();
     });
 
     it("encode", () => {
@@ -38,13 +38,13 @@ describe("ComplexHandler MaxLength", () => {
       const maxLength = 20;
 
       let handler = new ComplexHandler({ maxLength });
-      const zipped = handler.zip(team);
-      expect(zipped.length).toBe(17);
+      const packed = handler.pack(team);
+      expect(packed.length).toBe(17);
 
       handler = new ComplexHandler({ maxLength, domainOriginLength: 10 });
 
       try {
-        handler.zip(team);
+        handler.pack(team);
       } catch (error) {
         expect((error as QpError).code).toBe(QpErrorCode.MAX_LENGTH);
       }

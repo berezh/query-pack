@@ -1,7 +1,12 @@
 # base32: 
   minus support
   dot support (on upper levels)
-#general:
+general:
+ - add ignore property support
   URL max length exception(domain length)
 #test
   encoded char: cyrillic, etc
+  
+# RELEVANT
+- Optimization: One symbol array [Number|Bool|String]. N1N2N3 => NN123, B1B0B1 => BB101, SaSbSc => SSabc
+- Optimization: Array of complex [Object|Array]. OOO => 02, AAA => A2

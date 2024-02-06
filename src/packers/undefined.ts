@@ -1,10 +1,10 @@
 import { UsedSigns } from "../lib/used-signs";
-import { Zipper } from "./zipper";
+import { BasicPacker } from "./basic";
 
 const s = UsedSigns.Splitter;
 
-export class UndefinedZipper extends Zipper<undefined> {
-  public zip(source: undefined): string {
+export class UndefinedPacker extends BasicPacker<undefined> {
+  public pack(source: undefined): string {
     if (source === undefined) {
       return s.UndefinedProperty;
     }
@@ -12,8 +12,8 @@ export class UndefinedZipper extends Zipper<undefined> {
     return "";
   }
 
-  public unzip(zipped: string): undefined {
-    if (zipped === s.UndefinedProperty) {
+  public unpack(packed: string): undefined {
+    if (packed === s.UndefinedProperty) {
       return undefined;
     }
 

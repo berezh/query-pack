@@ -4,7 +4,7 @@
 // -_.~
 
 import { UsedSigns } from "../lib/used-signs";
-import { Zipper } from "./zipper";
+import { BasicPacker } from "./basic";
 
 const s = UsedSigns.String;
 
@@ -15,7 +15,8 @@ interface SignInfo {
 }
 
 export type IItemType = typeof s.WhiteSpace | typeof s.Apostrophe;
-export class StringZipper extends Zipper<string> {
+
+export class StringPacker extends BasicPacker<string> {
   private readonly signs: Record<string, SignInfo> = {
     " ": { alt: s.WhiteSpace, altRegex: "\\s" },
     "'": { alt: s.Apostrophe },
@@ -31,32 +32,32 @@ export class StringZipper extends Zipper<string> {
     '"': { alt: s.Quotation },
   };
 
-  private zipAnyMatch: RegExp;
+  private packAnyMatch: RegExp;
 
-  private unzipAnyMatch: RegExp;
+  private unpackAnyMatch: RegExp;
 
   constructor() {
     super();
-    let zipReg = "";
+    let packReg = "";
     for (const key in this.signs) {
       const { altRegex, special } = this.signs[key];
-      zipReg += altRegex ? altRegex : (special === true ? "\\" : "") + key;
+      packReg += altRegex ? altRegex : (special === true ? "\\" : "") + key;
     }
-    this.zipAnyMatch = new RegExp(`[${zipReg}]`, "g");
+    this.packAnyMatch = new RegExp(`[${packReg}]`, "g");
 
-    let unzipReg = "";
+    let unpackReg = "";
     const keys = Object.keys(this.signs);
     for (const key of keys) {
-      unzipReg += this.signs[key].alt;
+      unpackReg += this.signs[key].alt;
     }
-    this.unzipAnyMatch = new RegExp(`[${unzipReg}]`, "g");
+    this.unpackAnyMatch = new RegExp(`[${unpackReg}]`, "g");
   }
 
-  public zip(source: string): string {
+  public pack(source: string): string {
     let result = source;
     if (typeof result === "string") {
-      if (result.match(this.zipAnyMatch)) {
-        result = result.replace(this.zipAnyMatch, match => {
+      if (result.match(this.packAnyMatch)) {
+        result = result.replace(this.packAnyMatch, match => {
           const info = this.signs[match];
           return info?.alt;
         });
@@ -69,11 +70,11 @@ export class StringZipper extends Zipper<string> {
     return result;
   }
 
-  public unzip(zipped: string): string {
-    let result = zipped;
+  public unpack(packed: string): string {
+    let result = packed;
     if (typeof result === "string") {
-      if (result.match(this.unzipAnyMatch)) {
-        result = result.replace(this.unzipAnyMatch, match => {
+      if (result.match(this.unpackAnyMatch)) {
+        result = result.replace(this.unpackAnyMatch, match => {
           const key = Object.keys(this.signs).find(key => this.signs[key].alt === match);
           return key || "";
         });

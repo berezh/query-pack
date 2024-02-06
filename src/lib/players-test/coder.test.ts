@@ -36,8 +36,8 @@ describe("Coder", () => {
         ],
       };
 
-      const zipped = encode(data);
-      const response = decode(zipped);
+      const packed = encode(data);
+      const response = decode(packed);
 
       expect(data).toEqual(response);
     });
@@ -231,8 +231,8 @@ describe("Coder", () => {
         },
       };
 
-      const zipped = encode(data, options);
-      const response = decode(zipped, options);
+      const packed = encode(data, options);
+      const response = decode(packed, options);
 
       expect(data).toEqual(response);
     });

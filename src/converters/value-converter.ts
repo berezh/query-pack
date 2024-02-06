@@ -43,7 +43,7 @@ export class ValueConverter {
     return r;
   }
 
-  public zip(roots: string[], name: string, value: string): string {
+  public pack(roots: string[], name: string, value: string): string {
     const c = this.find([...roots, name]);
     if (c) {
       const alt = c[value];
@@ -54,7 +54,7 @@ export class ValueConverter {
     return value;
   }
 
-  public unzipValue(roots: string[], name: string, value: string | number): string | number {
+  public unpackValue(roots: string[], name: string, value: string | number): string | number {
     const c = this.find([...roots, name]);
     if (c) {
       const originalValue = Object.keys(c).find(key => `${c[key]}` === `${value}`);
@@ -74,19 +74,19 @@ export class ValueConverter {
       const objectValue = value as object;
       const keys = Object.keys(objectValue);
       for (const key of keys) {
-        const zippedValue = objectValue[key];
-        if (zippedValue !== null) {
-          if (typeof zippedValue === "string") {
-            objectValue[key] = this.unzipValue(names, key, zippedValue);
-          } else if (typeof zippedValue === "object") {
-            this.init([...names, key], zippedValue);
+        const packedValue = objectValue[key];
+        if (packedValue !== null) {
+          if (typeof packedValue === "string") {
+            objectValue[key] = this.unpackValue(names, key, packedValue);
+          } else if (typeof packedValue === "object") {
+            this.init([...names, key], packedValue);
           }
         }
       }
     }
   }
 
-  public unzip(root: object): object {
+  public unpack(root: object): object {
     if (this.convertor) {
       const names: string[] = [];
       this.init(names, root);

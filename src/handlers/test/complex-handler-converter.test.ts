@@ -2,19 +2,19 @@ import { PackOptions } from "../../interfaces";
 import { ComplexHandler } from "../../handlers/complex-handler";
 
 describe("Combine Converters", () => {
-  function testZip(source: any, alt: any, options: PackOptions) {
+  function testPack(source: any, alt: any, options: PackOptions) {
     const handler = new ComplexHandler(options);
-    const zipSource = handler.zip(source);
-    const zipAlt = new ComplexHandler().zip(alt);
-    expect(zipSource).toEqual(zipAlt);
+    const packSource = handler.pack(source);
+    const packAlt = new ComplexHandler().pack(alt);
+    expect(packSource).toEqual(packAlt);
 
-    const unzipResult = handler.unzip(zipSource);
-    expect(source).toEqual(unzipResult);
+    const unpackResult = handler.unpack(packSource);
+    expect(source).toEqual(unpackResult);
   }
 
   describe("object", () => {
     it("root", () => {
-      testZip(
+      testPack(
         {
           name: "Kent",
         },

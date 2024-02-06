@@ -2,8 +2,8 @@ import { Number32 } from "../number32";
 
 describe("Number32", () => {
   function convert(input: number, base32: string) {
-    const curZipped = Number32.toBase32(input);
-    expect(curZipped).toBe(base32);
+    const curPacked = Number32.toBase32(input);
+    expect(curPacked).toBe(base32);
     expect(Number32.toNumber(base32)).toBe(input);
   }
 
