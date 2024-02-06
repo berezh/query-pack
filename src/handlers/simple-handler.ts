@@ -1,10 +1,10 @@
-import { BooleanZipper } from "../zippers/boolean";
-import { NullZipper } from "../zippers/null";
-import { NumberZipper } from "../zippers/number";
-import { StringZipper } from "../zippers/string";
-import { UndefinedZipper } from "../zippers/undefined";
-import { UpperCaseZipper } from "../zippers/upper-case";
-import { Zipper } from "../zippers/zipper";
+import { BooleanPacker } from "../packers/boolean";
+import { NullPacker } from "../packers/null";
+import { NumberPacker } from "../packers/number";
+import { StringPacker } from "../packers/string";
+import { UndefinedPacker } from "../packers/undefined";
+import { UpperCasePacker } from "../packers/upper-case";
+import { BasicPacker } from "../packers/basic";
 import { UsedSigns } from "../lib/used-signs";
 import { PackType, PackedValue } from "../interfaces";
 
@@ -13,51 +13,51 @@ const s = UsedSigns.Splitter;
 interface TypeOperator {
   type: PackType;
   splitter: string;
-  zippers: Zipper[];
-  unzippers?: Zipper[];
+  packers: BasicPacker[];
+  unpackers?: BasicPacker[];
 }
 
 export class SimpleHandler {
-  private upperCaseZipper = new UpperCaseZipper();
+  private upperCasePacker = new UpperCasePacker();
 
-  private stringZipper = new StringZipper();
+  private stringPacker = new StringPacker();
 
   private operators: TypeOperator[] = [
     {
       type: "string",
       splitter: s.StringProperty,
-      zippers: [this.upperCaseZipper, this.stringZipper],
-      unzippers: [this.stringZipper, this.upperCaseZipper],
+      packers: [this.upperCasePacker, this.stringPacker],
+      unpackers: [this.stringPacker, this.upperCasePacker],
     },
     {
       type: "number",
       splitter: s.NumberProperty,
-      zippers: [new NumberZipper()],
+      packers: [new NumberPacker()],
     },
     {
       type: "boolean",
       splitter: s.BooleanProperty,
-      zippers: [new BooleanZipper()],
+      packers: [new BooleanPacker()],
     },
     {
       type: "null",
       splitter: s.NullProperty,
-      zippers: [new NullZipper()],
+      packers: [new NullPacker()],
     },
     {
       type: "undefined",
       splitter: s.UndefinedProperty,
-      zippers: [new UndefinedZipper()],
+      packers: [new UndefinedPacker()],
     },
   ];
 
-  public zip(type: PackType, source: unknown): PackedValue | undefined {
+  public pack(type: PackType, source: unknown): PackedValue | undefined {
     const operator = this.operators.find(x => x.type === type);
     if (operator) {
       let result = source;
-      const { zippers } = operator;
-      for (const zipper of zippers) {
-        result = zipper.zip(result);
+      const { packers } = operator;
+      for (const packer of packers) {
+        result = packer.pack(result);
       }
       return {
         type: operator.type,
@@ -69,13 +69,13 @@ export class SimpleHandler {
     return undefined;
   }
 
-  public unzip<T = unknown>(splitter: string, zipped: string): T {
+  public unpack<T = unknown>(splitter: string, packed: string): T {
     const operator = this.operators.find(x => x.splitter === splitter);
-    let result: any = zipped;
+    let result: any = packed;
     if (operator) {
-      const { unzippers, zippers } = operator;
-      for (const zipper of unzippers || zippers) {
-        result = zipper.unzip(result);
+      const { unpackers, packers } = operator;
+      for (const packer of unpackers || packers) {
+        result = packer.unpack(result);
       }
     }
     return result;

@@ -6,18 +6,18 @@ import { UsedSigns } from "../../lib/used-signs";
 const s = UsedSigns.Splitter;
 
 describe("FieldConverter", () => {
-  function testZip(input: any, zipped: string, converter: PackFieldConvertor) {
+  function testPack(input: any, packed: string, converter: PackFieldConvertor) {
     const handler = new ComplexHandler({ fields: converter });
-    const zipResult = handler.zip(input);
-    expect(zipResult).toEqual(zipped);
-    expect(handler.unzip(zipped)).toEqual(input);
+    const packResult = handler.pack(input);
+    expect(packResult).toEqual(packed);
+    expect(handler.unpack(packed)).toEqual(input);
   }
 
   function testCycle(source: any, converter: PackFieldConvertor) {
     const handler = new ComplexHandler({ fields: converter });
-    const zipped = handler.zip(source);
-    const unzipped = handler.unzip(zipped);
-    expect(source).toEqual(unzipped);
+    const packed = handler.pack(source);
+    const unpacked = handler.unpack(packed);
+    expect(source).toEqual(unpacked);
   }
 
   describe("object", () => {
@@ -26,13 +26,13 @@ describe("FieldConverter", () => {
         id: 10,
         name: "Kent",
       };
-      testZip(v, TU.full(s.Object, TU.obj(TU.p("1", v.id), TU.p("2", v.name))), {
+      testPack(v, TU.full(s.Object, TU.obj(TU.p("1", v.id), TU.p("2", v.name))), {
         id: 1,
         name: 2,
       });
     });
     it("example", () => {
-      testZip(
+      testPack(
         {
           id: 1,
           name: "Team 1",

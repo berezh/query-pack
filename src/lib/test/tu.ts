@@ -15,11 +15,11 @@ export class TU {
     } else if (value === undefined) {
       result = s.UndefinedProperty;
     } else if (typeof value === "string") {
-      result = s.StringProperty + this.zipS(value);
+      result = s.StringProperty + this.packS(value);
     } else if (typeof value === "number") {
-      result = s.NumberProperty + this.zipN(value);
+      result = s.NumberProperty + this.packN(value);
     } else if (typeof value === "boolean") {
-      result = s.BooleanProperty + this.zipB(value);
+      result = s.BooleanProperty + this.packB(value);
     } else if (typeof value === "object") {
       result = s.ObjectProperty;
     }
@@ -37,21 +37,21 @@ export class TU {
     return result;
   }
 
-  public static zipN(input: number): string {
-    return this.simpleHandler.zip("number", input)?.value || "";
+  public static packN(input: number): string {
+    return this.simpleHandler.pack("number", input)?.value || "";
   }
 
-  public static zipS(input: string): string {
-    return this.simpleHandler.zip("string", input)?.value || "";
+  public static packS(input: string): string {
+    return this.simpleHandler.pack("string", input)?.value || "";
   }
 
-  public static zipB(input: boolean): string {
-    return this.simpleHandler.zip("boolean", input)?.value || "";
+  public static packB(input: boolean): string {
+    return this.simpleHandler.pack("boolean", input)?.value || "";
   }
 
   public static p(name: string, value: any, last = false): string {
     const stringValue = TU.splitterValue(value);
-    const r = this.zipS(name) + stringValue + (last ? "" : s.Property);
+    const r = this.packS(name) + stringValue + (last ? "" : s.Property);
     return r;
   }
 
@@ -60,19 +60,19 @@ export class TU {
   }
 
   public static propN(name: string, value: number, last = false): string {
-    return this.zipS(name) + s.NumberProperty + this.zipN(value) + (last ? "" : s.Property);
+    return this.packS(name) + s.NumberProperty + this.packN(value) + (last ? "" : s.Property);
   }
 
   public static propS(name: string, value: string, last = false): string {
-    return this.zipS(name) + s.StringProperty + this.zipS(value) + (last ? "" : s.Property);
+    return this.packS(name) + s.StringProperty + this.packS(value) + (last ? "" : s.Property);
   }
 
   public static propB(name: string, value: boolean, last = false): string {
-    return this.zipS(name) + s.BooleanProperty + this.zipB(value) + (last ? "" : s.Property);
+    return this.packS(name) + s.BooleanProperty + this.packB(value) + (last ? "" : s.Property);
   }
 
   public static r(name: string, last = false): string {
-    return this.zipS(name) + s.ObjectProperty + (last ? "" : s.Property);
+    return this.packS(name) + s.ObjectProperty + (last ? "" : s.Property);
   }
 
   public static a(items: any[]): string {
@@ -95,17 +95,17 @@ export class TU {
     return c;
   }
 
-  public static converter(zipper: { zip: (input: unknown) => string; unzip: (z: string) => unknown }) {
-    return (source: unknown, zipped: string | (string | number)[], options?: { zip?: boolean; unzip?: boolean }) => {
-      const zippedValue = Array.isArray(zipped) ? zipped.join("") : zipped;
+  public static converter(packer: { pack: (input: unknown) => string; unpack: (z: string) => unknown }) {
+    return (source: unknown, packed: string | (string | number)[], options?: { pack?: boolean; unpack?: boolean }) => {
+      const packedValue = Array.isArray(packed) ? packed.join("") : packed;
 
-      const o = options || { zip: true, unzip: true };
+      const o = options || { pack: true, unpack: true };
 
-      if (o.zip) {
-        expect(zipper.zip(source)).toEqual(zippedValue);
+      if (o.pack) {
+        expect(packer.pack(source)).toEqual(packedValue);
       }
-      if (o.unzip) {
-        expect(zipper.unzip(zippedValue)).toEqual(source);
+      if (o.unpack) {
+        expect(packer.unpack(packedValue)).toEqual(source);
       }
     };
   }

@@ -54,7 +54,7 @@ export class FieldConverter {
     return propNumber;
   }
 
-  public zip(names: string[] | undefined, currentName: string): string {
+  public pack(names: string[] | undefined, currentName: string): string {
     if (this.convertor) {
       const path: string[] = [];
       if (Array.isArray(names)) {
@@ -63,11 +63,11 @@ export class FieldConverter {
       path.push(currentName);
       const conValue = this.getPropertyNumber(...path);
       if (typeof conValue === "number") {
-        return this.simpleHandler.zip("number", conValue)?.value || "";
+        return this.simpleHandler.pack("number", conValue)?.value || "";
       }
     }
 
-    return this.simpleHandler.zip("string", currentName)?.value || "";
+    return this.simpleHandler.pack("string", currentName)?.value || "";
   }
 
   private getPropertyName(names: string[], propNumber: number): string | undefined {
@@ -101,16 +101,16 @@ export class FieldConverter {
     return undefined;
   }
 
-  private unzipName(names: string[], zippedName: string): string {
-    if (Number32.isBase32(zippedName)) {
-      const propNumber = Number32.toNumber(zippedName);
+  private unpackName(names: string[], packedName: string): string {
+    if (Number32.isBase32(packedName)) {
+      const propNumber = Number32.toNumber(packedName);
       const propName = this.getPropertyName(names, propNumber);
       if (typeof propName === "string") {
         return propName;
       }
     }
 
-    return this.simpleHandler.unzip(s.StringProperty, zippedName);
+    return this.simpleHandler.unpack(s.StringProperty, packedName);
   }
 
   private init(names: string[], value: unknown) {
@@ -122,7 +122,7 @@ export class FieldConverter {
       const objectValue = value as object;
       const keys = Object.keys(objectValue);
       for (const key of keys) {
-        const propName = this.unzipName(names, key);
+        const propName = this.unpackName(names, key);
         if (propName !== key) {
           const value = objectValue[key];
           delete objectValue[key];
@@ -137,7 +137,7 @@ export class FieldConverter {
     }
   }
 
-  public unzip(root: object): object {
+  public unpack(root: object): object {
     if (this.convertor) {
       const names: string[] = [];
       this.init(names, root);

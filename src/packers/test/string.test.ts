@@ -1,16 +1,16 @@
 import { UsedSigns } from "../../lib/used-signs";
-import { StringZipper } from "../string";
+import { StringPacker } from "../string";
 
-describe("StringZipper", () => {
-  const zipper = new StringZipper();
+describe("StringPacker", () => {
+  const packer = new StringPacker();
 
-  function stringTest(source: string, zipped: string) {
-    const curZipped = zipper.zip(source);
-    expect(curZipped).toBe(zipped);
-    expect(zipper.unzip(zipped)).toBe(source);
+  function stringTest(source: string, packed: string) {
+    const curPacked = packer.pack(source);
+    expect(curPacked).toBe(packed);
+    expect(packer.unpack(packed)).toBe(source);
   }
 
-  describe("zip/unzip", () => {
+  describe("pack/unpack", () => {
     it("simple", () => {
       stringTest("text", "text");
     });

@@ -9,10 +9,10 @@ describe("SimpleHandler", () => {
 
   function convert(input: string, result: string) {
     // result: ZippedValue) {
-    const curZipped = handler.zip("string", input);
-    expect(curZipped).toEqual<PackedValue>({ value: result, type: "string", splitter: s.StringProperty });
-    const unzipValue = handler.unzip(s.StringProperty, result);
-    expect(unzipValue).toEqual(input);
+    const curPacked = handler.pack("string", input);
+    expect(curPacked).toEqual<PackedValue>({ value: result, type: "string", splitter: s.StringProperty });
+    const unpackValue = handler.unpack(s.StringProperty, result);
+    expect(unpackValue).toEqual(input);
   }
 
   describe("string", () => {

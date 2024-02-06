@@ -11,22 +11,22 @@ interface TestObject {
 describe("ComplexHandler Array", () => {
   const handler = new ComplexHandler();
 
-  const testZip = TU.converter(handler);
+  const testPack = TU.converter(handler);
 
   describe("root", () => {
     it("example", () => {
-      testZip([12, 34, 56], "1NcN12N1o", { zip: true });
-      testZip(["cat", "dog", "mouse"], "1ScatSdogSmouse", { zip: true });
-      testZip([12, "dog", true], "1NcSdogB1", { zip: true });
+      testPack([12, 34, 56], "1NcN12N1o", { pack: true });
+      testPack(["cat", "dog", "mouse"], "1ScatSdogSmouse", { pack: true });
+      testPack([12, "dog", true], "1NcSdogB1", { pack: true });
     });
 
     it("contains undefined", () => {
       const v = ["kant", undefined, 1];
-      testZip(v, ComplexHandler.Version + TU.i("kant") + TU.i(undefined) + TU.i(1));
+      testPack(v, ComplexHandler.Version + TU.i("kant") + TU.i(undefined) + TU.i(1));
     });
     it("contains null", () => {
       const v = ["kant", null, 1];
-      testZip(v, ComplexHandler.Version + TU.i("kant") + TU.i(null) + TU.i(1));
+      testPack(v, ComplexHandler.Version + TU.i("kant") + TU.i(null) + TU.i(1));
     });
   });
 
@@ -40,7 +40,7 @@ describe("ComplexHandler Array", () => {
           id: 2,
         },
       ];
-      testZip(value, TU.full(TU.obj(s.ObjectProperty, s.ObjectProperty), TU.obj(TU.p("id", value[0].id)), TU.obj(TU.p("id", value[1].id))));
+      testPack(value, TU.full(TU.obj(s.ObjectProperty, s.ObjectProperty), TU.obj(TU.p("id", value[0].id)), TU.obj(TU.p("id", value[1].id))));
     });
   });
 
@@ -50,14 +50,14 @@ describe("ComplexHandler Array", () => {
         id: 1,
         players: [],
       };
-      testZip(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a([])));
+      testPack(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a([])));
     });
     it("default", () => {
       const value = {
         id: 1,
         players: ["first", "second"],
       };
-      testZip(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a(["first", "second"])));
+      testPack(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a(["first", "second"])));
     });
   });
 
@@ -67,7 +67,7 @@ describe("ComplexHandler Array", () => {
         id: 1,
         players: ["first", "second"],
       };
-      testZip(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a(["first", "second"])));
+      testPack(value, TU.full(s.Object, TU.obj(TU.p("id", 1), TU.p("players", [])), TU.a(["first", "second"])));
     });
   });
 
@@ -77,14 +77,14 @@ describe("ComplexHandler Array", () => {
         id: 1,
         players: [{ id: 2 }, ["first", "second"]],
       };
-      const zipped = TU.full(
+      const packed = TU.full(
         s.Object,
         TU.obj(TU.p("id", 1), TU.p("players", value.players)),
         TU.obj(s.ObjectProperty, s.ArrayProperty),
         TU.obj(TU.p("id", 2)),
         TU.a(["first", "second"])
       );
-      testZip(value, zipped);
+      testPack(value, packed);
     });
   });
 });

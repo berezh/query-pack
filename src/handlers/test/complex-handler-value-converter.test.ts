@@ -2,19 +2,19 @@ import { PackValueConvertor } from "../../interfaces";
 import { ComplexHandler } from "../../handlers/complex-handler";
 
 describe("ValueConverter", () => {
-  function testZip(source: any, alt: any, converter: PackValueConvertor) {
+  function testPack(source: any, alt: any, converter: PackValueConvertor) {
     const handler = new ComplexHandler({ values: converter });
-    const zipSource = handler.zip(source);
-    const zipAlt = new ComplexHandler().zip(alt);
-    expect(zipSource).toEqual(zipAlt);
+    const packSource = handler.pack(source);
+    const packAlt = new ComplexHandler().pack(alt);
+    expect(packSource).toEqual(packAlt);
 
-    const unzipResult = handler.unzip(zipSource);
-    expect(source).toEqual(unzipResult);
+    const unpackResult = handler.unpack(packSource);
+    expect(source).toEqual(unpackResult);
   }
 
   describe("object", () => {
     it("simple: string key", () => {
-      testZip(
+      testPack(
         {
           name: "Kent",
         },
@@ -30,7 +30,7 @@ describe("ValueConverter", () => {
     });
 
     it("example", () => {
-      testZip(
+      testPack(
         {
           name: "zak",
           level: "good",
@@ -51,7 +51,7 @@ describe("ValueConverter", () => {
       );
     });
     it("simple: number key", () => {
-      testZip(
+      testPack(
         {
           name: "Kent",
         },
@@ -66,7 +66,7 @@ describe("ValueConverter", () => {
       );
     });
     it("child", () => {
-      testZip(
+      testPack(
         {
           name: "root",
           child: {
@@ -92,7 +92,7 @@ describe("ValueConverter", () => {
       );
     });
     it("many child", () => {
-      testZip(
+      testPack(
         {
           child1: {
             name: "Kent",
@@ -132,7 +132,7 @@ describe("ValueConverter", () => {
 
   describe("array", () => {
     it("root", () => {
-      testZip(
+      testPack(
         [
           {
             name: "Kent",
@@ -159,7 +159,7 @@ describe("ValueConverter", () => {
     });
     // 1 X 1N9 Y 2A X O X 1Na Y nameSUkent
     it("child", () => {
-      testZip(
+      testPack(
         {
           child: [
             {

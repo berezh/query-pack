@@ -31,14 +31,14 @@ export class Parser {
     undefined: s.UndefinedProperty,
   };
 
-  public version(zipped: string): [number | undefined, string] {
-    const splits = zipped.match(new RegExp(`^[${RT.number32Signs}]`, "g"));
+  public version(packed: string): [number | undefined, string] {
+    const splits = packed.match(new RegExp(`^[${RT.number32Signs}]`, "g"));
     let ver: number | undefined = undefined;
-    let rest = zipped;
+    let rest = packed;
     if (splits) {
       const v = splits[0];
       ver = Number32.toNumber(v);
-      rest = zipped.slice(v.length);
+      rest = packed.slice(v.length);
       if (rest.match(new RegExp(`^${s.Object}`, "g"))) {
         rest = rest.slice(s.Object.length);
       }
@@ -47,9 +47,9 @@ export class Parser {
     return [ver, rest];
   }
 
-  public items(zipped: string): ParsedProperty[] {
+  public items(packed: string): ParsedProperty[] {
     const result: ParsedProperty[] = [];
-    const parts = zipped.match(RT.itemSplitReg);
+    const parts = packed.match(RT.itemSplitReg);
     if (parts) {
       for (const part of parts) {
         const splits = part.match(RT.itemPartsSplitReg);
@@ -82,9 +82,9 @@ export class Parser {
     return Object.keys(this.propertyTypes).find(key => this.propertyTypes[key] === splitter) as PackType;
   }
 
-  public properties(zipped: string): ParsedProperty[] {
+  public properties(packed: string): ParsedProperty[] {
     const result: ParsedProperty[] = [];
-    const parts = zipped.split(s.Property);
+    const parts = packed.split(s.Property);
     if (parts) {
       for (const part of parts) {
         const splits = part.match(RT.propertyPartsSplitReg);
@@ -103,9 +103,9 @@ export class Parser {
     return result;
   }
 
-  public objects(zipped: string): ParsedObject[] {
+  public objects(packed: string): ParsedObject[] {
     const result: ParsedObject[] = [];
-    const contents = zipped.split(new RegExp(s.Object));
+    const contents = packed.split(new RegExp(s.Object));
     for (const content of contents) {
       if (content.match(this.propertyAllReg)) {
         result.push({

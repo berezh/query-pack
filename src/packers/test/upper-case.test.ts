@@ -1,12 +1,12 @@
 import { UsedSigns } from "../../lib/used-signs";
-import { UpperCaseZipper } from "../upper-case";
+import { UpperCasePacker } from "../upper-case";
 
-describe("UpperCaseZipper", () => {
-  const zipper = new UpperCaseZipper();
+describe("UpperCasePacker", () => {
+  const packer = new UpperCasePacker();
 
-  function upperCaseTest(source: string, zipped: string) {
-    expect(zipper.zip(source)).toBe(zipped);
-    expect(zipper.unzip(zipped)).toBe(source);
+  function upperCaseTest(source: string, packed: string) {
+    expect(packer.pack(source)).toBe(packed);
+    expect(packer.unpack(packed)).toBe(source);
   }
   describe("multi U", () => {
     it("3 upper", () => {
@@ -17,7 +17,7 @@ describe("UpperCaseZipper", () => {
     });
   });
 
-  describe("zip/unzip", () => {
+  describe("pack/unpack", () => {
     it("none", () => {
       upperCaseTest("text", "text");
     });

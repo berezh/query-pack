@@ -13,7 +13,7 @@ export interface PackedValue {
 
 export interface PackedNamedValue extends PackedValue {
   propertyName?: string;
-  zippedName?: string;
+  packedName?: string;
 }
 
 export interface PackedRefPosition {

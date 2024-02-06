@@ -55,14 +55,14 @@ export class ComplexHandler {
     }
   }
 
-  private zipSimple(current: PackedRef, zippedName: string | undefined, type: PackType, value: unknown) {
-    const simpleResult = this.simple.zip(type, value);
+  private packSimple(current: PackedRef, packedName: string | undefined, type: PackType, value: unknown) {
+    const simpleResult = this.simple.pack(type, value);
     if (simpleResult) {
-      current.children.push({ ...simpleResult, zippedName });
+      current.children.push({ ...simpleResult, packedName: packedName });
     }
   }
 
-  private zipObject(references: PackedRef[], parent: PackedRef | undefined, propertyName: string | undefined, value: unknown, pos: PackedRefPosition) {
+  private packObject(references: PackedRef[], parent: PackedRef | undefined, propertyName: string | undefined, value: unknown, pos: PackedRefPosition) {
     const position = this.objectPosition.level(pos);
 
     const current: PackedRef = new PackedRef("object", position, parent, propertyName);
@@ -76,31 +76,31 @@ export class ComplexHandler {
       const childValue = objectValue[propName];
       const type = TypeUtil.getType(childValue);
       const p = this.objectPosition.index(position, index);
-      const zipName = this.fieldConverter.zip(current?.rootNames, propName);
+      const packName = this.fieldConverter.pack(current?.rootNames, propName);
 
       if (type) {
         if (type === "object") {
           current.children.push({
             propertyName: propName,
-            zippedName: zipName,
+            packedName: packName,
             type: type,
             splitter: s.ObjectProperty,
             value: "",
           });
-          this.zipObject(references, current, propName, childValue, p);
+          this.packObject(references, current, propName, childValue, p);
         } else if (type === "array") {
           current.children.push({
             propertyName: propName,
-            zippedName: zipName,
+            packedName: packName,
             type: type,
             splitter: s.ArrayProperty,
             value: "",
           });
-          this.zipArray(references, current, propName, childValue, p);
+          this.packArray(references, current, propName, childValue, p);
         } else if (type === "null") {
           current.children.push({
             propertyName: propName,
-            zippedName: zipName,
+            packedName: packName,
             type: type,
             splitter: s.NullProperty,
             value: "",
@@ -109,21 +109,21 @@ export class ComplexHandler {
           if (this.includeUndefinedProperty) {
             current.children.push({
               propertyName: propName,
-              zippedName: zipName,
+              packedName: packName,
               type: type,
               splitter: s.UndefinedProperty,
               value: "",
             });
           }
         } else if (TypeUtil.isSimple(type)) {
-          const zipValue = this.valueConverter.zip(current.rootNames, propName, childValue);
-          this.zipSimple(current, zipName, type, zipValue);
+          const packValue = this.valueConverter.pack(current.rootNames, propName, childValue);
+          this.packSimple(current, packName, type, packValue);
         }
       }
     }
   }
 
-  private zipArray(references: PackedRef[], parent: PackedRef | undefined, propertyName: string | undefined, value: unknown, pos: PackedRefPosition) {
+  private packArray(references: PackedRef[], parent: PackedRef | undefined, propertyName: string | undefined, value: unknown, pos: PackedRefPosition) {
     const position = this.objectPosition.level(pos);
 
     const current: PackedRef = new PackedRef("array", position, parent, propertyName);
@@ -143,14 +143,14 @@ export class ComplexHandler {
             splitter: s.ObjectProperty,
             value: "",
           });
-          this.zipObject(references, current, undefined, item, p);
+          this.packObject(references, current, undefined, item, p);
         } else if (type === "array") {
           current.children.push({
             type,
             splitter: s.ArrayProperty,
             value: "",
           });
-          this.zipArray(references, current, undefined, item, p);
+          this.packArray(references, current, undefined, item, p);
         } else if (type === "undefined") {
           current.children.push({
             type,
@@ -164,13 +164,13 @@ export class ComplexHandler {
             value: "",
           });
         } else if (TypeUtil.isSimple(type)) {
-          this.zipSimple(current, undefined, type, item);
+          this.packSimple(current, undefined, type, item);
         }
       }
     }
   }
 
-  public zip(source: unknown): string {
+  public pack(source: unknown): string {
     let references: PackedRef[] = [];
     const lines: string[] = [];
 
@@ -179,14 +179,14 @@ export class ComplexHandler {
     if (type) {
       const p = this.objectPosition.reset();
       if (type === "object") {
-        this.zipObject(references, undefined, undefined, source, p);
+        this.packObject(references, undefined, undefined, source, p);
       } else if (type === "array") {
-        this.zipArray(references, undefined, undefined, source, p);
+        this.packArray(references, undefined, undefined, source, p);
       } else if (TypeUtil.isSimple(type) || TypeUtil.isEmpty(type)) {
         const current: PackedRef = new PackedRef(type, p);
         references.push(current);
         if (TypeUtil.isSimple(type)) {
-          this.zipSimple(current, undefined, type, source);
+          this.packSimple(current, undefined, type, source);
         } else if (type === "undefined") {
           current.children.push({
             type,
@@ -207,8 +207,8 @@ export class ComplexHandler {
       for (const cr of references) {
         const propertySplitter = cr.type === "object" ? s.Property : "";
         const complexLine = cr.children
-          .map(({ zippedName, splitter, value }) => {
-            return (zippedName ? zippedName : "") + splitter + value;
+          .map(({ packedName: packedName, splitter, value }) => {
+            return (packedName ? packedName : "") + splitter + value;
           })
           .join(propertySplitter);
 
@@ -235,13 +235,13 @@ export class ComplexHandler {
     return fullResult;
   }
 
-  public unzip(zipped: string): any {
-    const [version, restZipped] = this.parser.version(zipped);
+  public unpack(packed: string): any {
+    const [version, restPacked] = this.parser.version(packed);
     if ([ComplexHandler.Version].includes(version || 0)) {
       let result: object | undefined = undefined;
       // multi objects
-      if (restZipped.match(this.parser.objectReg)) {
-        const parsedObjects = this.parser.objects(restZipped);
+      if (restPacked.match(this.parser.objectReg)) {
+        const parsedObjects = this.parser.objects(restPacked);
         if (parsedObjects.length > 0) {
           const root = parsedObjects[0];
           if (TypeUtil.isComplexOrEmpty(root.type)) {
@@ -255,7 +255,7 @@ export class ComplexHandler {
                 const array: any[] = [];
                 for (let propIndex = 0; propIndex < properties.length; propIndex++) {
                   const { splitter, value, type } = properties[propIndex];
-                  const itemValue = this.simple.unzip(splitter, value);
+                  const itemValue = this.simple.unpack(splitter, value);
                   array.push(itemValue);
                   if (TypeUtil.isComplex(type)) {
                     if (lastRefIndex === -1) {
@@ -272,7 +272,7 @@ export class ComplexHandler {
               else if (type === "object") {
                 const obj = {};
                 for (const { name, splitter, value, type } of properties) {
-                  obj[name] = this.simple.unzip(splitter, value);
+                  obj[name] = this.simple.unpack(splitter, value);
                   if (TypeUtil.isComplex(type)) {
                     if (lastRefIndex === -1) {
                       lastRefIndex = i + 1;
@@ -302,33 +302,33 @@ export class ComplexHandler {
         }
       }
       // one object
-      else if (restZipped.match(this.parser.propertyAllReg)) {
-        const props = this.parser.properties(restZipped);
+      else if (restPacked.match(this.parser.propertyAllReg)) {
+        const props = this.parser.properties(restPacked);
         const obj = {};
         for (const { name, splitter, value } of props) {
-          const key = this.simple.unzip<string>(s.StringProperty, name);
-          obj[key] = this.simple.unzip(splitter, value);
+          const key = this.simple.unpack<string>(s.StringProperty, name);
+          obj[key] = this.simple.unpack(splitter, value);
         }
         result = obj;
       }
       // simple value or array
-      else if (restZipped.match(this.parser.itemAllReg)) {
-        const ps = this.parser.items(restZipped);
+      else if (restPacked.match(this.parser.itemAllReg)) {
+        const ps = this.parser.items(restPacked);
         const values = ps.map(({ splitter, value }) => {
-          return this.simple.unzip(splitter, value);
+          return this.simple.unpack(splitter, value);
         });
         if (values.length) {
           result = (values.length === 1 ? values[0] : values) as object;
         }
       }
       // empty object
-      else if (restZipped === "") {
+      else if (restPacked === "") {
         result = {};
       }
 
       if (result) {
-        result = this.fieldConverter.unzip(result);
-        result = this.valueConverter.unzip(result);
+        result = this.fieldConverter.unpack(result);
+        result = this.valueConverter.unpack(result);
       }
 
       return result;

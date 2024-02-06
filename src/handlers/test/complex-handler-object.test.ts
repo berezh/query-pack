@@ -14,21 +14,21 @@ interface TestContainer extends TestObject {
 }
 
 describe("ComplexHandler Object", () => {
-  function testZip(input: any, zipped: string, options?: PackOptions) {
+  function testPack(input: any, packed: string, options?: PackOptions) {
     const handler = new ComplexHandler(options);
-    const zipResult = handler.zip(input);
-    expect(zipResult).toEqual(zipped);
-    expect(handler.unzip(zipped)).toEqual(input);
+    const packResult = handler.pack(input);
+    expect(packResult).toEqual(packed);
+    expect(handler.unpack(packed)).toEqual(input);
   }
 
   describe("simple", () => {
     it("empty object", () => {
       const v = {};
-      testZip(v, ComplexHandler.Version.toString() + s.Object);
+      testPack(v, ComplexHandler.Version.toString() + s.Object);
     });
 
     it("team object", () => {
-      testZip(
+      testPack(
         {
           id: 1,
           name: "Team 1",
@@ -43,7 +43,7 @@ describe("ComplexHandler Object", () => {
         id: 10,
         child: {},
       };
-      testZip(value, TU.full(s.Object, TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj()));
+      testPack(value, TU.full(s.Object, TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj()));
     });
 
     describe("undefined", () => {
@@ -52,14 +52,14 @@ describe("ComplexHandler Object", () => {
           name: "kant",
           child: undefined,
         };
-        testZip(v, TU.full(s.Object, TU.p("name", v.name)));
+        testPack(v, TU.full(s.Object, TU.p("name", v.name)));
       });
       it("undefined includeUndefinedProperty", () => {
         const v = {
           name: "kant",
           child: undefined,
         };
-        testZip(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)), { includeUndefinedProperty: true });
+        testPack(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)), { includeUndefinedProperty: true });
       });
     });
     describe("null", () => {
@@ -68,7 +68,7 @@ describe("ComplexHandler Object", () => {
           name: "kant",
           child: null,
         };
-        testZip(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)));
+        testPack(v, TU.full(s.Object, TU.p("name", v.name), TU.p("child", v.child)));
       });
     });
   });
@@ -81,7 +81,7 @@ describe("ComplexHandler Object", () => {
           id: 11,
         },
       };
-      testZip(value, TU.full(s.Object, TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj(TU.propN("id", value.child.id))));
+      testPack(value, TU.full(s.Object, TU.obj(TU.propN("id", value.id), TU.r("child")), TU.obj(TU.propN("id", value.child.id))));
     });
 
     it("2 child", () => {
@@ -94,7 +94,7 @@ describe("ComplexHandler Object", () => {
           id: 12,
         },
       };
-      testZip(value, TU.full(s.Object, TU.obj(TU.p("id", value.id), TU.r("first"), TU.r("second")), TU.obj(TU.p("id", value.first.id)), TU.obj(TU.p("id", value.second.id))));
+      testPack(value, TU.full(s.Object, TU.obj(TU.p("id", value.id), TU.r("first"), TU.r("second")), TU.obj(TU.p("id", value.first.id)), TU.obj(TU.p("id", value.second.id))));
     });
 
     it("2 deep", () => {
@@ -107,7 +107,7 @@ describe("ComplexHandler Object", () => {
           },
         },
       };
-      testZip(
+      testPack(
         value,
         TU.full(s.Object, TU.obj(TU.propN("id", value.id), TU.r("first")), TU.obj(TU.propN("id", value.first.id), TU.r("second")), TU.obj(TU.propN("id", value.first.second.id)))
       );
@@ -127,7 +127,7 @@ describe("ComplexHandler Object", () => {
           id: 3,
         },
       };
-      testZip(
+      testPack(
         value,
         TU.full(
           s.Object,
@@ -173,7 +173,7 @@ describe("ComplexHandler Object", () => {
           },
         },
       };
-      testZip(
+      testPack(
         value,
         TU.full(
           s.Object,
