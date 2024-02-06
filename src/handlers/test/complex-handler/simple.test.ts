@@ -1,6 +1,6 @@
-import { ComplexHandler } from "../../handlers/complex-handler";
-import { TU } from "../../lib/test/tu";
-import { UsedSigns } from "../../lib/used-signs";
+import { ComplexHandler } from "../../complex-handler";
+import { TU } from "../../../lib/test/tu";
+import { UsedSigns } from "../../../lib/used-signs";
 
 const s = UsedSigns.Splitter;
 

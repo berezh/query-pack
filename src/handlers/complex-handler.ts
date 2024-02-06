@@ -1,6 +1,6 @@
 import { PackedRef, PackedRefPosition, PackType, PackOptions, MAX_URL_LENGTH } from "../interfaces";
 import { CommonUtil } from "../lib/common";
-import { ObjectPosition } from "./object-position";
+import { ObjectPosition } from "../utils/object-position";
 import { Parser } from "../lib/parser";
 import { SimpleHandler } from "./simple-handler";
 import { TypeUtil } from "../lib/type";

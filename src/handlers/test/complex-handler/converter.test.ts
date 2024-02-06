@@ -1,5 +1,5 @@
-import { PackOptions } from "../../interfaces";
-import { ComplexHandler } from "../../handlers/complex-handler";
+import { PackOptions } from "../../../interfaces";
+import { ComplexHandler } from "../../complex-handler";
 
 describe("Combine Converters", () => {
   function testPack(source: any, alt: any, options: PackOptions) {
