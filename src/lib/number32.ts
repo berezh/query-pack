@@ -37,8 +37,12 @@ export class Number32 {
     v: 31,
   };
 
+  public static get Sings(): string {
+    return Object.keys(Number32.numbers).join();
+  }
+
   private static get MatchReg(): RegExp {
-    const sings = Object.keys(Number32.numbers);
+    const sings = Number32.Sings;
     return new RegExp(`^\\-?[${sings}]+(\\.[${sings}]+)?$`, "g");
   }
 

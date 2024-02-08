@@ -207,7 +207,7 @@ export class ComplexHandler {
       for (const cr of references) {
         const propertySplitter = cr.type === "object" ? s.Property : "";
         const complexLine = cr.children
-          .map(({ packedName: packedName, splitter, value }) => {
+          .map(({ packedName, splitter, value }) => {
             return (packedName ? packedName : "") + splitter + value;
           })
           .join(propertySplitter);
