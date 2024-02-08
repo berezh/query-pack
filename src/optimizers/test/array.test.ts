@@ -1,12 +1,12 @@
 import { ARRAY_ITEM_OPTIMIZER_MIN_MATCH } from "../../lib/consts";
 import { Number32 } from "../../lib/number32";
 import { UsedSigns } from "../../lib/used-signs";
-import { ArrayItemOptimizer } from "../array-item";
+import { ArrayOptimizer } from "../array";
 
 const s = UsedSigns.Splitter;
 
-describe("ArrayItemOptimizer", () => {
-  const o = new ArrayItemOptimizer();
+describe("ArrayOptimizer", () => {
+  const o = new ArrayOptimizer();
 
   describe("ObjectProperty", () => {
     function testObjectProperty(input: string, output: string) {

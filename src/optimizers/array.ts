@@ -4,7 +4,7 @@ import { BasicOptimizer } from "./basic";
 
 const s = UsedSigns.Splitter;
 
-export class ArrayItemOptimizer extends BasicOptimizer {
+export class ArrayOptimizer extends BasicOptimizer {
   private matches: ArrayItemSplitterOptimizer[] = [];
 
   constructor() {
