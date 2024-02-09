@@ -1,7 +1,7 @@
 import { ArrayBoolValueOptimizer } from "../array-bool-value";
 
 describe("ArrayBoolValueOptimizer", () => {
-  function testPattern(input: string, output: string) {
+  function testPack(input: string, output: string) {
     const o = new ArrayBoolValueOptimizer();
     const opt = o.pack(input);
     expect(opt).toEqual(output);
@@ -10,13 +10,13 @@ describe("ArrayBoolValueOptimizer", () => {
   }
 
   it("no action", () => {
-    testPattern("B1", "B1");
-    testPattern("B1B0", "B1B0");
+    testPack("B1", "B1");
+    testPack("B1B0", "B1B0");
   });
 
   it("simple", () => {
-    testPattern("B1B0B1", "BB101");
-    testPattern("B1B0B1B0", "BB1010");
-    testPattern("B1B0B1B0B1", "BB10101");
+    testPack("B1B0B1", "BB101");
+    testPack("B1B0B1B0", "BB1010");
+    testPack("B1B0B1B0B1", "BB10101");
   });
 });
