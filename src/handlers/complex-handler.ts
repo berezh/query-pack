@@ -9,6 +9,7 @@ import { ValueConverter } from "../converters/value-converter";
 import { FieldConverter } from "../converters/field-converter";
 import { QpError } from "../lib/error";
 import { QpErrorCode } from "../lib/error/code";
+import { ArrayOptimizer } from "../optimizers/array";
 
 const s = UsedSigns.Splitter;
 
@@ -22,6 +23,8 @@ export class ComplexHandler {
   private fieldConverter: FieldConverter;
 
   private valueConverter: ValueConverter;
+
+  private arrayOptimizer = new ArrayOptimizer();
 
   private includeUndefinedProperty: boolean;
 
@@ -226,17 +229,20 @@ export class ComplexHandler {
       }
     }
 
-    const fullResult = lines.join(s.Object);
+    let fullResult = lines.join(s.Object);
 
     if (!this.ignoreMaxLength && fullResult?.length + this.domainOriginLength > this.maxLength) {
       throw new QpError(QpErrorCode.MAX_LENGTH, `The max length of URL is ${this.maxLength}. You have - ${fullResult.length + this.domainOriginLength}`);
     }
 
+    fullResult = this.arrayOptimizer.pack(fullResult);
+
     return fullResult;
   }
 
   public unpack(packed: string): any {
-    const [version, restPacked] = this.parser.version(packed);
+    const input = this.arrayOptimizer.unpack(packed);
+    const [version, restPacked] = this.parser.version(input);
     if ([ComplexHandler.Version].includes(version || 0)) {
       let result: object | undefined = undefined;
       // multi objects
