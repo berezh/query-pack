@@ -9,7 +9,7 @@ interface TestObject {
 }
 
 describe("ComplexHandler Array", () => {
-  const handler = new ComplexHandler();
+  const handler = new ComplexHandler({ useOptimizer: false });
 
   const testPack = TU.converter(handler);
 

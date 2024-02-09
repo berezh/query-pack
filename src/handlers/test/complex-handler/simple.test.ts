@@ -5,7 +5,7 @@ import { UsedSigns } from "../../../lib/used-signs";
 const s = UsedSigns.Splitter;
 
 describe("ComplexHandler Simple", () => {
-  const handler = new ComplexHandler();
+  const handler = new ComplexHandler({ useOptimizer: true });
 
   const convert = TU.converter(handler);
 

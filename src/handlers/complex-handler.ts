@@ -26,7 +26,7 @@ export class ComplexHandler {
 
   private arrayOptimizer = new ArrayOptimizer();
 
-  private includeUndefinedProperty: boolean;
+  private includeUndefinedProperty = false;
 
   private maxLength = MAX_URL_LENGTH;
 
@@ -34,27 +34,28 @@ export class ComplexHandler {
 
   private ignoreMaxLength = false;
 
+  private useOptimizer = true;
+
   private parser = new Parser();
 
   constructor(options?: PackOptions) {
-    const {
-      fields = {},
-      values = {},
-      includeUndefinedProperty = false,
-      maxLength: optionMaxLength,
-      domainOriginLength: optionDomainOriginLength,
-      ignoreMaxLength: optionIgnoreMaxLength,
-    } = options || {};
-    this.fieldConverter = new FieldConverter(fields);
-    this.valueConverter = new ValueConverter(values);
-    this.includeUndefinedProperty = includeUndefinedProperty;
-    this.ignoreMaxLength = !!optionIgnoreMaxLength;
+    this.fieldConverter = new FieldConverter(options?.fields || {});
+    this.valueConverter = new ValueConverter(options?.values || {});
 
-    if (optionMaxLength) {
-      this.maxLength = optionMaxLength;
+    if (typeof options?.includeUndefinedProperty === "boolean") {
+      this.includeUndefinedProperty = options?.includeUndefinedProperty;
     }
-    if (optionDomainOriginLength) {
-      this.domainOriginLength = optionDomainOriginLength;
+    if (typeof options?.ignoreMaxLength === "boolean") {
+      this.ignoreMaxLength = options?.ignoreMaxLength;
+    }
+    if (typeof options?.useOptimizer === "boolean") {
+      this.useOptimizer = options?.useOptimizer;
+    }
+    if (typeof options?.maxLength === "boolean") {
+      this.maxLength = options?.maxLength;
+    }
+    if (typeof options?.domainOriginLength === "boolean") {
+      this.domainOriginLength = options?.domainOriginLength;
     }
   }
 
@@ -235,13 +236,15 @@ export class ComplexHandler {
       throw new QpError(QpErrorCode.MAX_LENGTH, `The max length of URL is ${this.maxLength}. You have - ${fullResult.length + this.domainOriginLength}`);
     }
 
-    fullResult = this.arrayOptimizer.pack(fullResult);
+    if (this.useOptimizer) {
+      fullResult = this.arrayOptimizer.pack(fullResult);
+    }
 
     return fullResult;
   }
 
   public unpack(packed: string): any {
-    const input = this.arrayOptimizer.unpack(packed);
+    const input = this.useOptimizer ? this.arrayOptimizer.unpack(packed) : packed;
     const [version, restPacked] = this.parser.version(input);
     if ([ComplexHandler.Version].includes(version || 0)) {
       let result: object | undefined = undefined;
