@@ -1,6 +1,6 @@
 import { PackedRef, PackedRefPosition, PackType, PackOptions, MAX_URL_LENGTH } from "../interfaces";
 import { CommonUtil } from "../lib/common";
-import { ObjectPosition } from "./object-position";
+import { ObjectPosition } from "../utils/object-position";
 import { Parser } from "../lib/parser";
 import { SimpleHandler } from "./simple-handler";
 import { TypeUtil } from "../lib/type";
@@ -9,6 +9,7 @@ import { ValueConverter } from "../converters/value-converter";
 import { FieldConverter } from "../converters/field-converter";
 import { QpError } from "../lib/error";
 import { QpErrorCode } from "../lib/error/code";
+import { ArrayOptimizer } from "../optimizers/array";
 
 const s = UsedSigns.Splitter;
 
@@ -22,6 +23,8 @@ export class ComplexHandler {
   private fieldConverter: FieldConverter;
 
   private valueConverter: ValueConverter;
+
+  private arrayOptimizer = new ArrayOptimizer();
 
   private includeUndefinedProperty: boolean;
 
@@ -207,7 +210,7 @@ export class ComplexHandler {
       for (const cr of references) {
         const propertySplitter = cr.type === "object" ? s.Property : "";
         const complexLine = cr.children
-          .map(({ packedName: packedName, splitter, value }) => {
+          .map(({ packedName, splitter, value }) => {
             return (packedName ? packedName : "") + splitter + value;
           })
           .join(propertySplitter);
@@ -226,17 +229,20 @@ export class ComplexHandler {
       }
     }
 
-    const fullResult = lines.join(s.Object);
+    let fullResult = lines.join(s.Object);
 
     if (!this.ignoreMaxLength && fullResult?.length + this.domainOriginLength > this.maxLength) {
       throw new QpError(QpErrorCode.MAX_LENGTH, `The max length of URL is ${this.maxLength}. You have - ${fullResult.length + this.domainOriginLength}`);
     }
 
+    fullResult = this.arrayOptimizer.pack(fullResult);
+
     return fullResult;
   }
 
   public unpack(packed: string): any {
-    const [version, restPacked] = this.parser.version(packed);
+    const input = this.arrayOptimizer.unpack(packed);
+    const [version, restPacked] = this.parser.version(input);
     if ([ComplexHandler.Version].includes(version || 0)) {
       let result: object | undefined = undefined;
       // multi objects

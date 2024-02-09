@@ -1,5 +1,5 @@
-import { PackValueConvertor } from "../../interfaces";
-import { ComplexHandler } from "../../handlers/complex-handler";
+import { PackValueConvertor } from "../../../interfaces";
+import { ComplexHandler } from "../../complex-handler";
 
 describe("ValueConverter", () => {
   function testPack(source: any, alt: any, converter: PackValueConvertor) {

@@ -1,7 +1,7 @@
-import { encode } from "../..";
-import { QpError } from "../../lib/error";
-import { QpErrorCode } from "../../lib/error/code";
-import { ComplexHandler } from "../complex-handler";
+import { encode } from "../../..";
+import { QpError } from "../../../lib/error";
+import { QpErrorCode } from "../../../lib/error/code";
+import { ComplexHandler } from "../../complex-handler";
 
 describe("ComplexHandler MaxLength", () => {
   // 1XidN1YnameSUjohn (17)
